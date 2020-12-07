@@ -1,10 +1,7 @@
-/* 
-Script de creación de la base de datos para el proyecto "GESTIÓN DE COWORKING".
-
-    Creado por:
-        Julián David Calle Cristancho
-        Raúl González Seco
-        Iago Ubeira Martínez
+/* Script de creación de la base de datos para el proyecto "GESTIÓN DE COWORKING" creado por:
+    Julián David Calle Cristamcho
+    Raúl González Seco
+    Iago Ubeira Martínez
 */
 
 CREATE DATABASE IF NOT EXISTS coworking CHARSET "utf8mb4" COLLATE "utf8mb4_spanish_ci";
@@ -15,8 +12,8 @@ CREATE TABLE usuarios (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     nombre VARCHAR(50) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
-    foto VARCHAR(50) DEFAULT 'img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
-    localidad VARCHAR(200) NOT NULL,
+    clave VARCHAR(30) NOT NULL,
+    foto VARCHAR(50) DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
     biografia VARCHAR(280),
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo
     tlf VARCHAR(30) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
@@ -30,27 +27,36 @@ CREATE TABLE espacios (
 	tipo ENUM("Sala de reuniones", "Oficina individual", "Auditorio", "Sala audiovisual", "Oficina compartida") NOT NULL, -- Solo existirán los tipos de espacios aquí definidos
     nombre VARCHAR(50) NOT NULL,
     hora_apertura TIME NOT NULL,
-    hora_cierre TIME NOT NULL, 
-    precio SMALLINT UNSIGNED NOT NULL    
+    hora_cierre TIME NOT NULL,
+    precio SMALLINT UNSIGNED NOT NULL
+);
+
+CREATE TABLE fotos (
+	ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    url VARCHAR(50) UNIQUE NOT NULL, -- URL de la imagen que queramos usar
+	id_espacio INT UNSIGNED, 
+    CONSTRAINT espacios_fotos_fk1 FOREIGN KEY (id_espacio)
+		REFERENCES espacios (ID)
 );
 
 CREATE TABLE packs ( -- Los packs serán conjuntos preestablecidos de servicios que se incluirán en el pedido
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     tipo ENUM('Básico', 'Intermedio', 'Audiovisual', 'Informático') NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
     texto_contenido TEXT NOT NULL, -- Todos los servicios que incluirá cada pack (mayor velocidad de conexión, proyector, cafetería...)
-    precio SMALLINT UNSIGNED NOT NULL
+    precio SMALLINT UNSIGNED NOT NULL,
+    foto VARCHAR(50) NOT NULL -- URL de la imagen que queramos usar
 );
 
 CREATE TABLE valoraciones (
-    ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    comentario VARCHAR(500) NOT NULL,
+    ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+    comentario VARCHAR(500) NOT NULL, 
     calificacion TINYINT UNSIGNED DEFAULT 5, 
-    id_usuario INT UNSIGNED NOT NULL,
-    id_espacio INT UNSIGNED NOT NULL,
+    id_usuario INT UNSIGNED NOT NULL, 
+    id_espacio INT UNSIGNED NOT NULL, 
     CONSTRAINT valoraciones_usuarios_fk1 FOREIGN KEY (id_usuario) 
-        REFERENCES usuarios (ID),
-    CONSTRAINT valoraciones_espacios_fk2 FOREIGN KEY (id_espacio)
-        REFERENCES espacios (ID),
+        REFERENCES usuarios (ID), 
+    CONSTRAINT valoraciones_espacios_fk2 FOREIGN KEY (id_espacio) 
+        REFERENCES espacios (ID), 
         CONSTRAINT valoraciones_calificacion_ck1 CHECK (calificacion BETWEEN 1 AND 10)
 );
 
@@ -68,7 +74,6 @@ CREATE TABLE reportes (
         REFERENCES espacios (ID),
     CONSTRAINT reportes_resuelta_ck1 CHECK (resuelta IN (0 , 1)) -- Hacemos que el campo resuelta se asemeje a un booleano
 );
-
 
 CREATE TABLE pedidos (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

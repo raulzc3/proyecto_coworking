@@ -12,7 +12,7 @@ CREATE TABLE usuarios (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     nombre VARCHAR(50) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
-    clave VARCHAR(30) NOT NULL,
+    clave VARCHAR(30) NOT NULL, -- Contraseña del usuario
     foto VARCHAR(50) DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
     biografia VARCHAR(280),
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo
@@ -28,7 +28,8 @@ CREATE TABLE espacios (
     nombre VARCHAR(50) NOT NULL,
     hora_apertura TIME NOT NULL,
     hora_cierre TIME NOT NULL,
-    precio SMALLINT UNSIGNED NOT NULL
+    precio SMALLINT UNSIGNED NOT NULL,
+    aforo SMALLINT UNSIGNED NOT NULL
 );
 
 CREATE TABLE fotos (

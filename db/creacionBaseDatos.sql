@@ -19,6 +19,7 @@ CREATE TABLE usuarios (
     tlf VARCHAR(30) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
     administrador TINYINT DEFAULT 0, -- Por defecto, los usuarios no serán administradores
     fecha_nacimiento DATE NOT NULL,
+    empresa VARCHAR(50), -- Empresa en la que trabaja el usuario
     CONSTRAINT usuarios_administrador_ck1 CHECK (administrador = 1 OR administrador = 0) -- Hacemos que el campo administrador se asemeje a un booleano
 );
 

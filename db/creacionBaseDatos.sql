@@ -68,6 +68,7 @@ CREATE TABLE reportes (
     descripcion VARCHAR(500) NOT NULL,
     resuelta TINYINT DEFAULT 0, -- Por defecto, un reporte no estará resuelto (0) al momento de publicarlo 
     fecha_incidencia DATE NOT NULL,
+    foto VARCHAR(50) UNIQUE,
     id_usuario INT UNSIGNED NOT NULL,
     id_espacio INT UNSIGNED NOT NULL,
     CONSTRAINT reportes_usuarios_fk1 FOREIGN KEY (id_usuario)

@@ -1,4 +1,4 @@
-logo.png
+
 node_modules
 .env
-
+.eslintrc.js

@@ -169,7 +169,7 @@ CREATE TABLE usuarios (
     for (let i = 0; i < numSpaces; i++) {
       await connection.query(`
       INSERT INTO espacios (tipo, nombre, precio, aforo)
-      VALUES ("${listTypeSpaces[random(0, 4)]}","espacio_${random(1, 100)}",${
+      VALUES ("${listTypeSpaces[random(0, 4)]}","espacio_${i}",${
         100 * random(1, 5)
       },${random(1, 50)})
       
@@ -197,7 +197,7 @@ CREATE TABLE usuarios (
       `);
     }
     console.log("datos usuarios introducidos");
-    const orders = 400;
+    const orders = 40;
     //Introducimos pedidos
     for (let i = 0; i < orders; i++) {
       const orderDate = formatDateToDB(faker.date.past());

@@ -3,6 +3,7 @@ const faker = require("faker");
 const { random } = require("lodash");
 const getDB = require("./db.js");
 const { formatDateToDB } = require("./helpers");
+
 let connection;
 async function main() {
   try {

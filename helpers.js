@@ -1,23 +1,23 @@
 const { format } = require("date-fns");
-/*const sharp = require("sharp");
+const sharp = require("sharp");
 const uuid = require("uuid");
 const path = require("path");
 const crypto = require("crypto");
-const sgMail = require("@sendgrid/mail");*/
+const sgMail = require("@sendgrid/mail");
 
-/*const { ensureDir, unlink } = require("fs-extra");
+const { ensureDir, unlink } = require("fs-extra");
 
 const { UPLOADS_DIRECTORY } = process.env;
-const uploadsDir = path.join(__dirname, UPLOADS_DIRECTORY);*/
+const uploadsDir = path.join(__dirname, UPLOADS_DIRECTORY);
 
 // Configuro sendgrid
-/*sgMail.setApiKey(process.env.SENDGRID_API_KEY);*/
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Formatea un objeto de fecha a DATETIME de SQL
 function formatDateToDB(dateObject) {
   return format(dateObject, "yyyy-MM-dd HH:mm:ss");
 }
-/*
+
 // Borra un fichero en el directorio de uploads
 async function deletePhoto(photo) {
   const photoPath = path.join(uploadsDir, photo);
@@ -80,12 +80,11 @@ async function sendMail({ to, subject, body }) {
     throw new Error("Error enviando mail");
   }
 }
-*/
+
 module.exports = {
   formatDateToDB,
+  savePhoto,
+  deletePhoto,
+  generateRandomString,
+  sendMail,
 };
-
-/*savePhoto,
-deletePhoto,
-generateRandomString,
-sendMail,*/

@@ -30,7 +30,9 @@ CREATE TABLE espacios (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	tipo ENUM("Sala de reuniones", "Oficina individual", "Auditorio", "Sala audiovisual", "Oficina compartida") NOT NULL, -- Solo existirán los tipos de espacios aquí definidos
     nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT NOT NULL, 
     precio SMALLINT UNSIGNED NOT NULL,
+    descripcion
     aforo SMALLINT UNSIGNED NOT NULL
 );
 
@@ -54,7 +56,7 @@ CREATE TABLE valoraciones (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     comentario VARCHAR(500) NOT NULL, 
     calificacion TINYINT UNSIGNED DEFAULT 5, 
-    fecha_valoracion DATE NOT NULL, -- **************************** REVISAR CONSTRAINT ************
+    fecha_valoracion DATE NOT NULL, -- ******************* REVISAR CONSTRAINT ******************
     id_usuario INT UNSIGNED NOT NULL, 
     id_espacio INT UNSIGNED NOT NULL,     
     CONSTRAINT valoraciones_usuarios_fk1 FOREIGN KEY (id_usuario) 

@@ -14,16 +14,22 @@ CREATE TABLE usuarios (
     nombre VARCHAR(50) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
     nif CHAR(9) NOT NULL UNIQUE,
-    clave VARCHAR(50) NOT NULL, -- Contraseña del usuario (cifrada)
-    foto VARCHAR(50) DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
+    clave VARCHAR(512) NOT NULL, -- Contraseña del usuario (cifrada)
+    foto VARCHAR(50) NOT NULL DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo
-    tlf VARCHAR(30) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
+    tlf VARCHAR(30) UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
+    fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    fecha_nacimiento DATE, 
+    empresa VARCHAR(50), -- Empresa en la que trabaja el usuario
     administrador TINYINT DEFAULT 0, -- Por defecto, los usuarios no serán administradores
     verificado TINYINT DEFAULT 0, -- Por defecto, un usuario no estará verificado
-    fecha_nacimiento DATE NOT NULL,
-    empresa VARCHAR(50), -- Empresa en la que trabaja el usuario
+    eliminado TINYINT DEFAULT 0, -- Por defecto, un usuario no está eliminado
+    codigo_validacion CHAR(100), -- Codigo de validación del correo electrónico
+    codigo_recuperacion  CHAR(100), -- Código  de recuperación de la contraseña
+    last_auth_date DATETIME, -- Última autenticación del usuario
     CONSTRAINT usuarios_administrador_ck1 CHECK (administrador = 1 OR administrador = 0), -- Hacemos que el campo administrador se asemeje a un booleano
-	CONSTRAINT usuarios_verificado_ck2 CHECK (verificado = 1 OR verificado = 0) -- Hacemos que el campo verificado se asemeje a un booleano
+	CONSTRAINT usuarios_verificado_ck2 CHECK (verificado = 1 OR verificado = 0), -- Hacemos que el campo verificado se asemeje a un booleano
+    CONSTRAINT usuarios_eliminado_ck3 CHECK (eliminado = 1 OR eliminado = 0)
 );
 
 CREATE TABLE espacios (
@@ -32,8 +38,11 @@ CREATE TABLE espacios (
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT NOT NULL, 
     precio SMALLINT UNSIGNED NOT NULL,
-    descripcion
-    aforo SMALLINT UNSIGNED NOT NULL
+    aforo SMALLINT UNSIGNED NOT NULL,
+    habilitado TINYINT DEFAULT 1,
+    CONSTRAINT espacios_precio_ck1 CHECK (precio > 0),
+    CONSTRAINT espacios_aforo_ck2 CHECK (aforo > 0),
+    CONSTRAINT espacios_habilitado_ck3 CHECK (habilitado = 0 OR habilitado = 1)
 );
 
 CREATE TABLE fotos (
@@ -56,14 +65,14 @@ CREATE TABLE valoraciones (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     comentario VARCHAR(500) NOT NULL, 
     calificacion TINYINT UNSIGNED DEFAULT 5, 
-    fecha_valoracion DATE NOT NULL, -- ******************* REVISAR CONSTRAINT ******************
+    fecha_valoracion DATE NOT NULL, 
     id_usuario INT UNSIGNED NOT NULL, 
     id_espacio INT UNSIGNED NOT NULL,     
     CONSTRAINT valoraciones_usuarios_fk1 FOREIGN KEY (id_usuario) 
         REFERENCES usuarios (ID), 
     CONSTRAINT valoraciones_espacios_fk2 FOREIGN KEY (id_espacio) 
         REFERENCES espacios (ID), 
-        CONSTRAINT valoraciones_calificacion_ck1 CHECK (calificacion BETWEEN 1 AND 10)
+    CONSTRAINT valoraciones_calificacion_ck1 CHECK (calificacion BETWEEN 1 AND 10)
 );
 
 CREATE TABLE reportes (
@@ -71,7 +80,7 @@ CREATE TABLE reportes (
     categoria ENUM('Hardware', 'Software', 'Conectividad', 'Limpieza', 'Atención al cliente', 'Otros') NOT NULL, 
     descripcion VARCHAR(500) NOT NULL,
     resuelta TINYINT DEFAULT 0, -- Por defecto, un reporte no estará resuelto (0) al momento de publicarlo 
-    fecha_incidencia DATE NOT NULL,
+    fecha_incidencia TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     foto VARCHAR(50) UNIQUE,
     id_usuario INT UNSIGNED NOT NULL,
     id_espacio INT UNSIGNED NOT NULL,
@@ -84,10 +93,10 @@ CREATE TABLE reportes (
 
 CREATE TABLE pedidos (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    fecha_pedido DATETIME NOT NULL, -- Momento en el que se realiza la reserva
+    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Momento en el que se realiza la reserva
     fecha_inicio DATE NOT NULL, -- Fecha de inicio del periodo reservado
     fecha_fin DATE NOT NULL,	-- Fecha final del periodo reservado
-    precio_pedido SMALLINT NOT NULL, -- Precio total del pedido (precio pack + precio espacio)
+    precio_pedido SMALLINT UNSIGNED NOT NULL, -- Precio total del pedido (precio pack + precio espacio)
     id_usuario INT UNSIGNED NOT NULL,
     id_espacio INT UNSIGNED NOT NULL,
     id_pack INT UNSIGNED NOT NULL,
@@ -99,8 +108,8 @@ CREATE TABLE pedidos (
         REFERENCES packs (ID),
     CONSTRAINT espacios_fecha_inicio_uq1 UNIQUE (id_espacio, fecha_inicio), -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
     CONSTRAINT espacios_fecha_fin_uq2 UNIQUE (id_espacio, fecha_fin),  -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
-    CONSTRAINT pedididos_fechas_ck1 CHECK(fecha_inicio <= fecha_fin AND fecha_pedido <= fecha_inicio) /* Nos aseguramos de que la fecha de inicio de la reserva es anterior 
-																										antes del día en el que se realiza el pedido */    
+    CONSTRAINT pedido_precio_ck1 CHECK(precio_pedido > 0),
+    CONSTRAINT pedidos_fechas_ck2 CHECK(fecha_inicio <= fecha_fin AND fecha_pedido <= fecha_inicio) /* Nos aseguramos de que la fecha de inicio de la reserva es anterior 																								antes del día en el que se realiza el pedido */    
 	);
     
     

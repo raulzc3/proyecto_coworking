@@ -1,7 +1,6 @@
 require("dotenv").config();
 const path = require("path");
 const express = require("express");
-//const formidable = require("express-formidable");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
@@ -13,16 +12,41 @@ const {
   filterSpaces,
   getReservation,
   newReport,
+  editReport,
+  newReservation,
+  deleteReservation,
+  editSpace,
+  newSpace,
+  deleteValoration,
+  editReservation,
 } = require("./controllers/spaces");
-const userExists = require("./middlewares/userExists");
 
+//Controladores de packs
+const {
+  newPack,
+  editPack,
+  deletePack,
+  getPack,
+} = require("./controllers/packs");
+const {
+  userExists,
+  spaceExists,
+  reservationExists,
+  reportExists,
+} = require("./middlewares");
+
+const { filterUsers } = require("./controllers/users");
 // Creamos la app de express
 const app = express();
+// Body parser (body en JSON)
 app.use(bodyParser.json());
-//app.use(formidable());
+// Body parser (multipart form data <- subida de imágenes)
+app.use(fileUpload());
+// Logger
+app.use(morgan("dev"));
 
 /**
- * Espacios
+ * Espacios         Hecho 🦧
  */
 
 //GET - Petición para un espacio en concreto(:id)
@@ -31,16 +55,108 @@ app.get("/spaces/:id_spaces", getSpace);
 
 //Filtrar espacios (si no se filtra, se muestran todos)
 // http://localhost:3000/spaces?aforo=23
-
 app.get("/spaces", filterSpaces);
 
+// Crear espacios
+// http://localhost:3000/spaces
+app.post("/spaces", newSpace);
+
+//Editar espacios
+//http://localhost:3000/spaces/3
+app.put("/spaces/:id", editSpace);
+
+/**
+ * reservas         Hecho 🦧
+ */
+
+//GET - :id_user /booking --obtener reservas de usuario
+//http://localhost:3000/1/bookings
+app.get("/:id_user/bookings", userExists, getReservation);
+
+//POST - /space:id_space/:id_user /booking --hacer una reserva
+//http://localhost:3000/space/1/1
+app.post("/space/:id_space/:id_user", userExists, spaceExists, newReservation);
+
+//PUT - /id_user/bookings:id_reservation -- modificar una reserva
+//http://localhost:3000/1/bookings/1"
+app.put(
+  "/:id_user/bookings/:id_reservation",
+  userExists,
+  reservationExists,
+  editReservation
+);
+//DELETE - /id_user/bookings:id_reservation --eliminar una reserva
+//http://localhost:3000/1/bookings/1"
+app.delete(
+  "/:id_user/bookings/:id_reservation",
+  userExists,
+  reservationExists,
+  deleteReservation
+);
+
+/**
+ * packs              (Faltan get fotos)
+ */
+
+// ver packs
+// http://localhost:3000/packs
+app.get("/packs", getPack);
+
+// Añadir packs
+// http://localhost:3000/packs
+app.post("/packs", newPack);
+
+//Editar packs
+// http://localhost:3000/packs/1
+app.put("/packs/:id", editPack);
+
+// Eliminar packs
+// http://localhost:3000/packs/5
+app.delete("/packs/:id", deletePack);
+
+/**
+ * Valoraciones         (Falta get valoraciones)
+ */
+
+//Eliminar valoraciones
+app.delete("/spaces/:id/valoration/:id_valoration", deleteValoration);
+
+/**
+ * Reportes
+ */
+
 // post reportes
-app.post("/report/:user/:space", userExists, newReport);
+// URL ejemplo: http://localhost:3000/report/1/3
+// Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
+app.post("/report/:id_user/:id_space", userExists, spaceExists, newReport);
 
-//get reservas
-app.get("/spaces/reserves", getReservation);
+// put reportes
+// URL de ejemplo:
+app.put("/report/:id_report", reportExists, editReport);
 
-//app.post("/report/:user/:space",userExists,newReport)
+/**
+ * Usuarios         (Falta get casitodo)
+ */
+
+//get usuarios
+app.get("/users", filterUsers);
+
+// Middleware de error
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(error.httpStatus || 500).send({
+    status: "error",
+    message: error.message,
+  });
+});
+
+// Middleware de 404
+app.use((req, res) => {
+  res.status(404).send({
+    status: "error",
+    message: "Not found",
+  });
+});
 
 // Inicio del servidor
 app.listen(PORT, () => {

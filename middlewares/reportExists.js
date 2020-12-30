@@ -1,26 +1,26 @@
 const getDB = require("../db");
 const { createError } = require("../helpers");
 
-const userExists = async (req, res, next) => {
+const reportExists = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
-    const { id_user } = req.params;
+    const { id_report } = req.params;
 
-    console.log(id_user);
+    console.log(id_report);
 
     const [user] = await connection.query(
       `
-      SELECT id FROM usuarios WHERE ID=?
+      SELECT id FROM reportes WHERE ID=?
     `,
-      [id_user]
+      [id_report]
     );
 
     if (user.length === 0) {
       throw createError(
-        "El ID introducido no se corresponde con ningún usuario",
+        "El ID introducido no se corresponde con ningún reporte",
         404
       );
     }
@@ -33,4 +33,4 @@ const userExists = async (req, res, next) => {
   }
 };
 
-module.exports = userExists;
+module.exports = reportExists;

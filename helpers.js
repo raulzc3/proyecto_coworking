@@ -25,12 +25,17 @@ async function deletePhoto(photo) {
   await unlink(photoPath);
 }
 
-// Guarda una foto en el directorio de uploads
-async function savePhoto(imageData) {
+// Guarda una foto en el directorio de uploads o un directorio que se indique dentro de uploads
+async function savePhoto(imageData, folder, width) {
   // imageData es el objeto con información de la imagen
 
+  // Asignamos valores por defecto en caso de que no se introduzcan los parámetros folder o width
+  folder = folder === undefined ? "" : folder;
+  width = width === undefined ? 1000 : width;
+
+  const photoDir = path.join(uploadsDir, folder);
   // Asegurarse que el directorio de subida de imagenes exista
-  await ensureDir(uploadsDir);
+  await ensureDir(photoDir);
 
   // Leer la imagen con sharp
   const image = sharp(imageData.data);
@@ -39,7 +44,7 @@ async function savePhoto(imageData) {
   const imageInfo = await image.metadata();
 
   // Si es mayor que ese tamaño redimensionarla a ese tamaño
-  const IMAGE_MAX_WIDTH = 1000;
+  const IMAGE_MAX_WIDTH = width;
   if (imageInfo.width > IMAGE_MAX_WIDTH) {
     image.resize(IMAGE_MAX_WIDTH);
   }
@@ -48,7 +53,7 @@ async function savePhoto(imageData) {
   const savedImageName = `${uuid.v4()}.jpg`;
 
   // Guardar la imagen en el directorio de subida de imagenes
-  await image.toFile(path.join(uploadsDir, savedImageName));
+  await image.toFile(path.join(photoDir, savedImageName));
 
   // Devolver en nombre del fichero
   return savedImageName;
@@ -80,6 +85,11 @@ async function sendMail({ to, subject, body }) {
     throw new Error("Error enviando mail");
   }
 }
+function createError(message, numHttpStatus) {
+  const error = new Error(message);
+  error.httpStatus = numHttpStatus;
+  return error;
+}
 
 module.exports = {
   formatDateToDB,
@@ -87,4 +97,5 @@ module.exports = {
   deletePhoto,
   generateRandomString,
   sendMail,
+  createError,
 };

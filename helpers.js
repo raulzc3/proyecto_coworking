@@ -19,8 +19,9 @@ function formatDateToDB(dateObject) {
 }
 
 // Borra un fichero en el directorio de uploads
-async function deletePhoto(photo) {
-  const photoPath = path.join(uploadsDir, photo);
+async function deletePhoto(photo, folder) {
+  folder = folder === undefined ? "" : folder;
+  const photoPath = path.join(uploadsDir, folder, photo);
 
   await unlink(photoPath);
 }

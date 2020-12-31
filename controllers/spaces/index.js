@@ -2,6 +2,7 @@ const getSpace = require("./getSpace");
 const filterSpaces = require("./filterSpaces");
 const getReservation = require("./getReservation");
 const newReport = require("./newReport");
+const filterReports = require("./filterReports");
 const editReport = require("./editReport");
 const newSpace = require("./newSpace");
 const editReservation = require("./editReservation");
@@ -15,6 +16,7 @@ module.exports = {
   filterSpaces,
   getReservation,
   newReport,
+  filterReports,
   editReport,
   newSpace,
   newReservation,

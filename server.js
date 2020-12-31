@@ -12,6 +12,7 @@ const {
   filterSpaces,
   getReservation,
   newReport,
+  filterReports,
   editReport,
   newReservation,
   deleteReservation,
@@ -95,7 +96,7 @@ app.delete(
 );
 
 /**
- * packs              (Faltan get fotos)
+ * packs             Hecho 🦧
  */
 
 // ver packs
@@ -125,13 +126,17 @@ app.delete("/spaces/:id/valoration/:id_valoration", deleteValoration);
  * Reportes
  */
 
+// get reportes
+//URL de ejemplo: http://localhost:3000/report/
+app.get("/report", filterReports);
+
 // post reportes
 // URL ejemplo: http://localhost:3000/report/1/3
 // Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
 app.post("/report/:id_user/:id_space", userExists, spaceExists, newReport);
 
 // put reportes
-// URL de ejemplo:
+// URL de ejemplo: http://localhost:3000/report/1
 app.put("/report/:id_report", reportExists, editReport);
 
 /**

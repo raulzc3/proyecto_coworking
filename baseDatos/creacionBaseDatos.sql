@@ -99,7 +99,7 @@ CREATE TABLE orders (
     price SMALLINT UNSIGNED NOT NULL, -- Precio total del pedido (precio pack + precio espacio)
     user_id INT UNSIGNED NOT NULL,
     space_id INT UNSIGNED NOT NULL,
-    id_pack INT UNSIGNED NOT NULL,
+    pack_id INT UNSIGNED NOT NULL,
     CONSTRAINT orders_users_fk1 FOREIGN KEY (user_id)
         REFERENCES users (ID),
     CONSTRAINT orders_spaces_fk2 FOREIGN KEY (space_id)

@@ -26,13 +26,13 @@ const filterReports = async (req, res, next) => {
     const [results] = await connection.query(
       `
         SELECT *
-        FROM reportes
+        FROM reports
         WHERE (id = ? OR ?) 
-                AND (id_usuario = ? OR ?)
-                AND (id_espacio = ? OR ?) 
-                AND (fecha_incidencia = ? OR ?) 
-                AND (categoria = ? OR ?) 
-                AND (resuelta= ? OR ?);
+                AND (user_id = ? OR ?)
+                AND (space_id = ? OR ?) 
+                AND (report_date = ? OR ?) 
+                AND (category = ? OR ?) 
+                AND (solved = ? OR ?);
     `,
       [
         reportId,

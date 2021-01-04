@@ -13,7 +13,7 @@ const userExists = async (req, res, next) => {
 
     const [user] = await connection.query(
       `
-      SELECT id FROM usuarios WHERE ID=?
+      SELECT id FROM users WHERE ID=?
     `,
       [id_user]
     );

@@ -24,10 +24,10 @@ const newReport = async (req, res, next) => {
     let [order] = await connection.query(
       `
     SELECT * 
-    FROM pedidos 
-    WHERE (CURDATE() BETWEEN fecha_inicio AND fecha_fin) 
-          AND id_usuario = ?
-          AND id_espacio = ?;
+    FROM orders 
+    WHERE (CURDATE() BETWEEN start_date AND end_date) 
+          AND user_id = ?
+          AND space_id = ?;
     `,
       [id_user, id_space]
     );
@@ -39,7 +39,10 @@ const newReport = async (req, res, next) => {
       );
       error.httpStatus = 400;
       throw error;
-    } else if (!categories.includes(category.toLowerCase())) {
+    } else if (
+      category === undefined ||
+      !categories.includes(category.toLowerCase())
+    ) {
       const error = new Error("La categoría introducida no es válida");
       error.httpStatus = 400;
       throw error;
@@ -59,7 +62,7 @@ const newReport = async (req, res, next) => {
     //Ejecutamos la inserción en la base de datos
     const [insertResult] = await connection.query(
       `
-      INSERT INTO reportes (categoria, descripcion, id_usuario, id_espacio, foto)
+      INSERT INTO reports (category, description, user_id, space_id, photo)
       VALUES (?, ?, ?, ?, ?);
       `,
       [category, description, id_user, id_space, reportPhoto]
@@ -69,7 +72,7 @@ const newReport = async (req, res, next) => {
 
     const [
       result,
-    ] = await connection.query(`SELECT * FROM  reportes WHERE id = ?;`, [
+    ] = await connection.query(`SELECT * FROM  reports WHERE id = ?;`, [
       insertId,
     ]);
 

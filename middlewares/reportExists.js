@@ -13,7 +13,7 @@ const reportExists = async (req, res, next) => {
 
     const [user] = await connection.query(
       `
-      SELECT id FROM reportes WHERE ID=?
+      SELECT id FROM reports WHERE ID=?
     `,
       [id_report]
     );

@@ -10,7 +10,7 @@ const spaceExists = async (req, res, next) => {
 
     const [space] = await connection.query(
       `
-      SELECT id FROM espacios WHERE ID=?
+      SELECT id FROM spaces WHERE ID=?
     `,
       [id_space]
     );

@@ -11,8 +11,8 @@ const editReport = async (req, res, next) => {
     //Ejecutamos la edición en la base de datos
     await connection.query(
       `
-      UPDATE reportes r1, reportes r2 
-      SET r1.resuelta = IF(r2.resuelta = 0, 1,0)     
+      UPDATE reports r1, reports r2 
+      SET r1.solved = IF(r2.solved = 0, 1,0)     
       WHERE r1.id = r2.id and r1.id = ?;
 
     `,
@@ -21,7 +21,7 @@ const editReport = async (req, res, next) => {
 
     const [
       result,
-    ] = await connection.query(`SELECT * FROM  reportes WHERE id = ?;`, [
+    ] = await connection.query(`SELECT * FROM  reports WHERE id = ?;`, [
       id_report,
     ]);
 

@@ -19,7 +19,6 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo
     tel VARCHAR(30) UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-    birthdate DATE, 
     company VARCHAR(50), -- Empresa en la que trabaja el usuario
     admin TINYINT DEFAULT 0, -- Por defecto, los usuarios no serán administradores
     verified TINYINT DEFAULT 0, -- Por defecto, un usuario no estará verificado
@@ -104,7 +103,7 @@ CREATE TABLE orders (
         REFERENCES users (ID),
     CONSTRAINT orders_spaces_fk2 FOREIGN KEY (space_id)
         REFERENCES spaces (ID),
-    CONSTRAINT orders_packs_fk3 FOREIGN KEY (id_pack)
+    CONSTRAINT orders_packs_fk3 FOREIGN KEY (pack_id)
         REFERENCES packs (ID),
     CONSTRAINT spaces_start_date_uq1 UNIQUE (space_id, start_date), -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
     CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date),  -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez

@@ -58,7 +58,6 @@ async function main() {
       email VARCHAR(100) NOT NULL UNIQUE,
       tel VARCHAR(30) UNIQUE, 
       registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-      birthdate DATE, 
       company VARCHAR(50), 
       admin TINYINT DEFAULT 0, 
       verified TINYINT DEFAULT 0, 
@@ -177,12 +176,12 @@ async function main() {
       price SMALLINT UNSIGNED NOT NULL, 
       user_id INT UNSIGNED NOT NULL,
       space_id INT UNSIGNED NOT NULL,
-      id_pack INT UNSIGNED NOT NULL,
+      pack_id INT UNSIGNED NOT NULL,
       CONSTRAINT orders_users_fk1 FOREIGN KEY (user_id)
           REFERENCES users (ID),
       CONSTRAINT orders_spaces_fk2 FOREIGN KEY (space_id)
           REFERENCES spaces (ID),
-      CONSTRAINT orders_packs_fk3 FOREIGN KEY (id_pack)
+      CONSTRAINT orders_packs_fk3 FOREIGN KEY (pack_id)
           REFERENCES packs (ID),
       CONSTRAINT spaces_start_date_uq1 UNIQUE (space_id, start_date),
       CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date), 
@@ -214,18 +213,11 @@ async function main() {
       const email = faker.internet.email();
       const tlf = faker.phone.phoneNumber();
       const company = faker.company.companyName();
-      const birthDay = new Date(
-        random(1950, 2003),
-        random(1, 12),
-        random(1, 28)
-      );
       const verified = random(0, 1);
 
       await connection.query(`
-        INSERT INTO users(name, surname, nif, password, email, tel, birthdate, company, verified)
-        VALUES("${name}","${lastName}", "${nif}",SHA2("${password}", 512),"${email}","${tlf}","${formatDateToDB(
-        birthDay
-      )}", "${company}", ${verified})
+        INSERT INTO users(name, surname, nif, password, email, tel, company, verified)
+        VALUES("${name}","${lastName}", "${nif}",SHA2("${password}", 512),"${email}","${tlf}","${company}", ${verified})
       `);
     }
     console.log("Datos de users añadidos");
@@ -346,7 +338,7 @@ async function main() {
       price *= reservedDays;
 
       await connection.query(`
-            INSERT INTO orders (order_date, start_date, end_date, price, user_id, space_id, id_pack) 
+            INSERT INTO orders (order_date, start_date, end_date, price, user_id, space_id, pack_id) 
             VALUES ("${orderDate}","${formatDateToDB(
         bookingBegin
       )}", "${formatDateToDB(

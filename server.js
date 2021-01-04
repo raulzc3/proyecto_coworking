@@ -17,6 +17,7 @@ const {
   newReservation,
   deleteReservation,
   editSpace,
+  deleteSpace,
   newSpace,
   deleteValoration,
   editReservation,
@@ -65,6 +66,12 @@ app.post("/spaces", newSpace);
 //Editar espacios
 //http://localhost:3000/spaces/3
 app.put("/spaces/:id", editSpace);
+
+//Eliminar espacios
+//http://localhost:3000/spaces/11
+app.delete("spaces/:id",deleteSpace)
+
+
 
 /**
  * reservas         Hecho 🦧

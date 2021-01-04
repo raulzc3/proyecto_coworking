@@ -11,15 +11,11 @@ const {
   getSpace,
   filterSpaces,
   getReservation,
-  newReport,
-  filterReports,
-  editReport,
   newReservation,
   deleteReservation,
   editSpace,
   deleteSpace,
   newSpace,
-  deleteValoration,
   editReservation,
 } = require("./controllers/spaces");
 
@@ -30,6 +26,21 @@ const {
   deletePack,
   getPack,
 } = require("./controllers/packs");
+
+//Controladores de reviews
+const { deleteReview } = require("./controllers/reviews");
+
+//Controladores de reports
+const {
+  newReport,
+  filterReports,
+  editReport,
+} = require("./controllers/reports");
+
+//Controladores de usuarios
+//const { filterUsers } = require("./controllers/users");
+
+//Middlewares
 const {
   userExists,
   spaceExists,
@@ -37,7 +48,6 @@ const {
   reportExists,
 } = require("./middlewares");
 
-const { filterUsers } = require("./controllers/users");
 // Creamos la app de express
 const app = express();
 // Body parser (body en JSON)
@@ -69,9 +79,7 @@ app.put("/spaces/:id", editSpace);
 
 //Eliminar espacios
 //http://localhost:3000/spaces/11
-app.delete("spaces/:id",deleteSpace)
-
-
+app.delete("spaces/:id", deleteSpace);
 
 /**
  * reservas         Hecho 🦧
@@ -127,7 +135,7 @@ app.delete("/packs/:id", deletePack);
  */
 
 //Eliminar valoraciones
-app.delete("/spaces/:id/valoration/:id_valoration", deleteValoration);
+app.delete("/spaces/:id/review/:id_review", deleteReview);
 
 /**
  * Reportes
@@ -151,7 +159,7 @@ app.put("/report/:id_report", reportExists, editReport);
  */
 
 //get usuarios
-app.get("/users", filterUsers);
+//app.get("/users", filterUsers);
 
 // Middleware de error
 app.use((error, req, res, next) => {

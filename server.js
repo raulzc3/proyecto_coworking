@@ -47,7 +47,7 @@ app.use(fileUpload());
 app.use(morgan("dev"));
 
 /**
- * Espacios         Hecho 🦧
+ * Espacios         Hecho 🦧 (delete Space)
  */
 
 //GET - Petición para un espacio en concreto(:id)

@@ -5,44 +5,51 @@ const filterSpaces = async (req, res, next) => {
   try {
     connection = await getDB();
 
-    //      Quiero: idEspacio, tipoEspacio,nombreEspacio,precio,aforo,,,mediaValoraciones,fotos
+    //      Quiero: idEspacio,typeEspacio,nombreEspacio,price,capacity,,,mediascores,fotos
 
     //    Saco la propiedad id de los parámetros de ruta
-    const { tipo, precio, calificacion, aforo, order, direction } = req.query;
+    let {type, price, score, capacity, order, direction } = req.query;
 
-    let newTipo = tipo === undefined ? "true" : `e.tipo LIKE '%${tipo}%'`;
-
-    const validOrderFields = ["tipo", "precio", "calificacion", "aforo"];
+    const validOrderFields = ["type", "price", "score", "capacity"];
     const validOrderDirection = ["DESC", "ASC"];
 
-    const orderBy = validOrderFields.includes(order) ? order : "calificacion";
+    const orderBy = validOrderFields.includes(order) ? order : "score";
     const orderDirection = validOrderDirection.includes(direction)
       ? direction
       : "ASC";
 
     let results;
-    if (tipo || precio || calificacion || aforo) {
+
+    if (capacity ||type || price || score) {
       [results] = await connection.query(
         `
-    SELECT e.ID, e.tipo, e.nombre, e.precio,e.aforo,AVG(IFNULL(v.calificacion,0)) AS calificacion, f.url 
-    FROM espacios e LEFT JOIN valoraciones v ON (e.ID=v.id_espacio)
-    LEFT JOIN fotos f ON (e.ID=f.id_e spacio)
-    WHERE ? OR e.precio LIKE ?  OR v.calificacion LIKE ? OR e.aforo >= ?
-    GROUP BY e.ID, f.url,v.calificacion
-    ORDER BY "${orderBy}" "${orderDirection}";
+    SELECT DISTINCT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(v.score,0)) AS calificacion, f.url,e.description 
+    FROM spaces e LEFT JOIN reviews v ON (e.ID=v.space_id)
+    LEFT JOIN photos f ON (e.ID=f.space_id)
+    GROUP BY e.ID, f.url
+    HAVING (e.price <= ? OR ?) AND (score >=? OR ?) AND (e.type LIKE ? OR ?) AND (e.capacity >=? OR ?)
+    ORDER BY "${orderBy}", "${orderDirection}";
     `,
-        [newTipo, `%${precio}%`, `%${calificacion}%`, `%${aforo}%`]
+        [
+          price,
+          !price,
+          score,
+          !score,
+          type,
+          !type,
+          capacity,
+          !capacity,
+        ]
       );
     } else {
       [results] = await connection.query(`
-  SELECT e.ID, e.tipo, e.nombre, e.precio,e.aforo,AVG(IFNULL(v.calificacion,0)) AS calificacion, f.url 
-  FROM espacios e LEFT JOIN valoraciones v ON (e.ID=v.id_espacio)
-  LEFT JOIN fotos f ON (e.ID=f.id_espacio)
+  SELECT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(v.score,0)) AS calificacion, f.url,e.description 
+  FROM spaces e LEFT JOIN reviews v ON (e.ID=v.space_id)
+  LEFT JOIN photos f ON (e.ID=f.space_id)
   GROUP BY e.ID, f.url
   ORDER BY "${orderBy}", "${orderDirection}";`);
     }
 
-    const [single] = results;
     res.send({
       status: "ok",
       data: {

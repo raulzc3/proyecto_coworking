@@ -1,7 +1,6 @@
-const deleteReview = require("./deleteReview");
 const newReview = require("./newReview");
+const editReview = require("./editReview");
+const deleteReview = require("./deleteReview");
+const filterReviews=require("./filterReviews")
 
-module.exports = {
-  deleteReview,
-  newReview,
-};
+module.exports = { newReview,editReview,deleteReview,filterReviews };

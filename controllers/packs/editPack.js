@@ -17,15 +17,11 @@ const editPack = async (req, res, next) => {
     }
     //Compruebo que son válidos
     const typeArray = ["Básico", "Intermedio", "Audiovisual", "Informático"];
-    if (
-      !typeArray.includes(type) ||
-      content.length > 60000 ||
-      price < 0
-    ) {
+    if (!typeArray.includes(type) || content.length > 60000 || price < 0) {
       throw createError("campo inválido", 400);
     }
-//Obtengo el nombre de la foto
-    [photoQuery] = await connection.query(
+    //Obtengo el nombre de la foto
+    const [photoQuery] = await connection.query(
       `
     SELECT photo FROM packs
     WHERE  ID=?`,
@@ -33,7 +29,7 @@ const editPack = async (req, res, next) => {
     );
     let photo = photoQuery[0].photo;
 
-    ("644b614c-c15c-45fb-a81e-a17e4a2a76a9.jpg");
+    //   ("644b614c-c15c-45fb-a81e-a17e4a2a76a9.jpg");
     //Compruebo si se envió foto y si es correcta
     if (req.files && Object.keys(req.files).length === 1) {
       //Primero borro la foto del servidor

@@ -28,7 +28,7 @@ const {
 } = require("./controllers/packs");
 
 //Controladores de reviews
-const { deleteReview } = require("./controllers/reviews");
+const { deleteReview, newReview } = require("./controllers/reviews");
 
 //Controladores de reports
 const {
@@ -131,8 +131,10 @@ app.put("/packs/:id", editPack);
 app.delete("/packs/:id", deletePack);
 
 /**
- * Valoraciones         (Falta get valoraciones)
+ * Reviews         (Falta get valoraciones)
  */
+//Crear valoraciones
+app.post("/review/:space_id/:user_id", newReview);
 
 //Eliminar valoraciones
 app.delete("/spaces/:id/review/:id_review", deleteReview);

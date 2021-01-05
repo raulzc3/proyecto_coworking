@@ -4,6 +4,8 @@ const uuid = require("uuid");
 const path = require("path");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
+const Joi = require("joi");
+require("dotenv").config();
 
 const { ensureDir, unlink } = require("fs-extra");
 
@@ -86,10 +88,27 @@ async function sendMail({ to, subject, body }) {
     throw new Error("Error enviando mail");
   }
 }
+
+// Devuelve un error con un mensaje y un codigo de error
 function createError(message, numHttpStatus) {
   const error = new Error(message);
   error.httpStatus = numHttpStatus;
   return error;
+}
+
+//Comprueba que el id introducido como parámetro es un número
+function isId(id) {
+  const schema = Joi.number().required().integer().positive();
+  const validation = schema.validate(id);
+
+  if (validation.error) {
+    throw createError(
+      "El valor introducido no se corresponde con el formato de un ID",
+      400
+    );
+  } else {
+    return id;
+  }
 }
 
 module.exports = {
@@ -99,4 +118,5 @@ module.exports = {
   generateRandomString,
   sendMail,
   createError,
+  isId,
 };

@@ -1,5 +1,5 @@
 const getDB = require("../db");
-const { createError } = require("../helpers");
+const { createError, isId } = require("../helpers");
 const reservationExists = async (req, res, next) => {
   let connection;
 
@@ -7,6 +7,8 @@ const reservationExists = async (req, res, next) => {
     connection = await getDB();
 
     const { id_reservation } = req.params;
+
+    isId(id_reservation);
 
     const [bookings] = await connection.query(
       `

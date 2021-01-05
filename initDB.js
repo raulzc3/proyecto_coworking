@@ -132,7 +132,7 @@ async function main() {
       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
       comment VARCHAR(500) NOT NULL, 
       score TINYINT UNSIGNED DEFAULT 5, 
-      review_date DATE NOT NULL, 
+      review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       user_id INT UNSIGNED NOT NULL, 
       space_id INT UNSIGNED NOT NULL,     
       CONSTRAINT reviews_users_fk1 FOREIGN KEY (user_id) 
@@ -273,13 +273,12 @@ async function main() {
     for (let index = 0; index < reviews; index++) {
       const coment = faker.lorem.sentence();
       const rating = random(1, 10);
-      const valorationDate = formatDateToDB(faker.date.past());
       const userId = random(1, users);
       const spacesId = random(1, numSpaces);
 
       await connection.query(`
-        INSERT INTO reviews(comment, score, review_date, user_id, space_id)
-        VALUES("${coment}",${rating},"${valorationDate}",${userId},${spacesId})
+        INSERT INTO reviews(comment, score,  user_id, space_id)
+        VALUES("${coment}",${rating},${userId},${spacesId})
       `);
     }
     console.log("Datos de reviews añadidos");
@@ -317,7 +316,11 @@ async function main() {
 
     for (let i = 0; i < orders; i++) {
       const orderDate = formatDateToDB(faker.date.past());
-      const bookingEnd = faker.date.future();
+      const end_dates = [
+        faker.date.future(),
+        faker.date.between(orderDate, new Date()),
+      ];
+      const bookingEnd = end_dates[random(0, 1)];
       const bookingBegin = faker.date.between(orderDate, bookingEnd);
       const reservedDays = Math.ceil(
         Math.abs(

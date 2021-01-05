@@ -64,7 +64,7 @@ CREATE TABLE reviews (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     comment VARCHAR(500) NOT NULL, 
     score TINYINT UNSIGNED DEFAULT 5, 
-    review_date DATE NOT NULL, 
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     user_id INT UNSIGNED NOT NULL, 
     space_id INT UNSIGNED NOT NULL,     
     CONSTRAINT reviews_users_fk1 FOREIGN KEY (user_id) 
@@ -109,7 +109,5 @@ CREATE TABLE orders (
     CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date),  -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
     CONSTRAINT orders_price_ck1 CHECK(price > 0),
     CONSTRAINT orders_dates_ck2 CHECK(start_date <= end_date AND order_date <= start_date) /* Nos aseguramos de que la fecha de inicio de la reserva es anterior 																								antes del día en el que se realiza el pedido */    
-	);
-    
-    
+	);       
     

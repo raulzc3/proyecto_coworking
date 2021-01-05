@@ -67,7 +67,7 @@ function generateRandomString(length) {
   return crypto.randomBytes(length).toString("hex");
 }
 
-async function sendMail({ to, subject, body }) {
+async function sendMail({ to, subject, body, name }) {
   // Instrucciones: https://www.npmjs.com/package/@sendgrid/mail
   try {
     const msg = {
@@ -76,10 +76,15 @@ async function sendMail({ to, subject, body }) {
       subject,
       text: body,
       html: `
+      <h1>Bienvenido ${name.toUpperCase()}</h1>
         <div>
-          <h1>${subject}</h1>
+          <h2>${subject}</h2>
           <p>${body}</p>
+          <br>
+          <strong><i><u>Coworkit</u> "Let's synergy <u>together</u>"</i></strong>
         </div>
+        
+
       `,
     };
 
@@ -110,6 +115,13 @@ function isId(id) {
     return id;
   }
 }
+function dateValidator(startDateOrder) {
+  if (new Date().getTime() > startDateOrder.getTime()) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 module.exports = {
   formatDateToDB,
@@ -119,4 +131,5 @@ module.exports = {
   sendMail,
   createError,
   isId,
+  dateValidator,
 };

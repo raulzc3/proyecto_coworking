@@ -1,5 +1,5 @@
 const getDB = require("../../db");
-const { formatDateToDB, createError } = require("../../helpers");
+const { formatDateToDB } = require("../../helpers");
 //onst { createError } = require("../../helpers");
 
 const getReservation = async (req, res, next) => {
@@ -7,7 +7,7 @@ const getReservation = async (req, res, next) => {
   let reservation = [];
   try {
     connection = await getDB();
-    const { id_user } = req.params;
+    const { user_id } = req.params;
     const { sort } = req.query;
     const validFieldsOfsSort = ["current", "pending", "finished"];
     const sortBy = validFieldsOfsSort.includes(sort) ? sort : " ";
@@ -22,29 +22,29 @@ const getReservation = async (req, res, next) => {
       case "current":
         orders = await connection.query(
           `
-           SELECT * FROM pedidos WHERE id_usuario = ? AND (? BETWEEN fecha_inicio AND fecha_fin) ORDER BY ID;`,
-          [id_user, formatDateToDB(new Date())]
+           SELECT * FROM orders WHERE user_id = ? AND (? BETWEEN start_date AND end_date) ORDER BY ID;`,
+          [user_id, formatDateToDB(new Date())]
         );
         break;
 
       case "pending":
         orders = await connection.query(
           `
-             SELECT * FROM pedidos WHERE id_usuario = ? AND ? < fecha_inicio ORDER BY ID;`,
-          [id_user, formatDateToDB(new Date())]
+             SELECT * FROM orders WHERE user_id = ? AND ? < start_date ORDER BY ID;`,
+          [user_id, formatDateToDB(new Date())]
         );
         break;
       case "finished":
         orders = await connection.query(
           `
-               SELECT * FROM pedidos WHERE id_usuario = ? AND ? > fecha_fin ORDER BY ID ;`,
-          [id_user, formatDateToDB(new Date("2022-02-02"))]
+               SELECT * FROM orders WHERE user_id = ? AND ? > end_date ORDER BY ID ;`,
+          [user_id, formatDateToDB(new Date())]
         );
         break;
       default:
         orders = await connection.query(
-          `SELECT * FROM pedidos WHERE id_usuario = ?;`,
-          [id_user]
+          `SELECT * FROM orders WHERE user_id = ?;`,
+          [user_id]
         );
         break;
     }

@@ -1,31 +1,36 @@
 const getDB = require("../../db");
-const { formatDateToDB, createError } = require("../../helpers");
+const { formatDateToDB, createError, dateValidator } = require("../../helpers");
 
 const newReservation = async (req, res, next) => {
   let connection;
   try {
     connection = await getDB();
-    const { id_user, id_space } = req.params;
-    const { fecha_inicio, fecha_fin, id_pack } = req.body;
+    const { user_id, space_id } = req.params;
+    const { start_date, end_date, pack_id } = req.body;
 
     // si el id de usuario no existe dar error --> middleware userExists ✅
 
     //si el id de espacio no existe dar error --> middleware spaceExists ✅
+
+    //la fecha de inicio no puede ser posterior a la fecha actual ✅
+    if (!dateValidator(new Date(start_date)))
+      throw createError("La fecha inicial debe ser posterior a la actual", 400);
+
     // si la fecha de inicio es posterio a la de fin dar un error ✅
 
-    if (new Date(fecha_inicio) > new Date(fecha_fin)) {
+    if (new Date(start_date) > new Date(end_date)) {
       throw createError("La fecha de fin debe ser posterior a la inicial", 400);
     }
     // si el espacio está ocupado en las mismas fechas dar error
 
     const bookingOfSpace = await connection.query(
       `
-      SELECT * FROM pedidos WHERE ((? BETWEEN fecha_inicio AND fecha_fin) OR (? BETWEEN fecha_inicio AND fecha_fin) )AND id_espacio =?;
+      SELECT * FROM orders WHERE ((? BETWEEN start_date AND end_date) OR (? BETWEEN start_date AND end_date) )AND space_id =?;
     `,
       [
-        `${formatDateToDB(new Date(fecha_inicio))}`,
-        `${formatDateToDB(new Date(fecha_fin))}`,
-        id_space,
+        formatDateToDB(new Date(start_date)),
+        formatDateToDB(new Date(end_date)),
+        space_id,
       ]
     );
 
@@ -35,24 +40,21 @@ const newReservation = async (req, res, next) => {
 
     //En caso de que exista hay que calcular precio y devolver la información de la reserva
     //precio base del espacio
-    const place = await connection.query(
-      `SELECT * FROM espacios WHERE ID = ?`,
-      [id_space]
-    );
-    const spacePricePerDay = place[0][0].precio;
+    const place = await connection.query(`SELECT * FROM spaces WHERE ID = ?`, [
+      space_id,
+    ]);
+    const spacePricePerDay = place[0][0].price;
     //precio del pack añadido al espacio
     const pack = await connection.query(
       `
     SELECT * FROM packs WHERE ID = ?`,
-      [id_pack]
+      [pack_id]
     );
-    const packPrice = pack[0][0].precio;
+    const packPrice = pack[0][0].price;
     //precio en función del número de días se deseen contratar
 
     const numOfDays = Math.ceil(
-      Math.abs(
-        new Date(fecha_fin).getTime() - new Date(fecha_inicio).getTime()
-      ) /
+      Math.abs(new Date(end_date).getTime() - new Date(start_date).getTime()) /
         (1000 * 3600 * 24)
     );
 
@@ -61,29 +63,29 @@ const newReservation = async (req, res, next) => {
 
     await connection.query(
       `
-    INSERT INTO pedidos (fecha_inicio, fecha_fin,precio_pedido, id_usuario,id_espacio,id_pack)
+    INSERT INTO orders (start_date, end_date,price, user_id,space_id,pack_id)
     VALUES (?,?,?,?,?,?);
     `,
       [
-        formatDateToDB(new Date(fecha_inicio)),
-        formatDateToDB(new Date(fecha_fin)),
+        formatDateToDB(new Date(start_date)),
+        formatDateToDB(new Date(end_date)),
         totalPriceResservation,
-        id_user,
-        id_space,
-        id_pack,
+        user_id,
+        space_id,
+        pack_id,
       ]
     );
 
     res.send({
       status: "ok",
       data: {
-        fecha_pedido: formatDateToDB(new Date()),
-        fecha_inicio: formatDateToDB(new Date(fecha_inicio)),
-        fecha_fin: formatDateToDB(new Date(fecha_fin)),
-        precio_pedido: totalPriceResservation,
-        id_usuario: id_user,
-        id_espacio: id_space,
-        id_pack: id_pack,
+        order_date: formatDateToDB(new Date()),
+        start_date: formatDateToDB(new Date(start_date)),
+        end_date: formatDateToDB(new Date(end_date)),
+        price: totalPriceResservation,
+        user_id,
+        space_id,
+        pack_id,
       },
     });
   } catch (error) {

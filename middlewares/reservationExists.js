@@ -1,20 +1,20 @@
 const getDB = require("../db");
-const { createError, isId } = require("../helpers");
+const { createError } = require("../helpers");
 const reservationExists = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
-    const { id_reservation } = req.params;
+    const { reservation_id } = req.params;
 
-    isId(id_reservation);
-
+    //comprobar que hay id de reserva
+    console.log("esto es :", reservation_id);
     const [bookings] = await connection.query(
       `
-      SELECT id FROM pedidos WHERE ID=?
+      SELECT ID FROM orders WHERE ID=?
     `,
-      [id_reservation]
+      [reservation_id]
     );
 
     if (bookings.length === 0) {

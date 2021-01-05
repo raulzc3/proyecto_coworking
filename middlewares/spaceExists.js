@@ -1,20 +1,18 @@
 const getDB = require("../db");
-const { createError, isId } = require("../helpers");
+const { createError } = require("../helpers");
 const spaceExists = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
-    const { id_space } = req.params;
-
-    isId(id_space);
+    const { space_id } = req.params;
 
     const [space] = await connection.query(
       `
-      SELECT id FROM spaces WHERE ID=?
+      SELECT ID FROM spaces WHERE ID=?
     `,
-      [id_space]
+      [space_id]
     );
 
     if (space.length === 0) {

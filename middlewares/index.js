@@ -3,6 +3,7 @@ const spaceExists = require("./spaceExists");
 const reservationExists = require("./reservationExists");
 const reportExists = require("./reportExists");
 const reviewExists = require("./reviewExists");
+const isUser = require("./isUser");
 
 module.exports = {
   userExists,
@@ -10,4 +11,5 @@ module.exports = {
   reservationExists,
   reportExists,
   reviewExists,
+  isUser,
 };

@@ -43,7 +43,12 @@ const {
 } = require("./controllers/reports");
 
 //Controladores de usuarios
-const { addUser, validateUser, loginUser } = require("./controllers/users");
+const {
+  addUser,
+  validateUser,
+  loginUser,
+  getUser,
+} = require("./controllers/users");
 
 //Middlewares
 const {
@@ -52,6 +57,7 @@ const {
   reservationExists,
   reportExists,
   reviewExists,
+  isUser,
 } = require("./middlewares");
 
 // Creamos la app de express
@@ -177,12 +183,16 @@ app.put("/report/:id_report", reportExists, editReport);
 app.post("/users", addUser);
 
 // GET - /users/validate/:validationcode
-// Valida un usuario que se acaba de registrar ✅
+// Valida un usuario que se acaba de registrar
 app.get("/users/validate/:validationCode", validateUser);
 
 // POST - /users/login
-// Hace login de un usuario ✅
+// Hace login de un usuario
 app.post("/users/login", loginUser);
+
+// GET - /users/:id
+// Muestra información de usuario ✅
+app.get("/users/:user_id", isUser, getUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

@@ -27,10 +27,7 @@ const isAuthorized = async (req, res, next) => {
     }
 
     if (tokenInfo.id !== Number(user_id) && !tokenInfo.admin) {
-      throw createError(
-        "No estás autorizado para acceder a los datos de este usuario",
-        401
-      );
+      throw createError("No estás autorizado para realizar esta acción", 401);
     }
     // Selecciono la fecha de ultima actualización de email / password del usuario
     const [result] = await connection.query(

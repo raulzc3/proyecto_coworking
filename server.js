@@ -43,7 +43,7 @@ const {
 } = require("./controllers/reports");
 
 //Controladores de usuarios
-//const { filterUsers } = require("./controllers/users");
+const { addUser, validateUser, loginUser } = require("./controllers/users");
 
 //Middlewares
 const {
@@ -51,6 +51,7 @@ const {
   spaceExists,
   reservationExists,
   reportExists,
+  reviewExists,
 } = require("./middlewares");
 
 // Creamos la app de express
@@ -90,18 +91,18 @@ app.delete("spaces/:id", deleteSpace);
  * reservas         Hecho 🦧
  */
 
-//GET - :id_user /booking --obtener reservas de usuario
+//GET - /:user_id/bookings--obtener reservas de usuario
 //http://localhost:3000/1/bookings
-app.get("/:id_user/bookings", userExists, getReservation);
+app.get("/:user_id/bookings", userExists, getReservation);
 
-//POST - /space:id_space/:id_user /booking --hacer una reserva
+//POST - /space/:space_id/:user_id  --hacer una reserva
 //http://localhost:3000/space/1/1
-app.post("/space/:id_space/:id_user", userExists, spaceExists, newReservation);
+app.post("/space/:space_id/:user_id", userExists, spaceExists, newReservation);
 
-//PUT - /id_user/bookings:id_reservation -- modificar una reserva
+//PUT - /:user_id/bookings/:reservation_id -- modificar una reserva
 //http://localhost:3000/1/bookings/1"
 app.put(
-  "/:id_user/bookings/:id_reservation",
+  "/:user_id/bookings/:reservation_id",
   userExists,
   reservationExists,
   editReservation
@@ -109,7 +110,7 @@ app.put(
 //DELETE - /id_user/bookings:id_reservation --eliminar una reserva
 //http://localhost:3000/1/bookings/1"
 app.delete(
-  "/:id_user/bookings/:id_reservation",
+  "/:user_id/bookings/:reservation_id",
   userExists,
   reservationExists,
   deleteReservation
@@ -139,8 +140,8 @@ app.delete("/packs/:id", deletePack);
  * Reviews         (Falta get valoraciones)
  */
 
- //filtrar reviews de un espacio por review_id,user_id,type,review_date
- app.get("/reviews",filterReviews)
+//filtrar reviews de un espacio por review_id,user_id,type,review_date
+app.get("/reviews", filterReviews);
 
 //Crear valoracion
 app.post("/review/:space_id/:user_id", newReview);
@@ -168,11 +169,20 @@ app.post("/report/:id_user/:id_space", userExists, spaceExists, newReport);
 app.put("/report/:id_report", reportExists, editReport);
 
 /**
- * Usuarios         (Falta get casitodo)
+ * Usuarios
  */
 
-//get usuarios
-//app.get("/users", filterUsers);
+//POST - /users --registrar un nuevo usuario
+//http://localhost:3000/users
+app.post("/users", addUser);
+
+// GET - /users/validate/:validationcode
+// Valida un usuario que se acaba de registrar ✅
+app.get("/users/validate/:validationCode", validateUser);
+
+// POST - /users/login
+// Hace login de un usuario ✅
+app.post("/users/login", loginUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

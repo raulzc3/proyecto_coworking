@@ -122,6 +122,14 @@ function dateValidator(startDateOrder) {
     return true;
   }
 }
+async function validator(schema, valueToValidate) {
+  try {
+    await schema.validateAsync(valueToValidate);
+  } catch (error) {
+    error.httpStatus = 400;
+    throw error;
+  }
+}
 
 module.exports = {
   formatDateToDB,
@@ -132,4 +140,5 @@ module.exports = {
   createError,
   isId,
   dateValidator,
+  validator,
 };

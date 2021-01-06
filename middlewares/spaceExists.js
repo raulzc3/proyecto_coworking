@@ -14,7 +14,7 @@ const spaceExists = async (req, res, next) => {
     `,
       [space_id]
     );
-
+    //console.log(space);
     if (space.length === 0) {
       throw createError("Esta espacio no existe", 404);
     }

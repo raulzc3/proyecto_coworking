@@ -1,9 +1,12 @@
+const { validate } = require("uuid");
 const getDB = require("../../db");
 const {
   generateRandomString,
   sendMail,
   createError,
+  validator,
 } = require("../../helpers");
+const { userSchema } = require("../../schemas");
 
 const addUser = async (req, res, next) => {
   let connection;
@@ -14,11 +17,9 @@ const addUser = async (req, res, next) => {
     // Recojo de req.body el email y la password
     const { name, surname, nif, email, password } = req.body;
 
-    // Compruebo que no estén vacíos
+    //validar lso datos introducidos en el body
 
-    if (!name || !surname || !nif || !email || !password) {
-      throw createError("Faltan campos", 400);
-    }
+    await validator(userSchema, req.body);
 
     // Compruebo que no exista un usuario en la base de datos con ese email
 

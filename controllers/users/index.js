@@ -1,3 +1,6 @@
-const filterUsers = require("./filterUsers");
+//const filterUsers = require("./filterUsers");
+const addUser = require("./addUser");
+const validateUser = require("./validateUser");
+const loginUser = require("./loginUser");
 
-module.exports = { filterUsers };
+module.exports = { addUser, validateUser, loginUser };

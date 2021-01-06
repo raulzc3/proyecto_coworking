@@ -1,5 +1,11 @@
 const getDB = require("../../db");
-const { formatDateToDB, createError, dateValidator } = require("../../helpers");
+const {
+  formatDateToDB,
+  createError,
+  dateValidator,
+  validator,
+} = require("../../helpers");
+const { reservationSchema } = require("../../schemas");
 
 const newReservation = async (req, res, next) => {
   let connection;
@@ -7,6 +13,9 @@ const newReservation = async (req, res, next) => {
     connection = await getDB();
     const { user_id, space_id } = req.params;
     const { start_date, end_date, pack_id } = req.body;
+
+    //validar los valores del body ✅
+    await validator(reservationSchema, req.body);
 
     // si el id de usuario no existe dar error --> middleware userExists ✅
 

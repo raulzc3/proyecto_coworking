@@ -1,5 +1,11 @@
 const getDB = require("../../db");
-const { formatDateToDB, createError, dateValidator } = require("../../helpers");
+const {
+  formatDateToDB,
+  createError,
+  dateValidator,
+  validator,
+} = require("../../helpers");
+const { reservationSchema } = require("../../schemas");
 
 const editReservation = async (req, res, next) => {
   let connection;
@@ -7,6 +13,38 @@ const editReservation = async (req, res, next) => {
     connection = await getDB();
     const { user_id, reservation_id } = req.params;
     const { start_date, end_date, pack_id, space_id } = req.body;
+
+    //validar los valores del body ✅
+    await validator(reservationSchema, req.body);
+
+    // comprobar que el espacio existe
+
+    const [space] = await connection.query(
+      `
+      SELECT ID FROM spaces WHERE ID=?
+    `,
+      [space_id]
+    );
+    //console.log(space);
+    if (space.length === 0) {
+      throw createError("Esta espacio no existe", 404);
+    }
+
+    // comprobar que el pack existe
+
+    const [packList] = await connection.query(
+      `
+    SELECT id FROM packs WHERE ID=?
+  `,
+      [pack_id]
+    );
+
+    if (packList.length === 0) {
+      throw createError(
+        "El ID introducido no se corresponde con ningún pack",
+        404
+      );
+    }
 
     //comprobar si el usuario existe --> middleware userExists ✅
     //comprobar si el reserva existe --> middleware reservationExists ✅
@@ -30,10 +68,10 @@ const editReservation = async (req, res, next) => {
       Math.abs(new Date().getTime() - new Date(dateOfReservation).getTime()) /
         (1000 * 3600)
     );
-    console.log(bookings[0][0]);
-    console.log(dateOfReservation);
-    console.log(new Date());
-    console.log(numOfHours);
+    // console.log(bookings[0][0]);
+    // console.log(dateOfReservation);
+    // console.log(new Date());
+    // console.log(numOfHours);
 
     if (numOfHours >= 48) {
       throw createError(
@@ -52,7 +90,7 @@ const editReservation = async (req, res, next) => {
     //comprobar que las fechas están disponibles para el espacio, en caso contrario dar error 400 ✅
     const bookingOfSpace = await connection.query(
       `
-        SELECT * FROM orders WHERE ((? BETWEEN start_date AND end_date) OR (? BETWEEN start_date AND end_date) )AND space_id =? AND ID = ?;
+        SELECT * FROM orders WHERE ((? BETWEEN start_date AND end_date) OR (? BETWEEN start_date AND end_date) )AND space_id =? AND NOT ID = ?;
       `,
       [
         formatDateToDB(new Date(start_date)),
@@ -61,6 +99,7 @@ const editReservation = async (req, res, next) => {
         reservation_id,
       ]
     );
+
     if (bookingOfSpace[0].length !== 0) {
       throw await createError("Espacio no disponible en esas fechas", 400);
     }

@@ -52,7 +52,7 @@ async function main() {
       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(50) NOT NULL,
       surname VARCHAR(100) NOT NULL,
-      nif CHAR(9) NOT NULL UNIQUE,
+      nif CHAR(9) UNIQUE,
       password VARCHAR(512) NOT NULL,
       photo VARCHAR(50) NOT NULL DEFAULT '/img/default.png', 
       email VARCHAR(100) NOT NULL UNIQUE,

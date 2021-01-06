@@ -202,6 +202,11 @@ async function main() {
       "******************************************************************"
     );
 
+    // Inserición de usuario administrador
+    await connection.query(`
+    INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin)
+    VALUES("SUPERADMIN","SUPERADMIN", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1)
+    `);
     // Inserición de usuarios aleatorios
     const users = 10;
 

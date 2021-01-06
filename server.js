@@ -48,6 +48,7 @@ const {
   validateUser,
   loginUser,
   getUser,
+  deleteUser,
 } = require("./controllers/users");
 
 //Middlewares
@@ -57,7 +58,7 @@ const {
   reservationExists,
   reportExists,
   reviewExists,
-  isUser,
+  isAuthorized,
 } = require("./middlewares");
 
 // Creamos la app de express
@@ -192,7 +193,11 @@ app.post("/users/login", loginUser);
 
 // GET - /users/:id
 // Muestra información de usuario ✅
-app.get("/users/:user_id", isUser, getUser);
+app.get("/users/:user_id", userExists, isAuthorized, getUser);
+
+// DELETE - /users/:id
+// Anonimiza un usuario ✅
+app.delete("/users/:id", userExists, isAuthorized, deleteUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

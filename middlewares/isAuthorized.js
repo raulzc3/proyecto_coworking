@@ -1,21 +1,21 @@
 const getDB = require("../db");
 const jwt = require("jsonwebtoken");
+const { createError } = require("../helpers");
 
-const isUser = async (req, res, next) => {
+const isAuthorized = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
     const { authorization } = req.headers;
-
+    const { user_id } = req.params;
+    console.log(user_id);
     // TODO: la cabeceira de autorización puede tener otro formato (Bearer)
 
     // Si no authorization está vacío devuelvo un error
     if (!authorization) {
-      const error = new Error("Falta la cabecera de autorización");
-      error.httpStatus = 401;
-      throw error;
+      throw createError("Falta la cabecera de autorización", 401);
     }
 
     // Valido el token y si no es válido devuelvo un error
@@ -23,35 +23,35 @@ const isUser = async (req, res, next) => {
     try {
       tokenInfo = jwt.verify(authorization, process.env.SECRET);
     } catch (e) {
-      const error = new Error("El token no es válido");
-      error.httpStatus = 401;
-      throw error;
+      throw createError("El token no es válido", 401);
     }
 
+    if (tokenInfo.id !== Number(user_id) && !tokenInfo.admin) {
+      throw createError(
+        "No estás autorizado para acceder a los datos de este usuario",
+        401
+      );
+    }
     // Selecciono la fecha de ultima actualización de email / password del usuario
     const [result] = await connection.query(
       `
-      SELECT lastAuthUpdate
+      SELECT last_auth_date
       FROM users
-      WHERE id=?
+      WHERE ID=?
     `,
       [tokenInfo.id]
     );
-
-    const lastAuthUpdate = new Date(result[0].lastAuthUpdate);
+    console.log(result[0]);
+    const lastAuthUpdate = new Date(result[0].last_auth_date);
     const tokenEmissionDate = new Date(tokenInfo.iat * 1000);
-
+    console.log(tokenInfo);
     if (tokenEmissionDate < lastAuthUpdate) {
-      const error = new Error("El token no es válido");
-      error.httpStatus = 401;
-      throw error;
+      throw createError("El token no es válido", 401);
     }
 
     // Inyectamos en la request la información del token
     req.userAuth = tokenInfo;
-    // req.userAuth = { id: 12, role: 'normal', iat: 1608572656, exp: 1611164656 }; // por ejemplo
 
-    // Continúo
     next();
   } catch (error) {
     next(error);
@@ -60,4 +60,4 @@ const isUser = async (req, res, next) => {
   }
 };
 
-module.exports = isUser;
+module.exports = isAuthorized;

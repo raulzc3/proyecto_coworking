@@ -40,7 +40,7 @@ const loginUser = async (req, res, next) => {
     // Creo el objecto de información que irá en el token
     const info = {
       id: user[0].id,
-      role: user[0].admin,
+      admin: user[0].admin,
     };
 
     const token = jwt.sign(info, process.env.SECRET, {

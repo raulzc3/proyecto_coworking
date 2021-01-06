@@ -17,8 +17,8 @@ const getUser = async (req, res, next) => {
     `,
       [user_id]
     );
-    console.log(user[0]);
-    // // Creo la respuesta básica
+
+    // Si el usuario solicitado coíncide con el del token se muestran los datos --> middleware isAuthorized ✅
 
     const userInfo = {
       name: user[0].name,
@@ -31,14 +31,6 @@ const getUser = async (req, res, next) => {
       company: user[0].company,
       admin: user[0].admin,
     };
-    console.log(userInfo);
-
-    // // Si el usuario solicitado coíncide con el del token añado a la respuesta básica los datos privados
-    // if (user[0].id === req.userAuth.id || req.userAuth.role === "admin") {
-    //   userInfo.date = user[0].date;
-    //   userInfo.email = user[0].email;
-    //   userInfo.role = user[0].role;
-    // }
 
     // Devuelvo la respuesta
     res.send({
@@ -51,5 +43,4 @@ const getUser = async (req, res, next) => {
     if (connection) connection.release();
   }
 };
-
 module.exports = getUser;

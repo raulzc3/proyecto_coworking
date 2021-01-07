@@ -67,7 +67,7 @@ function generateRandomString(length) {
   return crypto.randomBytes(length).toString("hex");
 }
 
-async function sendMail({ to, subject, body, name }) {
+async function sendMail({ to, subject, body, name, introMessage }) {
   // Instrucciones: https://www.npmjs.com/package/@sendgrid/mail
   try {
     const msg = {
@@ -76,7 +76,7 @@ async function sendMail({ to, subject, body, name }) {
       subject,
       text: body,
       html: `
-      <h1>Bienvenido ${name.toUpperCase()}</h1>
+      <h1>${introMessage} ${name}</h1>
         <div>
           <h2>${subject}</h2>
           <p>${body}</p>
@@ -131,6 +131,25 @@ async function validator(schema, valueToValidate) {
   }
 }
 
+function capitalize(word) {
+  return word[0].toUpperCase() + word.slice(1).toLowerCase();
+}
+
+function formatName(firstName, lastName) {
+  firstName = firstName.toLowerCase().split(" ");
+  let formatedName;
+
+  for (let i = 0; i < firstName.length; i++) {
+    if (i === 0) {
+      formatedName = capitalize(firstName[i]);
+    } else {
+      formatedName += ` ${capitalize(firstName[i])}`;
+    }
+  }
+
+  return formatedName;
+}
+
 module.exports = {
   formatDateToDB,
   savePhoto,
@@ -141,4 +160,6 @@ module.exports = {
   isId,
   dateValidator,
   validator,
+  capitalize,
+  formatName,
 };

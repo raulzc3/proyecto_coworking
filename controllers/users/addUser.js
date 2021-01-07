@@ -5,6 +5,7 @@ const {
   sendMail,
   createError,
   validator,
+  formatName,
 } = require("../../helpers");
 const { userSchema } = require("../../schemas");
 
@@ -15,13 +16,18 @@ const addUser = async (req, res, next) => {
     connection = await getDB();
 
     // Recojo de req.body el email y la password
-    const { name, surname, nif, email, password } = req.body;
+    let { name, surname, nif, email, password } = req.body;
+
+    name = formatName(name);
+    surname = formatName(surname);
+
+    console.log(name, surname);
 
     //validar lso datos introducidos en el body
 
     await validator(userSchema, req.body);
 
-    // Compruebo que no exista un usuario en la base de datos con ese email
+    // Compruebo que no exista un usuario en la base de datos con ese email o ese nif
 
     const [existingUser] = await connection.query(
       ` 
@@ -51,6 +57,7 @@ const addUser = async (req, res, next) => {
       subject: `Activa tu usuario para empezar a hacer sinergia en COWORKIT`,
       body: emailBody,
       name,
+      introMessage: "Bienvenido",
     });
 
     // Meto el usuario en la base de datos desactivado y con ese código de registro

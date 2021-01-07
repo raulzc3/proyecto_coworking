@@ -1,28 +1,26 @@
 const getDB = require("../../db");
-const { createError } = require("../../helpers");
-
+const { validator } = require("../../helpers");
+const { filterReportSchema } = require("../../schemas");
 const filterReports = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
-    const categories = [
-      "hardware",
-      "software",
-      "conectividad",
-      "limpieza",
-      "atención al cliente",
-      "otros",
-    ];
-
     // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
 
-    let { reportId, user, space, date, category, solved } = req.query;
+    let { report_id, user, space, date, category, solved } = req.query;
+    if (category) category = category.toLowerCase();
 
-    if (category && !categories.includes(category.toLowerCase())) {
-      throw createError("La categoría introducida no es válida.", 400);
-    }
+    await validator(filterReportSchema, {
+      report_id,
+      user,
+      space,
+      category,
+      solved,
+    });
+
+    console.log(date);
     const [results] = await connection.query(
       `
         SELECT *
@@ -35,8 +33,8 @@ const filterReports = async (req, res, next) => {
                 AND (solved = ? OR ?);
     `,
       [
-        reportId,
-        !reportId,
+        report_id,
+        !report_id,
         user,
         !user,
         space,

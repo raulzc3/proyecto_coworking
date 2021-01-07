@@ -1,3 +1,4 @@
+const { number, date } = require("joi");
 const Joi = require("joi");
 
 const reservationSchema = Joi.object().keys({
@@ -76,4 +77,40 @@ const loginSchema = Joi.object().keys({
   }),
 });
 
-module.exports = { reservationSchema, userSchema, loginSchema };
+//Schema para filtrar reportes (los campos serán opcionales)
+const filterReportSchema = Joi.object().keys({
+  report_id: Joi.number().allow("").integer().positive().messages({
+    "number.base": `'report_id' debe ser de tipo 'number'`,
+  }),
+  user: Joi.number().allow("").integer().positive().messages({
+    "number.base": `'user_id' debe ser de tipo 'number'`,
+  }),
+  space: Joi.number().allow("").integer().positive().messages({
+    "number.base": `'space_id' debe ser de tipo 'number'`,
+  }),
+  /*date: Joi.date().allow("").optional().max(new Date()).messages({
+    "date.base": `'date' debe ser de tipo 'date'`,
+    "date.max": `'date' no puede ser posterior a la fecha actual`,
+  }),*/
+  category: Joi.any().valid(
+    "hardware",
+    "software",
+    "conectividad",
+    "limpieza",
+    "atención al cliente",
+    "otros",
+    ""
+  ),
+  solved: Joi.number().allow("").integer().min(0).max(1).messages({
+    "number.base": `'solved' debe ser de tipo 'number'`,
+    "number.min": `'solved' debe ser 1 o 0`,
+    "number.max": `'solved' debe ser 1 o 0`,
+  }),
+});
+
+module.exports = {
+  reservationSchema,
+  userSchema,
+  loginSchema,
+  filterReportSchema,
+};

@@ -40,6 +40,7 @@ const {
   newReport,
   filterReports,
   editReport,
+  answerReports,
 } = require("./controllers/reports");
 
 //Controladores de usuarios
@@ -162,18 +163,25 @@ app.delete("/review/:review_id", reviewExists, deleteReview);
  * Reportes
  */
 
-// get reportes
+// GET Filtrar reportes
 //URL de ejemplo: http://localhost:3000/report/
 app.get("/report", filterReports);
 
-// post reportes
+// POST Nuevos reportes
+// ######################## FALTA VALIDACIÓN DE USUARIOS (USUARIO CON RESERVA ACTIVA O ADMIN)
 // URL ejemplo: http://localhost:3000/report/1/3
 // Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
 app.post("/report/:id_user/:id_space", userExists, spaceExists, newReport);
 
-// put reportes
+// POST Responder reportes
+// ######################## FALTA VALIDACIÓN DE USUARIOS (ADMIN)
 // URL de ejemplo: http://localhost:3000/report/1
-app.put("/report/:id_report", reportExists, editReport);
+app.post("/report/:report_id", reportExists, answerReports);
+
+// PUT Editar reportes
+// ######################## FALTA VALIDACIÓN DE USUARIOS (ADMIN)
+// URL de ejemplo: http://localhost:3000/report/1
+app.put("/report/:report_id", reportExists, editReport);
 
 /**
  * Usuarios

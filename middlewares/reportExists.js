@@ -7,15 +7,15 @@ const reportExists = async (req, res, next) => {
   try {
     connection = await getDB();
 
-    const { id_report } = req.params;
+    const { report_id } = req.params;
 
-    isId(id_report);
+    isId(report_id);
 
     const [user] = await connection.query(
       `
       SELECT id FROM reports WHERE ID=?
     `,
-      [id_report]
+      [report_id]
     );
 
     if (user.length === 0) {

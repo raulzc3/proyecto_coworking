@@ -131,10 +131,12 @@ async function validator(schema, valueToValidate) {
   }
 }
 
+//Devuelve la cadena introducida con la primera letra en mayúscula y el resto en minúscula
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1).toLowerCase();
 }
 
+//Aplica la función capitalize a todas las palabras separadas con espacios
 function formatName(firstName) {
   firstName = firstName.toLowerCase().split(" ");
   let formatedName;

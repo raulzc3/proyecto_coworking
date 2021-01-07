@@ -29,22 +29,26 @@ async function deletePhoto(photo, folder) {
 }
 
 // Guarda una foto en el directorio de uploads o un directorio que se indique dentro de uploads
-async function savePhoto(imageData, folder, width) {
+async function savePhoto(imageData, folder = "", width = 1000) {
   // imageData es el objeto con información de la imagen
 
   // Asignamos valores por defecto en caso de que no se introduzcan los parámetros folder o width
-  folder = folder === undefined ? "" : folder;
-  width = width === undefined ? 1000 : width;
 
   const photoDir = path.join(uploadsDir, folder);
   // Asegurarse que el directorio de subida de imagenes exista
   await ensureDir(photoDir);
 
   // Leer la imagen con sharp
-  const image = sharp(imageData.data);
-
+  let image;
+  let imageInfo;
+  try {
+    image = sharp(imageData.data, { failOnError: true });
+    imageInfo = await image.metadata();
+  } catch (error) {
+    throw createError("El documento introducido no es una imagen", 400);
+  }
+  console.log("Hola");
   // Comprobar que la imagen no tenga un tamaño mayor a X pixeles de ancho
-  const imageInfo = await image.metadata();
 
   // Si es mayor que ese tamaño redimensionarla a ese tamaño
   const IMAGE_MAX_WIDTH = width;

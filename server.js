@@ -171,7 +171,7 @@ app.get("/report", filterReports);
 // ######################## FALTA VALIDACIÓN DE USUARIOS (USUARIO CON RESERVA ACTIVA O ADMIN)
 // URL ejemplo: http://localhost:3000/report/1/3
 // Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
-app.post("/report/:id_user/:id_space", userExists, spaceExists, newReport);
+app.post("/report/:user_id/:space_id", userExists, spaceExists, newReport);
 
 // POST Responder reportes
 // ######################## FALTA VALIDACIÓN DE USUARIOS (ADMIN)

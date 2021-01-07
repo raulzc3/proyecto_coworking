@@ -1,4 +1,3 @@
-const { validate } = require("uuid");
 const getDB = require("../../db");
 const {
   generateRandomString,

@@ -15,7 +15,7 @@ const newReport = async (req, res, next) => {
     ];
 
     //Obtenemos los datos necesario de req.params
-    const { id_user, id_space } = req.params;
+    const { user_id, space_id } = req.params;
 
     // Obtenemos los campos necesarios de req.body
     const { category, description } = req.body;
@@ -29,7 +29,7 @@ const newReport = async (req, res, next) => {
           AND user_id = ?
           AND space_id = ?;
     `,
-      [id_user, id_space]
+      [user_id, space_id]
     );
 
     //Devolvemos errores si no se cumplen las condiciones necesarias
@@ -57,6 +57,7 @@ const newReport = async (req, res, next) => {
 
     if (req.files && Object.keys(req.files).length > 0) {
       reportPhoto = await savePhoto(req.files.photo, "reports");
+      console.log(req.files.photo);
     }
 
     //Ejecutamos la inserción en la base de datos
@@ -65,7 +66,7 @@ const newReport = async (req, res, next) => {
       INSERT INTO reports (category, description, user_id, space_id, photo)
       VALUES (?, ?, ?, ?, ?);
       `,
-      [category, description, id_user, id_space, reportPhoto]
+      [category, description, user_id, space_id, reportPhoto]
     );
 
     const { insertId } = insertResult;

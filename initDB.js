@@ -4,6 +4,7 @@ const { random } = require("lodash");
 const getDB = require("./db.js");
 const { formatDateToDB } = require("./helpers");
 
+if (process.env.NODE_ENV !== "development") process.exit();
 /*
 
  ********************************************************************************************************************************

@@ -6,23 +6,23 @@ const editReport = async (req, res, next) => {
   try {
     connection = await getDB();
 
-    const { id_report } = req.params;
+    const { report_id } = req.params;
 
     //Ejecutamos la edición en la base de datos
     await connection.query(
       `
       UPDATE reports r1, reports r2 
-      SET r1.solved = IF(r2.solved = 0, 1,0)     
+      SET r1.solved = IF(r2.solved = 0, 1, 0)     
       WHERE r1.id = r2.id and r1.id = ?;
 
     `,
-      [id_report]
+      [report_id]
     );
 
     const [
       result,
     ] = await connection.query(`SELECT * FROM  reports WHERE id = ?;`, [
-      id_report,
+      report_id,
     ]);
 
     res.send({

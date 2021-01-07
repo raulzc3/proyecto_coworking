@@ -1,25 +1,19 @@
 const getDB = require("../../db");
-const { savePhoto } = require("../../helpers");
+const { savePhoto, validator } = require("../../helpers");
+const { newReportSchema } = require("../../schemas");
 
 const newReport = async (req, res, next) => {
   let connection;
   try {
     connection = await getDB();
-    const categories = [
-      "hardware",
-      "software",
-      "conectividad",
-      "limpieza",
-      "atención al cliente",
-      "otros",
-    ];
 
     //Obtenemos los datos necesario de req.params
     const { user_id, space_id } = req.params;
 
     // Obtenemos los campos necesarios de req.body
-    const { category, description } = req.body;
-
+    let { category, description } = req.body;
+    if (category) category = category.toLowerCase();
+    await validator(newReportSchema, { category, description });
     // Comprobamos que exista un pedido activo para el usuario y espacio introducidos
     let [order] = await connection.query(
       `
@@ -37,17 +31,6 @@ const newReport = async (req, res, next) => {
       const error = new Error(
         "No existe ninguna reserva activa para la combinación usuario-espacio introducida"
       );
-      error.httpStatus = 400;
-      throw error;
-    } else if (
-      category === undefined ||
-      !categories.includes(category.toLowerCase())
-    ) {
-      const error = new Error("La categoría introducida no es válida");
-      error.httpStatus = 400;
-      throw error;
-    } else if (!description) {
-      const error = new Error("El campo 'descripción' es obligatorio");
       error.httpStatus = 400;
       throw error;
     }

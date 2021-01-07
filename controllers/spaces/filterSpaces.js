@@ -1,5 +1,5 @@
 const getDB = require("../../db");
-const { formatDateToDB } = require("../../helpers");
+const { formatDateToDB, validator } = require("../../helpers");
 const { filterSpaceSchema } = require("../../schemas");
 const filterSpaces = async (req, res, next) => {
   let connection;
@@ -7,6 +7,7 @@ const filterSpaces = async (req, res, next) => {
     connection = await getDB();
 
     //      Valido datos del body
+    //      Quiero: idEspacio,typeEspacio,nombreEspacio,price,capacity,,,mediascores,fotos
     await validator(filterSpaceSchema, req.body);
     //    Saco la propiedad id de los parámetros de ruta
     let {
@@ -27,10 +28,8 @@ const filterSpaces = async (req, res, next) => {
       : "ASC";
 
     let results;
-    let date = true;
 
     if (start_date && end_date) {
-      date = false;
       start_date = formatDateToDB(new Date(start_date));
       end_date = formatDateToDB(new Date(end_date));
     }
@@ -38,28 +37,33 @@ const filterSpaces = async (req, res, next) => {
     if (capacity || type || price || score || (start_date && end_date)) {
       [results] = await connection.query(
         `
-    SELECT DISTINCT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(r.score,0)) AS score, o.space_id,
-    f.url,e.description
-    FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-    LEFT JOIN photos f ON (e.ID=f.space_id)
-    LEFT JOIN orders o ON(e.ID=o.space_id)
-    WHERE ((DATE(o.start_date)<DATE(?) AND (DATE(o.end_date)<DATE(?)) OR ?) OR
-    ((DATE(o.start_date)>DATE(?) AND DATE(o.end_date)>DATE(?)) OR ?))
-    GROUP BY e.ID, f.url
-    HAVING (e.price <= ? OR ?) AND (score >=? OR ?) AND (e.type LIKE ? OR ?) AND (e.capacity >=? OR ?) 
-      ORDER BY "${orderBy}", "${orderDirection}";
-    `,
+
+          SELECT * 
+          FROM spaces s JOIN photos p ON s.id = p.space_id
+          WHERE s.id NOT IN (
+          SELECT DISTINCT space_id 
+          FROM orders
+           WHERE (? BETWEEN start_date AND end_date) 
+           or (? BETWEEN start_date AND end_date)
+           or (? < start_date  AND ? > end_date)
+           )
+           AND s.id NOT IN (
+            SELECT DISTINCT space_id
+            FROM reviews
+            GROUP BY space_id
+            HAVING AVG(score)<?
+           ) AND (s.price <= ? OR ?) 
+           AND (s.type LIKE ? OR ?) 
+           AND (s.capacity >=? OR ?) 
+           ORDER BY "${orderBy}", "${orderDirection}";`,
         [
           start_date,
+          end_date,
           start_date,
-          date,
           end_date,
-          end_date,
-          date,
+          score,
           price,
           !price,
-          score,
-          !score,
           type,
           !type,
           capacity,
@@ -74,7 +78,7 @@ const filterSpaces = async (req, res, next) => {
   GROUP BY e.ID, f.url,r.space_id
   ORDER BY "${orderBy}", "${orderDirection}";`);
     }
-
+    console.log(results);
     res.send({
       status: "ok",
       data: {

@@ -51,6 +51,8 @@ const {
   loginUser,
   getUser,
   deleteUser,
+  editUser,
+  editUserForAdmin,
 } = require("./controllers/users");
 
 //Middlewares
@@ -62,6 +64,7 @@ const {
   reviewExists,
   isAuthorized,
   packExists,
+  isAdmin,
 } = require("./middlewares");
 
 // Creamos la app de express
@@ -177,17 +180,21 @@ app.get("/report", filterReports);
 // ######################## FALTA VALIDACIÓN DE USUARIOS (USUARIO CON RESERVA ACTIVA O ADMIN)
 // URL ejemplo: http://localhost:3000/report/1/3
 // Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
-app.post("/report/:user_id/:space_id", userExists, spaceExists, newReport);
+app.post(
+  "/report/:user_id/:space_id",
+  isAuthorized,
+  userExists,
+  spaceExists,
+  newReport
+);
 
 // POST Responder reportes
-// ######################## FALTA VALIDACIÓN DE USUARIOS (ADMIN)
 // URL de ejemplo: http://localhost:3000/report/1
-app.post("/report/:report_id", reportExists, answerReports);
+app.post("/report/:report_id", isAdmin, reportExists, answerReports);
 
 // PUT Editar reportes
-// ######################## FALTA VALIDACIÓN DE USUARIOS (ADMIN)
 // URL de ejemplo: http://localhost:3000/report/1
-app.put("/report/:report_id", reportExists, editReport);
+app.put("/report/:report_id", isAdmin, reportExists, editReport);
 
 /**
  * Usuarios
@@ -212,6 +219,10 @@ app.get("/users/:user_id", userExists, isAuthorized, getUser);
 // DELETE - /users/:id
 // Anonimiza un usuario ✅
 app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
+
+// PUT - /users/:id
+// Edita los datos de un usuario ✅
+app.put("/users/:user_id", userExists, isAuthorized, editUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

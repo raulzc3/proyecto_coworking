@@ -5,6 +5,7 @@ const reportExists = require("./reportExists");
 const reviewExists = require("./reviewExists");
 const isAuthorized = require("./isAuthorized");
 const packExists=require("./packExists");
+const isAdmin = require("./isAdmin");
 
 module.exports = {
   userExists,
@@ -14,4 +15,5 @@ module.exports = {
   reviewExists,
   isAuthorized,
   packExists,
+  isAdmin,
 };

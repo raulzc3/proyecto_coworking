@@ -90,14 +90,9 @@ const editReservation = async (req, res, next) => {
     //comprobar que las fechas están disponibles para el espacio, en caso contrario dar error 400 ✅
     const bookingOfSpace = await connection.query(
       `
-        SELECT * FROM orders WHERE ((? BETWEEN start_date AND end_date) OR (? BETWEEN start_date AND end_date) )AND space_id =? AND NOT ID = ?;
+        SELECT * FROM orders WHERE ((Date(?) BETWEEN start_date AND end_date) OR (Date(?) BETWEEN start_date AND end_date) )AND space_id =? AND NOT ID = ?;
       `,
-      [
-        formatDateToDB(new Date(start_date)),
-        formatDateToDB(new Date(end_date)),
-        space_id,
-        reservation_id,
-      ]
+      [new Date(start_date), new Date(end_date), space_id, reservation_id]
     );
 
     if (bookingOfSpace[0].length !== 0) {
@@ -126,11 +121,11 @@ const editReservation = async (req, res, next) => {
 
     await connection.query(
       `
-    UPDATE orders SET start_date=?,end_date=?,price=?,space_id=?,pack_id=? WHERE ID = ?
+    UPDATE orders SET start_date=Date(?),end_date=Date(?),price=?,space_id=?,pack_id=? WHERE ID = ?
     `,
       [
-        formatDateToDB(new Date(start_date)),
-        formatDateToDB(new Date(end_date)),
+        new Date(start_date),
+        new Date(end_date),
         totalPriceReservation,
         space_id,
         pack_id,

@@ -2,7 +2,7 @@ const getDB = require("../db");
 const jwt = require("jsonwebtoken");
 const { createError, isId } = require("../helpers");
 
-const isAuthorized = async (req, res, next) => {
+const isAdmin = async (req, res, next) => {
   let connection;
 
   try {
@@ -13,8 +13,6 @@ const isAuthorized = async (req, res, next) => {
 
     // Comprobamos que el id introducido es un número
     if (user_id) isId(user_id);
-
-    // TODO: la cabecera de autorización puede tener otro formato (Bearer)
 
     // Si no authorization está vacío devuelvo un error
     if (!authorization) {
@@ -29,7 +27,7 @@ const isAuthorized = async (req, res, next) => {
       throw createError("El token no es válido", 401);
     }
 
-    if (tokenInfo.id !== Number(user_id) && !tokenInfo.admin) {
+    if (!tokenInfo.admin) {
       throw createError("No estás autorizado para realizar esta acción", 401);
     }
     // Selecciono la fecha de ultima actualización de email / password del usuario
@@ -60,4 +58,4 @@ const isAuthorized = async (req, res, next) => {
   }
 };
 
-module.exports = isAuthorized;
+module.exports = isAdmin;

@@ -1,34 +1,16 @@
 const getDB = require("../../db");
 const {createError}=require("../../helpers");
-
+const { newSpaceSchema } = require("../../schemas");
 const newSpace = async (req, res, next) => {
   let connection;
 
   try {
     connection = await getDB();
 
+    //validar los valores del body ✅
+    await validator(newSpaceSchema, req.body);
     const { type, description, name, price, capacity } = req.body;
-    if (!type || !description || !name || !price || !capacity) {
-      throw await createError("Faltan campos", 400);
-    }
-
-    typeArray = [
-      "Sala de reuniones",
-      "Oficina individual",
-      "Auditorio",
-      "Sala audiovisual",
-      "Oficina compartida",
-    ];
-
-    if (
-      !typeArray.includes(type) ||
-      description.length > 60000 ||
-      name.length > 50 ||
-      price <= 0 ||
-      capacity <= 0
-    ) {
-      throw await createError("Datos incorrectos", 400);
-    }
+    
     //  Introduzco los nuevos datos
     const [result] = await connection.query(
       `

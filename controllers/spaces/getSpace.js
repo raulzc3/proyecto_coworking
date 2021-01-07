@@ -8,7 +8,7 @@ const getSpace = async (req, res, next) => {
     //      Quiero: idEspacio, tipoEspacio,nameEspacio,price,aforo,,,mediaValoraciones,fotos
 
     //    Saco la propiedad id de los parámetros de ruta
-    const { id } = req.params;
+    const { space_id } = req.params;
 
     //      Hago el SELECT en la bd
     const [result] = await connection.query(
@@ -20,7 +20,7 @@ const getSpace = async (req, res, next) => {
     GROUP BY e.ID
     
     ;`,
-      [id]
+      [space_id]
     );
 
     console.log(result);

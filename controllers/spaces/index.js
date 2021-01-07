@@ -7,6 +7,7 @@ const newReservation = require("./newReservation");
 const deleteReservation = require("./deleteReservation");
 const editSpace = require("./editSpace");
 const deleteSpace = require("./deleteSpace");
+const changeStateSpaces=require("./changeStateSpace")
 
 module.exports = {
   getSpace,
@@ -18,4 +19,5 @@ module.exports = {
   deleteReservation,
   editSpace,
   deleteSpace,
+  changeStateSpaces,
 };

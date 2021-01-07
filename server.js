@@ -17,6 +17,7 @@ const {
   deleteSpace,
   newSpace,
   editReservation,
+  changeStateSpaces,
 } = require("./controllers/spaces");
 
 //Controladores de packs
@@ -60,6 +61,7 @@ const {
   reportExists,
   reviewExists,
   isAuthorized,
+  packExists,
 } = require("./middlewares");
 
 // Creamos la app de express
@@ -77,7 +79,7 @@ app.use(morgan("dev"));
 
 //GET - Petición para un espacio en concreto(:id)
 // http://localhost:3000/spaces/1
-app.get("/spaces/:id_spaces", getSpace);
+app.get("/spaces/:space_id", getSpace);
 
 //Filtrar espacios (si no se filtra, se muestran todos)
 // http://localhost:3000/spaces?aforo=23
@@ -89,11 +91,15 @@ app.post("/spaces", newSpace);
 
 //Editar espacios
 //http://localhost:3000/spaces/3
-app.put("/spaces/:id", editSpace);
+app.put("/spaces/:space_id",spaceExists, editSpace);
 
 //Eliminar espacios
 //http://localhost:3000/spaces/11
-app.delete("spaces/:id", deleteSpace);
+app.delete("/spaces/:space_id",spaceExists, deleteSpace);
+
+//Cambiar estado espacio: habilitado/inhabilitado
+
+app.get("/enableSpace/:space_id",spaceExists,changeStateSpaces)
 
 /**
  * reservas         Hecho 🦧
@@ -138,11 +144,11 @@ app.post("/packs", newPack);
 
 //Editar packs
 // http://localhost:3000/packs/1
-app.put("/packs/:id", editPack);
+app.put("/packs/:id",packExists, editPack);
 
 // Eliminar packs
 // http://localhost:3000/packs/5
-app.delete("/packs/:id", deletePack);
+app.delete("/packs/:id",packExists, deletePack);
 
 /**
  * Reviews         (Falta get valoraciones)

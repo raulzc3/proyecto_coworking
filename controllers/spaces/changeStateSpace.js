@@ -6,7 +6,7 @@ const changeStateSpace=async(req,res,next)=>{
     try {
         connection=await getDB();
 
-        const { id } = req.params;
+        const { space_id } = req.params;
 
         //Ejecutamos la edición en la base de datos
         await connection.query(
@@ -16,13 +16,13 @@ const changeStateSpace=async(req,res,next)=>{
           WHERE s1.ID = s2.ID and s1.ID = ?;
     
         `,
-          [id]
+          [space_id]
         );
     
         const [
           result,
         ] = await connection.query(`SELECT * FROM  spaces WHERE ID = ?;`, [
-          id,
+          space_id,
         ]);
     
         res.send({

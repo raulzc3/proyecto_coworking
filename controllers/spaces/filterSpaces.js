@@ -1,13 +1,13 @@
 const getDB = require("../../db");
 const { formatDateToDB } = require("../../helpers");
-
+const { filterSpaceSchema } = require("../../schemas");
 const filterSpaces = async (req, res, next) => {
   let connection;
   try {
     connection = await getDB();
 
-    //      Quiero: idEspacio,typeEspacio,nombreEspacio,price,capacity,,,mediascores,fotos
-
+    //      Valido datos del body
+    await validator(filterSpaceSchema, req.body);
     //    Saco la propiedad id de los parámetros de ruta
     let {
       type,
@@ -20,15 +20,6 @@ const filterSpaces = async (req, res, next) => {
       direction,
     } = req.query;
 
-    const validOrderFields = [
-      "type",
-      "price",
-      "score",
-      "capacity",
-      start_date,
-      end_date,
-    ];
-    const validOrderDirection = ["DESC", "ASC"];
 
     const orderBy = validOrderFields.includes(order) ? order : "score";
     const orderDirection = validOrderDirection.includes(direction)

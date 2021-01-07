@@ -37,7 +37,7 @@ const answerReports = async (req, res, next) => {
 
     // Enviamos una respuesta al correo del usuario que publicó la incidencia
     await sendMail({
-      to: "raulzc3@gmail.com",
+      to: email,
       subject: `Respuesta a la incidencia ${report_id}`,
       body: emailBody,
       name,

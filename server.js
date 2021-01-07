@@ -197,7 +197,7 @@ app.get("/users/:user_id", userExists, isAuthorized, getUser);
 
 // DELETE - /users/:id
 // Anonimiza un usuario ✅
-app.delete("/users/:id", userExists, isAuthorized, deleteUser);
+app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

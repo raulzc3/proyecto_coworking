@@ -1,6 +1,6 @@
 const getDB = require("../db");
 const jwt = require("jsonwebtoken");
-const { createError } = require("../helpers");
+const { createError, isId } = require("../helpers");
 
 const isAuthorized = async (req, res, next) => {
   let connection;
@@ -10,8 +10,11 @@ const isAuthorized = async (req, res, next) => {
 
     const { authorization } = req.headers;
     const { user_id } = req.params;
-    console.log(user_id);
-    // TODO: la cabeceira de autorización puede tener otro formato (Bearer)
+
+    // Comprobamos que el id introducido es un número
+    isId(user_id);
+
+    // TODO: la cabecera de autorización puede tener otro formato (Bearer)
 
     // Si no authorization está vacío devuelvo un error
     if (!authorization) {
@@ -38,10 +41,10 @@ const isAuthorized = async (req, res, next) => {
     `,
       [tokenInfo.id]
     );
-    console.log(result[0]);
+
     const lastAuthUpdate = new Date(result[0].last_auth_date);
     const tokenEmissionDate = new Date(tokenInfo.iat * 1000);
-    console.log(tokenInfo);
+
     if (tokenEmissionDate < lastAuthUpdate) {
       throw createError("El token no es válido", 401);
     }

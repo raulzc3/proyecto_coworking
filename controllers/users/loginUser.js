@@ -26,7 +26,7 @@ const loginUser = async (req, res, next) => {
 
     // Si no existe asumimos que el email o la pass son incorrectas y damos un error
     if (user.length === 0) {
-      throw createError("El email o la password son incorrectos", 401);
+      throw createError("El email o el password son incorrectos", 401);
     }
     console.log(user[0]);
     // Si existe pero no está activo avisamos que está pendiente de activar

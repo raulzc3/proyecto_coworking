@@ -1,6 +1,5 @@
 const getDB = require("../../db");
-const { generateRandomString } = require("../../helpers");
-const { CreateError } = require("../../helpers");
+const { generateRandomString, createError } = require("../../helpers");
 
 const deleteUser = async (req, res, next) => {
   let connection;
@@ -8,11 +7,11 @@ const deleteUser = async (req, res, next) => {
     connection = await getDB();
 
     // Sacamos de req.params el id de usuario que queremos anonimizar
-    const { id } = req.params;
+    const { user_id } = req.params;
 
     // Si la id es igual a 1 deberíamos dar un error
-    if (Number(id) === 1) {
-      await CreateError(
+    if (Number(user_id) === 1) {
+      throw createError(
         "El administrador principal no se puede anonimizar",
         403
       );
@@ -25,16 +24,21 @@ const deleteUser = async (req, res, next) => {
     await connection.query(
       `
       UPDATE users
-      SET password=?, name="[borrado]", avatar=NULL, active=0, deleted=1, lastAuthUpdate=?
-      WHERE id=?
+      SET  nif=NULL, password=?, photo=?, tel= NULL,company= NULL, admin= 0, verified=0, deleted=1, last_auth_date=?
+      WHERE ID=?
     `,
-      [generateRandomString(40), new Date(), id]
+      [
+        generateRandomString(40),
+        process.env.DEFAULT_IMG_URL,
+        new Date(),
+        user_id,
+      ]
     );
 
     // Devolvemos respuesta
     res.send({
       status: "ok",
-      message: `El usuario con id: ${id} fue anonimizado`,
+      message: `El usuario con id ${user_id} fue anonimizado`,
     });
   } catch (error) {
     next(error);

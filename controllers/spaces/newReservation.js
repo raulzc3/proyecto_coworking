@@ -13,6 +13,7 @@ const newReservation = async (req, res, next) => {
     connection = await getDB();
     const { user_id, space_id } = req.params;
     const { start_date, end_date, pack_id } = req.body;
+    console.log("espacio", space_id);
 
     //validar los valores del body ✅
     await validator(reservationSchema, req.body);
@@ -34,9 +35,14 @@ const newReservation = async (req, res, next) => {
 
     const bookingOfSpace = await connection.query(
       `
-      SELECT * FROM orders WHERE ((? BETWEEN start_date AND end_date) OR (? BETWEEN start_date AND end_date) )AND space_id =?;
+      SELECT * FROM orders WHERE (((? BETWEEN start_date AND end_date) OR 
+      (? BETWEEN start_date AND end_date) ) OR
+       (? < start_date  AND ? > end_date )) AND
+        space_id =?;
     `,
       [
+        formatDateToDB(new Date(start_date)),
+        formatDateToDB(new Date(end_date)),
         formatDateToDB(new Date(start_date)),
         formatDateToDB(new Date(end_date)),
         space_id,
@@ -44,6 +50,7 @@ const newReservation = async (req, res, next) => {
     );
 
     if (bookingOfSpace[0].length !== 0) {
+      console.log(bookingOfSpace[0]);
       throw createError("Espacio no disponible en esas fechas", 400);
     }
 

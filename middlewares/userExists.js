@@ -1,5 +1,5 @@
 const getDB = require("../db");
-const { createError } = require("../helpers");
+const { createError, isId } = require("../helpers");
 const userExists = async (req, res, next) => {
   let connection;
 
@@ -7,6 +7,8 @@ const userExists = async (req, res, next) => {
     connection = await getDB();
 
     const { user_id } = req.params;
+
+    isId(user_id);
 
     const [user] = await connection.query(
       `

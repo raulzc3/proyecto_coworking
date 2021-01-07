@@ -13,7 +13,7 @@ CREATE TABLE users (
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     surname VARCHAR(100) NOT NULL,
-    nif CHAR(9) NOT NULL UNIQUE,
+    nif CHAR(9) UNIQUE,
     password VARCHAR(512) NOT NULL, -- Contraseña del usuario (cifrada)
     photo VARCHAR(50) NOT NULL DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo

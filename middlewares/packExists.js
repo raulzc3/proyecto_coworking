@@ -7,15 +7,15 @@ const userExists = async (req, res, next) => {
   try {
     connection = await getDB();
 
-    const { id } = req.params;
+    const { pack_id } = req.params;
 
-    isId(id);
+    isId(pack_id);
 
     const [user] = await connection.query(
       `
       SELECT id FROM packs WHERE ID=?
     `,
-      [id]
+      [pack_id]
     );
 
     if (user.length === 0) {

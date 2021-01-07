@@ -4,6 +4,7 @@ const reservationExists = require("./reservationExists");
 const reportExists = require("./reportExists");
 const reviewExists = require("./reviewExists");
 const isAuthorized = require("./isAuthorized");
+const isAdmin = require("./isAdmin");
 
 module.exports = {
   userExists,
@@ -12,4 +13,5 @@ module.exports = {
   reportExists,
   reviewExists,
   isAuthorized,
+  isAdmin,
 };

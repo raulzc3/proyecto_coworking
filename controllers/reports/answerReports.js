@@ -1,5 +1,5 @@
 const getDB = require("../../db");
-const { createError, sendMail } = require("../../helpers");
+const { createError, sendMail, formatDateToDB } = require("../../helpers");
 
 const answerReports = async (req, res, next) => {
   let connection;
@@ -10,7 +10,7 @@ const answerReports = async (req, res, next) => {
 
     let { emailBody } = req.body;
 
-    // Comprobamos que el usuario haya introducido una respuesta a la incidencia
+    // Comprobamos que el administrador haya introducido una respuesta a la incidencia
     if (emailBody.length === 0) {
       throw createError(
         "Es necesario crear una respuesta para la incidencia",
@@ -33,11 +33,11 @@ const answerReports = async (req, res, next) => {
     emailBody += `<hr><h3>Incidencia ${report_id}: </h3>
                   <p><b>Categoría:</b> ${category}<p>
                   <p><b>Descripción:</b> <br>${description}<p>
-                  <p><b>Fecha:</b> ${date}<p>`;
+                  <p><b>Fecha reporte:</b> ${formatDateToDB(date)}<p>`;
 
     // Enviamos una respuesta al correo del usuario que publicó la incidencia
     await sendMail({
-      to: email,
+      to: "raulzc3@gmail.com",
       subject: `Respuesta a la incidencia ${report_id}`,
       body: emailBody,
       name,

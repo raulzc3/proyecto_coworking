@@ -35,16 +35,16 @@ const newReservation = async (req, res, next) => {
 
     const bookingOfSpace = await connection.query(
       `
-      SELECT * FROM orders WHERE (((? BETWEEN start_date AND end_date) OR 
-      (? BETWEEN start_date AND end_date) ) OR
-       (? < start_date  AND ? > end_date )) AND
+      SELECT * FROM orders WHERE (((DATE(?) BETWEEN start_date AND end_date) OR 
+      (DATE(?) BETWEEN start_date AND end_date) ) OR
+       (DATE(?) < start_date  AND DATE(?) > end_date )) AND
         space_id =?;
     `,
       [
-        formatDateToDB(new Date(start_date)),
-        formatDateToDB(new Date(end_date)),
-        formatDateToDB(new Date(start_date)),
-        formatDateToDB(new Date(end_date)),
+        new Date(start_date),
+        new Date(end_date),
+        new Date(start_date),
+        new Date(end_date),
         space_id,
       ]
     );
@@ -83,8 +83,8 @@ const newReservation = async (req, res, next) => {
     VALUES (?,?,?,?,?,?);
     `,
       [
-        formatDateToDB(new Date(start_date)),
-        formatDateToDB(new Date(end_date)),
+        new Date(start_date),
+        new Date(end_date),
         totalPriceResservation,
         user_id,
         space_id,

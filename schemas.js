@@ -1,4 +1,3 @@
-const { number, date } = require("joi");
 const Joi = require("joi");
 
 const reservationSchema = Joi.object().keys({
@@ -77,6 +76,24 @@ const loginSchema = Joi.object().keys({
   }),
 });
 
+const newReportSchema = Joi.object().keys({
+  category: Joi.any().valid(
+    "hardware",
+    "software",
+    "conectividad",
+    "limpieza",
+    "atención al cliente",
+    "otros"
+  ),
+  description: Joi.string().required().min(30).max(500).messages({
+    "string.base": `"description" debe ser de tipo 'string'`,
+    "string.empty": `"description" no puede estar vacio`,
+    "string.min": `'description' debe ser mayor de {#limit} caracteres`,
+    "string.max": `"description" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"description" es un campo requerido`,
+  }),
+});
+
 //Schema para filtrar reportes (los campos serán opcionales)
 const filterReportSchema = Joi.object().keys({
   report_id: Joi.number().allow("").integer().positive().messages({
@@ -88,10 +105,10 @@ const filterReportSchema = Joi.object().keys({
   space: Joi.number().allow("").integer().positive().messages({
     "number.base": `'space_id' debe ser de tipo 'number'`,
   }),
-  /*date: Joi.date().allow("").optional().max(new Date()).messages({
+  date: Joi.date().allow("").optional().max(new Date()).messages({
     "date.base": `'date' debe ser de tipo 'date'`,
     "date.max": `'date' no puede ser posterior a la fecha actual`,
-  }),*/
+  }),
   category: Joi.any().valid(
     "hardware",
     "software",
@@ -107,10 +124,143 @@ const filterReportSchema = Joi.object().keys({
     "number.max": `'solved' debe ser 1 o 0`,
   }),
 });
+const newSpaceSchema = Joi.object().keys({
+  type: Joi.string()
+    .required()
+    .valid(
+      "Sala de reuniones",
+      "Oficina individual",
+      "Auditorio",
+      "Sala audiovisual",
+      "Oficina compartida"
+    )
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
+      "any.required": `"type" es un campo requerido`,
+    }),
+  description: Joi.string().required().max(60000).messages({
+    "string.base": `"description" debe ser de tipo 'string'`,
+    "string.empty": `"description" no puede estar vacio`,
+    "string.max": `"description" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"description" es un campo requerido`,
+  }),
+  name: Joi.string().required().max(50).messages({
+    "string.base": `"name" debe ser de tipo 'string'`,
+    "string.empty": `"name" no puede estar vacio`,
+    "string.max": `"name" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"name" es un campo requerido`,
+  }),
+  price: Joi.number().required().positive().messages({
+    "number.base": `"price" debe ser de tipo 'number'`,
+    "number.empty": `"price" no puede estar vacio`,
+    "number.positive": `"price" debe ser un valor positivo`,
+  }),
+  capacity: Joi.number().required().positive().integer().messages({
+    "number.base": `"capacity" debe ser de tipo 'number'`,
+    "number.empty": `"capacity" no puede estar vacio`,
+    "number.positive": `"capacity" debe ser un valor positivo`,
+    "number.integer": `"capacity" debe ser un valor entero`,
+  }),
+});
+const filterSpaceSchema = Joi.object().keys({
+  type: Joi.any()
+    .valid(
+      "Sala de reuniones",
+      "Oficina individual",
+      "Auditorio",
+      "Sala audiovisual",
+      "Oficina compartida"
+    )
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
+      "any.required": `"type" es un campo requerido`,
+    }),
+  description: Joi.string().max(60000).messages({
+    "string.base": `"description" debe ser de tipo 'string'`,
+    "string.empty": `"description" no puede estar vacio`,
+    "string.max": `"description" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"description" es un campo requerido`,
+  }),
+  name: Joi.string().max(50).messages({
+    "string.base": `"name" debe ser de tipo 'string'`,
+    "string.empty": `"name" no puede estar vacio`,
+    "string.max": `"name" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"name" es un campo requerido`,
+  }),
+  price: Joi.number().positive().messages({
+    "number.base": `"price" debe ser de tipo 'number'`,
+    "number.empty": `"price" no puede estar vacio`,
+    "number.positive": `"price" debe ser un valor positivo`,
+  }),
+  capacity: Joi.number().positive().integer().messages({
+    "number.base": `"capacity" debe ser de tipo 'number'`,
+    "number.empty": `"capacity" no puede estar vacio`,
+    "number.positive": `"capacity" debe ser un valor positivo`,
+    "number.integer": `"capacity" debe ser un valor entero`,
+  }),
+  start_date: Joi.date().min(new Date()).messages({
+    "date.base": `"start_date" debe ser de tipo 'date'`,
+    "date.empty": `"start_date" no puede estar vacio`,
+    "date.min": `"start_date" no puede ser anterior a la {#limit}`,
+    "any.required": `"start_date" es un campo requerido`,
+  }),
+  end_date: Joi.date()
+    .min(new Date())
+    .messages({
+      "date.base": `"end_date" debe ser de tipo 'date'`,
+      "date.empty": `"end_date" no puede estar vacio`,
+      "date.min": `"end_date" no puede ser anterior a ${new Date()}`,
+      "any.required": `"end_date" es un campo requerido`,
+    }),
+
+  order: Joi.string()
+    .valid("type", "price", "score", "capacity", "start_date", "end_date")
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+    }),
+
+  direction: Joi.string().valid("ASC", "DESC").messages({
+    "string.base": `"type" debe ser de tipo 'string'`,
+    "string.empty": `"type" no puede estar vacio`,
+    "string.valid": `"type" solo acepta los valores ASC y DESC`,
+  }),
+});
+
+const newPackSchema = Joi.object().keys({
+  type: Joi.string()
+    .required()
+    .valid("Básico", "Intermedio", "Audiovisual", "Informático")
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
+      "any.required": `"type" es un campo requerido`,
+    }),
+  content: Joi.string().required().max(400).messages({
+    "string.base": `"description" debe ser de tipo 'string'`,
+    "string.empty": `"description" no puede estar vacio`,
+    "string.max": `"description" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"description" es un campo requerido`,
+  }),
+  price: Joi.number().required().positive().messages({
+    "number.base": `"price" debe ser de tipo 'number'`,
+    "number.empty": `"price" no puede estar vacio`,
+    "number.positive": `"price" debe ser un valor positivo`,
+  }),
+});
 
 module.exports = {
   reservationSchema,
   userSchema,
   loginSchema,
+  newReportSchema,
   filterReportSchema,
+  newSpaceSchema,
+  filterSpaceSchema,
+  newPackSchema,
 };

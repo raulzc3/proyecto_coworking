@@ -47,7 +47,6 @@ async function savePhoto(imageData, folder = "", width = 1000) {
   } catch (error) {
     throw createError("El documento introducido no es una imagen", 400);
   }
-  console.log("Hola");
   // Comprobar que la imagen no tenga un tamaño mayor a X pixeles de ancho
 
   // Si es mayor que ese tamaño redimensionarla a ese tamaño

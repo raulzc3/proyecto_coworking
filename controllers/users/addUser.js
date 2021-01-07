@@ -17,14 +17,13 @@ const addUser = async (req, res, next) => {
     // Recojo de req.body el email y la password
     let { name, surname, nif, email, password } = req.body;
 
-    name = formatName(name);
-    surname = formatName(surname);
-
-    console.log(name, surname);
-
     //validar lso datos introducidos en el body
 
     await validator(userSchema, req.body);
+
+    name = formatName(name);
+    surname = formatName(surname);
+    console.log(name, surname);
 
     // Compruebo que no exista un usuario en la base de datos con ese email o ese nif
 

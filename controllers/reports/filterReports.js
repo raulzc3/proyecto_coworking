@@ -17,6 +17,7 @@ const filterReports = async (req, res, next) => {
       user,
       space,
       category,
+      date,
       solved,
     });
 
@@ -28,7 +29,7 @@ const filterReports = async (req, res, next) => {
         WHERE (id = ? OR ?) 
                 AND (user_id = ? OR ?)
                 AND (space_id = ? OR ?) 
-                AND (report_date = ? OR ?) 
+                AND (DATE(report_date) = DATE(?) OR ?) 
                 AND (category = ? OR ?) 
                 AND (solved = ? OR ?);
     `,

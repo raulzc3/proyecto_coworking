@@ -1,5 +1,5 @@
 const getDB = require("../../db");
-const { formatDateToDB } = require("../../helpers");
+//const { formatDateToDB } = require("../../helpers");
 //onst { createError } = require("../../helpers");
 
 const getReservation = async (req, res, next) => {
@@ -22,23 +22,23 @@ const getReservation = async (req, res, next) => {
       case "current":
         orders = await connection.query(
           `
-           SELECT * FROM orders WHERE user_id = ? AND (? BETWEEN start_date AND end_date) ORDER BY ID;`,
-          [user_id, formatDateToDB(new Date())]
+           SELECT * FROM orders WHERE user_id = ? AND (DATE(?) BETWEEN start_date AND end_date) ORDER BY ID;`,
+          [user_id, new Date()]
         );
         break;
 
       case "pending":
         orders = await connection.query(
           `
-             SELECT * FROM orders WHERE user_id = ? AND ? < start_date ORDER BY ID;`,
-          [user_id, formatDateToDB(new Date())]
+             SELECT * FROM orders WHERE user_id = ? AND DATE(?) < start_date ORDER BY ID;`,
+          [user_id, new Date()]
         );
         break;
       case "finished":
         orders = await connection.query(
           `
-               SELECT * FROM orders WHERE user_id = ? AND ? > end_date ORDER BY ID ;`,
-          [user_id, formatDateToDB(new Date())]
+               SELECT * FROM orders WHERE user_id = ? AND DATE(?) > end_date ORDER BY ID ;`,
+          [user_id, new Date()]
         );
         break;
       default:

@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const { PORT } = process.env;
-
+const getDB = require("./db");
 //Controladores de espacios
 const {
   getSpace,
@@ -52,7 +52,7 @@ const {
   getUser,
   deleteUser,
   editUser,
-  editUserForAdmin,
+  contactUser,
 } = require("./controllers/users");
 
 //Middlewares
@@ -69,6 +69,8 @@ const {
 
 // Creamos la app de express
 const app = express();
+// Guardo db en el local de express
+app.locals.getDB = getDB;
 // Body parser (body en JSON)
 app.use(bodyParser.json());
 // Body parser (multipart form data <- subida de imágenes)
@@ -94,15 +96,15 @@ app.post("/spaces", newSpace);
 
 //Editar espacios
 //http://localhost:3000/spaces/3
-app.put("/spaces/:space_id",spaceExists, editSpace);
+app.put("/spaces/:space_id", spaceExists, editSpace);
 
 //Eliminar espacios
 //http://localhost:3000/spaces/11
-app.delete("/spaces/:space_id",spaceExists, deleteSpace);
+app.delete("/spaces/:space_id", spaceExists, deleteSpace);
 
 //Cambiar estado espacio: habilitado/inhabilitado
 
-app.get("/enableSpace/:space_id",spaceExists,changeStateSpaces)
+app.get("/enableSpace/:space_id", spaceExists, changeStateSpaces);
 
 /**
  * reservas         Hecho 🦧
@@ -147,11 +149,11 @@ app.post("/packs", newPack);
 
 //Editar packs
 // http://localhost:3000/packs/1
-app.put("/packs/:id",packExists, editPack);
+app.put("/packs/:id", packExists, editPack);
 
 // Eliminar packs
 // http://localhost:3000/packs/5
-app.delete("/packs/:id",packExists, deletePack);
+app.delete("/packs/:id", packExists, deletePack);
 
 /**
  * Reviews         (Falta get valoraciones)
@@ -223,6 +225,9 @@ app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
 // PUT - /users/:id
 // Edita los datos de un usuario ✅
 app.put("/users/:user_id", userExists, isAuthorized, editUser);
+
+//POST Contactar un usuario
+app.post("/contact/:user_id", isAdmin, userExists, contactUser);
 
 // Middleware de error
 app.use((error, req, res, next) => {

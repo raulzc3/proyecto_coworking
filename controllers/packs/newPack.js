@@ -1,10 +1,9 @@
-const getDB = require("../../db");
-const { createError, savePhoto } = require("../../helpers");
+const { createError, savePhoto, validator } = require("../../helpers");
 const { newPackSchema } = require("../../schemas");
 const newPack = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     //validar los valores del body ✅
     await validator(newPackSchema, req.body);

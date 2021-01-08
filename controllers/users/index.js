@@ -5,7 +5,7 @@ const loginUser = require("./loginUser");
 const getUser = require("./getUser");
 const deleteUser = require("./deleteUser");
 const editUser = require("./editUser");
-const editUserForAdmin = require("./editUserForAdmin");
+const contactUser = require("./contactUser");
 
 module.exports = {
   addUser,
@@ -14,5 +14,5 @@ module.exports = {
   getUser,
   deleteUser,
   editUser,
-  editUserForAdmin,
+  contactUser,
 };

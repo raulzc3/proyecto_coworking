@@ -1,18 +1,26 @@
-const getDB = require("../../db");
-const {formatDateToDB}=require("../../helpers");
+const { formatDateToDB, validator } = require("../../helpers");
 
 const filterReviews = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
-//Filtrar por id/usuario/tipo de espacio/fecha
-    const {review_id,user_id,type,review_date,order,direction}= req.query;
+    //Filtrar por id/usuario/tipo de espacio/fecha
+    const {
+      review_id,
+      user_id,
+      type,
+      review_date,
+      order,
+      direction,
+    } = req.query;
 
-    const validOrderFields = ["space_id","user_id","type","review_date"];
+    const validOrderFields = ["space_id", "user_id", "type", "review_date"];
     const validOrderDirection = ["DESC", "ASC"];
-    
-    const formatedReviewDate=review_date?formatDateToDB(new Date(review_date)):formatDateToDB(new Date(0000-01-01))
+
+    const formatedReviewDate = review_date
+      ? formatDateToDB(new Date(review_date))
+      : formatDateToDB(new Date(1111 - 11 - 11));
     const orderBy = validOrderFields.includes(order) ? order : "score";
     const orderDirection = validOrderDirection.includes(direction)
       ? direction
@@ -20,7 +28,7 @@ const filterReviews = async (req, res, next) => {
 
     let results;
 
-    if (review_id ||user_id || type || review_date) {
+    if (review_id || user_id || type || review_date) {
       [results] = await connection.query(
         `
     SELECT DISTINCT r.ID, r.comment, r.score, DATE(r.review_date),r.user_id,e.type
@@ -43,7 +51,7 @@ const filterReviews = async (req, res, next) => {
       [results] = await connection.query(`
       SELECT DISTINCT r.ID, r.comment, r.score, DATE(r.review_date),r.user_id,e.type
       FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-      ORDER BY "${orderBy}", "${orderDirection}";`)
+      ORDER BY "${orderBy}", "${orderDirection}";`);
     }
 
     res.send({

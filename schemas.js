@@ -253,6 +253,21 @@ const newPackSchema = Joi.object().keys({
     "number.positive": `"price" debe ser un valor positivo`,
   }),
 });
+const newReviewSchema = Joi.object().keys({
+  comment: Joi.string().required().max(400).messages({
+    "string.base": `"comment" debe ser de tipo 'string'`,
+    "string.empty": `"comment" no puede estar vacio`,
+    "string.max": `"comment" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"comment" es un campo requerido`,
+  }),
+  score: Joi.number().required().positive().integer().max(10).messages({
+    "number.base": `"score" debe ser de tipo 'number'`,
+    "number.empty": `"score" no puede estar vacio`,
+    "number.positive": `"score" debe ser un valor positivo`,
+    "number.integer": `"score" debe ser un valor entero`,
+    "string.max": `"score" no puede ser mayor de {#limit} `,
+  }),
+});
 
 module.exports = {
   reservationSchema,
@@ -263,4 +278,5 @@ module.exports = {
   newSpaceSchema,
   filterSpaceSchema,
   newPackSchema,
+  newReviewSchema,
 };

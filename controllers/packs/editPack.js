@@ -1,13 +1,19 @@
-const getDB = require("../../db");
-const { createError, deletePhoto, savePhoto } = require("../../helpers");
+const {
+  createError,
+  deletePhoto,
+  savePhoto,
+  validator,
+} = require("../../helpers");
 const { newPackSchema } = require("../../schemas");
 const editPack = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
+
     //obtengo el id del pack a modificar del endpoint
     const { id } = req.params;
-
+    //validar los valores del body ✅
+    await validator(newPackSchema, req.body);
     //validar los valores del body ✅
     await validator(newPackSchema, req.body);
     //Saco los campos del body not null del body: tipo, texto_contenido,precio,foto

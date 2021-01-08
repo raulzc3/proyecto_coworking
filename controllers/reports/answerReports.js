@@ -1,10 +1,9 @@
-const getDB = require("../../db");
 const { createError, sendMail, formatDateToDB } = require("../../helpers");
 
 const answerReports = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { report_id } = req.params;
 
@@ -37,7 +36,7 @@ const answerReports = async (req, res, next) => {
 
     // Enviamos una respuesta al correo del usuario que publicó la incidencia
     await sendMail({
-      to: "raulzc3@gmail.com",
+      to: "raulzc3@gmail.com", //email
       subject: `Respuesta a la incidencia ${report_id}`,
       body: emailBody,
       name,

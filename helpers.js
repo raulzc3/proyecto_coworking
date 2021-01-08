@@ -154,6 +154,19 @@ function formatName(firstName) {
 
   return formatedName;
 }
+//Crea un saludo en función de la hora actual
+function createGreetings() {
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour > 7) {
+    return "Buenos días";
+  } else if (hour > 14 && hour < 20) {
+    return "Buenas tardes";
+  } else {
+    return "Buenas noches";
+  }
+}
 
 module.exports = {
   formatDateToDB,
@@ -167,4 +180,5 @@ module.exports = {
   validator,
   capitalize,
   formatName,
+  createGreetings,
 };

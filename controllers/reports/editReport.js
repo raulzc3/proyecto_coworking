@@ -1,10 +1,8 @@
-const getDB = require("../../db");
-
 const editReport = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { report_id } = req.params;
 

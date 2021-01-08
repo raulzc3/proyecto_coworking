@@ -1,11 +1,10 @@
-const getDB = require("../../db");
 const { savePhoto, validator } = require("../../helpers");
 const { newReportSchema } = require("../../schemas");
 
 const newReport = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     //Obtenemos los datos necesario de req.params
     const { user_id, space_id } = req.params;

@@ -17,8 +17,9 @@ const editUser = async (req, res, next) => {
     const { user_id } = req.params; // este es el id de usuario que queremos editar
     console.log(req.params);
     console.log(req.body);
+    console.log(req.userAuth);
     // Sacar name y email de req.body
-    const { name, surname, nif, company, tel, email } = req.body;
+    const { name, surname, nif, company, tel, email, admin } = req.body;
     // Si el usuario solicitado coíncide con el del token se muestran los datos --> middleware isAuthorized ✅
 
     // Sacar la información actual del usuario en la base de datos
@@ -30,11 +31,11 @@ const editUser = async (req, res, next) => {
       `,
       [user_id]
     );
+
     console.log(currentUserInfo[0]);
     if (req.files && req.files.photo) {
       // Se está subiendo un photo
       const userPhoto = await savePhoto(req.files.photo, "users");
-      console.log(userPhoto);
       await connection.query(
         `
         UPDATE users
@@ -63,7 +64,7 @@ const editUser = async (req, res, next) => {
           409
         );
       }
-
+      console.log("linea 66");
       // Creo un código de registro (contraseña temporal de un solo uso)
       const registrationCode = generateRandomString(40);
 
@@ -76,14 +77,14 @@ const editUser = async (req, res, next) => {
 
       await sendMail({
         to: email,
-        subject: `Valida tu nuevo email para continuar con sinergia en COWORKIT`,
+        subject: `Valida tu nuevo email para continuar la sinergia en COWORKIT`,
         body: emailBody,
         name,
         introMessage: "Hola",
       });
-
+      console.log(req.userAuth);
       // Actualizar el resto de los datos
-      //name, surname, nif, company, tel, email
+      console.log("este usuario es: ", req.userAuth.admin);
       await connection.query(
         `
       UPDATE users
@@ -102,6 +103,17 @@ const editUser = async (req, res, next) => {
           user_id,
         ]
       );
+      console.log(!req.userAuth.admin);
+      if (req.userAuth.admin) {
+        console.log("estoy dentro soy admin");
+        await connection.query(
+          `
+        UPDATE users
+        SET admin=? WHERE id=?
+        `,
+          [Number(admin), user_id]
+        );
+      }
 
       // Dar una respuesta
       res.send({
@@ -116,7 +128,7 @@ const editUser = async (req, res, next) => {
         SET name=?,surname=?, nif=?,company=?, tel=?
         WHERE id=?
         `,
-        [name, surname, nif, company, tel]
+        [name, surname, nif, company, tel, user_id]
       );
 
       res.send({

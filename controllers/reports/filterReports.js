@@ -1,11 +1,10 @@
-const getDB = require("../../db");
 const { validator } = require("../../helpers");
 const { filterReportSchema } = require("../../schemas");
 const filterReports = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
 

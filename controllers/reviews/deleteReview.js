@@ -1,9 +1,7 @@
-const getDB = require("../../db");
-
 const deleteReview = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { id, id_review } = req.params;
 
     await connection.query(

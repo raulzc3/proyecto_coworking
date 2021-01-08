@@ -11,9 +11,7 @@ const editPack = async (req, res, next) => {
     connection = await req.app.locals.getDB();
 
     //obtengo el id del pack a modificar del endpoint
-    const { id } = req.params;
-    //validar los valores del body ✅
-    await validator(newPackSchema, req.body);
+    const { pack_id } = req.params;
     //validar los valores del body ✅
     await validator(newPackSchema, req.body);
     //Saco los campos del body not null del body: tipo, texto_contenido,precio,foto
@@ -33,7 +31,7 @@ const editPack = async (req, res, next) => {
       `
     SELECT photo FROM packs
     WHERE  ID=?`,
-      [id]
+      [pack_id]
     );
     let photo = photoQuery[0].photo;
 
@@ -52,13 +50,13 @@ const editPack = async (req, res, next) => {
     UPDATE packs SET type=?,content=?,price=?,photo=?
     WHERE ID=?
     ;`,
-      [type, content, price, photo, id]
+      [type, content, price, photo, pack_id]
     );
 
     res.send({
       status: "ok",
       data: {
-        id,
+        pack_id,
         type,
         content,
         price,

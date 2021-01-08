@@ -1,5 +1,5 @@
 const getDB = require("../../db");
-const {createError}=require("../../helpers");
+const { validator } = require("../../helpers");
 const { newSpaceSchema } = require("../../schemas");
 const newSpace = async (req, res, next) => {
   let connection;
@@ -10,13 +10,15 @@ const newSpace = async (req, res, next) => {
     //validar los valores del body ✅
     await validator(newSpaceSchema, req.body);
     const { type, description, name, price, capacity } = req.body;
-    
+
     //  Introduzco los nuevos datos
     const [result] = await connection.query(
       `
         INSERT INTO spaces (type,description,name, price, capacity)
         VALUES (?,?,?,?,?);
-        `,[type, description, name, price, capacity]);
+        `,
+      [type, description, name, price, capacity]
+    );
 
     //obtengo la id autogenerada
     const { insertId } = result;
@@ -33,8 +35,8 @@ const newSpace = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-  }finally{
-      if (connection) connection.release();
+  } finally {
+    if (connection) connection.release();
   }
 };
-module.exports=newSpace;
+module.exports = newSpace;

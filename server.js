@@ -53,6 +53,10 @@ const {
   deleteUser,
   editUser,
   contactUser,
+  recoverUserPassword,
+  resetUserPassword,
+  filterUsers,
+  editPassword,
 } = require("./controllers/users");
 
 //Middlewares
@@ -79,12 +83,12 @@ app.use(fileUpload());
 app.use(morgan("dev"));
 
 /**
- * Espacios         Hecho 🦧 (delete Space)
+ * Espacios         Hecho 🦧
  */
 
 //GET - Petición para un espacio en concreto(:id)
 // http://localhost:3000/spaces/1
-app.get("/spaces/:space_id", getSpace);
+app.get("/spaces/:space_id", spaceExists, getSpace);
 
 //Filtrar espacios (si no se filtra, se muestran todos)
 // http://localhost:3000/spaces?aforo=23
@@ -123,6 +127,7 @@ app.post("/space/:space_id/:user_id", userExists, spaceExists, newReservation);
 app.put(
   "/:user_id/bookings/:reservation_id",
   userExists,
+  isAuthorized,
   reservationExists,
   editReservation
 );
@@ -131,6 +136,7 @@ app.put(
 app.delete(
   "/:user_id/bookings/:reservation_id",
   userExists,
+  isAuthorized,
   reservationExists,
   deleteReservation
 );
@@ -141,7 +147,7 @@ app.delete(
 
 // ver packs
 // http://localhost:3000/packs
-app.get("/packs", getPack);
+app.get("/packs", isAdmin, getPack);
 
 // Añadir packs
 // http://localhost:3000/packs
@@ -149,26 +155,32 @@ app.post("/packs", newPack);
 
 //Editar packs
 // http://localhost:3000/packs/1
-app.put("/packs/:id", packExists, editPack);
+app.put("/packs/:pack_id", isAdmin, packExists, editPack);
 
 // Eliminar packs
 // http://localhost:3000/packs/5
-app.delete("/packs/:id", packExists, deletePack);
+app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 
 /**
  * Reviews         (Falta get valoraciones)
  */
 
 //filtrar reviews de un espacio por review_id,user_id,type,review_date
-app.get("/reviews", filterReviews);
+app.get("/reviews", isAdmin, filterReviews);
 
 //Crear valoracion
-app.post("/review/:space_id/:user_id", newReview);
+app.post(
+  "/review/:space_id/:user_id",
+  spaceExists,
+  userExists,
+  isAuthorized,
+  newReview
+);
 
 //Editar valoración
-app.put("/review/:review_id", reviewExists, editReview);
+app.put("/review/:review_id", reviewExists, isAuthorized, editReview);
 //Eliminar valoraciones
-app.delete("/review/:review_id", reviewExists, deleteReview);
+app.delete("/review/:review_id", reviewExists, isAuthorized, deleteReview);
 
 /**
  * Reportes
@@ -176,12 +188,10 @@ app.delete("/review/:review_id", reviewExists, deleteReview);
 
 // GET Filtrar reportes
 //URL de ejemplo: http://localhost:3000/report/
-app.get("/report", filterReports);
+app.get("/report", isAdmin, filterReports);
 
 // POST Nuevos reportes
-// ######################## FALTA VALIDACIÓN DE USUARIOS (USUARIO CON RESERVA ACTIVA O ADMIN)
 // URL ejemplo: http://localhost:3000/report/1/3
-// Body de la petición: category:"hardware", description:"Lorem ipsum dolor sit amet...", photo: (una foto)
 app.post(
   "/report/:user_id/:space_id",
   isAuthorized,
@@ -224,10 +234,29 @@ app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
 
 // PUT - /users/:id
 // Edita los datos de un usuario ✅
-app.put("/users/:user_id", isAuthorized, userExists, editUser);
+app.put("/users/:user_id", userExists, isAuthorized, editUser);
+
+// GET - /users/?user_id=&name=&surname=&company=&admin=&verified=&deleted=&registration_date= --filtra los usuarios
+// Filtra los datos de un usuario ✅
+app.get("/users", isAdmin, filterUsers);
 
 //POST Contactar un usuario
 app.post("/contact/:user_id", isAdmin, userExists, contactUser);
+
+// PUT - /users/:id/changePassword
+// Modifica la contraseña de un usuario
+app.put(
+  "/users/:user_id/changePassword",
+  userExists,
+  isAuthorized,
+  editPassword
+);
+
+//POST recuperar contraseña
+app.post("/users/recoverPassword", recoverUserPassword);
+
+//POST resetear contraseña
+app.post("/users/resetPassword", resetUserPassword);
 
 // Middleware de error
 app.use((error, req, res, next) => {

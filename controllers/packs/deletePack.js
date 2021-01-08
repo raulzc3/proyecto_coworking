@@ -7,24 +7,24 @@ const deletePack = async (req, res, next) => {
     connection = await req.app.locals.getDB();
 
     //obtengo el id del pack que voy a eliminar de los parámetros
-    const { id } = req.params;
+    const { pack_id } = req.params;
     //Obtengo el nombre de esa photo en el servidor
-    [photoQuery] = await connection.query(
+    const [photoQuery] = await connection.query(
       `
       SELECT photo FROM packs
       WHERE  ID=?`,
-      [id]
+      [pack_id]
     );
     let photo = photoQuery[0].photo;
     //Borro la photo del servidor
     await deletePhoto(photo, "packs");
 
     //elimino el pack con dicho id de la tabla packs
-    await connection.query(`DELETE FROM packs WHERE ID= ? ;`, [id]);
+    await connection.query(`DELETE FROM packs WHERE ID= ? ;`, [pack_id]);
 
     res.send({
       stats: "ok",
-      message: `El pack con id ${id} fue borrada de la tabla packs`,
+      message: `El pack con id ${pack_id} fue borrada de la tabla packs`,
     });
   } catch (error) {
     next(error);

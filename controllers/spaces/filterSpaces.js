@@ -21,11 +21,8 @@ const filterSpaces = async (req, res, next) => {
       direction,
     } = req.query;
 
-
-    const orderBy = validOrderFields.includes(order) ? order : "score";
-    const orderDirection = validOrderDirection.includes(direction)
-      ? direction
-      : "ASC";
+    const orderBy = order ? order : "score";
+    const orderDirection = direction ? direction : "ASC";
 
     let results;
 
@@ -34,9 +31,8 @@ const filterSpaces = async (req, res, next) => {
       end_date = formatDateToDB(new Date(end_date));
     }
 
-    if (capacity || type || price || score || (start_date && end_date)) {
-      [results] = await connection.query(
-        `
+    [results] = await connection.query(
+      `
 
           SELECT * 
           FROM spaces s JOIN photos p ON s.id = p.space_id
@@ -56,28 +52,21 @@ const filterSpaces = async (req, res, next) => {
            AND (s.type LIKE ? OR ?) 
            AND (s.capacity >=? OR ?) 
            ORDER BY "${orderBy}", "${orderDirection}";`,
-        [
-          start_date,
-          end_date,
-          start_date,
-          end_date,
-          score,
-          price,
-          !price,
-          type,
-          !type,
-          capacity,
-          !capacity,
-        ]
-      );
-    } else {
-      [results] = await connection.query(`
-  SELECT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(r.score,0)) AS calificacion, f.url,e.description 
-  FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-  LEFT JOIN photos f ON (e.ID=f.space_id)
-  GROUP BY e.ID, f.url,r.space_id
-  ORDER BY "${orderBy}", "${orderDirection}";`);
-    }
+      [
+        start_date,
+        end_date,
+        start_date,
+        end_date,
+        score,
+        price,
+        !price,
+        type,
+        !type,
+        capacity,
+        !capacity,
+      ]
+    );
+
     console.log(results);
     res.send({
       status: "ok",

@@ -14,14 +14,7 @@ const { editUserSchema } = require("../../schemas");
 const editUser = async (req, res, next) => {
   let connection;
   let mailMessage = "";
-  let updateFields = [
-    "name=?",
-    "surname=?",
-    "nif=?",
-    "company=?",
-    "tel=?",
-    "last_auth_date=?",
-  ];
+  let updateFields = ["name=?", "surname=?", "company=?", "last_auth_date=?"];
 
   try {
     connection = await getDB();
@@ -29,6 +22,8 @@ const editUser = async (req, res, next) => {
     // Obtenemos id de req.params
     const { user_id } = req.params; // este es el id de usuario que queremos editar
 
+    //Validamos los datos introducidos
+    await validator(editUserSchema, req.body);
     // Obtenemos los datos pasados por req.body
     const {
       name,
@@ -38,33 +33,66 @@ const editUser = async (req, res, next) => {
       tel,
       email,
       admin,
+      deleted,
       deletePhoto,
     } = req.body;
 
-    //Validamos los datos introducidos
-    await validator(editUserSchema, {
-      name,
-      surname,
-      nif,
-      company,
-      tel,
-      email,
-      admin,
-      deletePhoto,
-    });
-
     // Obtenemos el email actual del usuario
-    const [currentEmail] = await connection.query(
+    const [currentData] = await connection.query(
       `
-      SELECT email
+      SELECT email, nif, tel
       FROM users
       WHERE id=?
       `,
       [user_id]
     );
 
+    // Si el nif recibido es diferente al que tenía anteriormente el usuario, lo procesamos
+    if (tel && tel !== currentData[0].tel) {
+      // Comprobamos que no exista el nuevo nif en la base de datos
+      const [existingNif] = await connection.query(
+        `
+      SELECT id
+      FROM users
+      WHERE nif=?
+      `,
+        [nif]
+      );
+
+      if (existingNif.length > 0) {
+        throw createError(
+          "Ya existe un usuario  en la base de datos con el nif proporcionado",
+          409
+        );
+      }
+
+      updateFields.push(`nif='${nif}'`);
+    }
+
+    // Si el teléfono recibido es diferente al que tenía anteriormente el usuario, lo procesamos
+    if (tel && tel !== currentData[0].tel) {
+      // Comprobamos que no exista el nuevo teléfono en la base de datos
+      const [existingTel] = await connection.query(
+        `
+      SELECT id
+      FROM users
+      WHERE tel=?
+      `,
+        [tel]
+      );
+
+      if (existingTel.length > 0) {
+        throw createError(
+          "Ya existe un usuario  en la base de datos con el teléfono proporcionado",
+          409
+        );
+      }
+
+      updateFields.push(`tel='${tel}'`);
+    }
+
     // Si el email recibido es diferente al que tenía anteriormente el usuario, lo procesamos
-    if (email && email !== currentEmail[0].email) {
+    if (email && email !== currentData[0].email) {
       // Comprobamos que no exista el nuevo email en la base de datos
       const [existingEmail] = await connection.query(
         `
@@ -77,7 +105,7 @@ const editUser = async (req, res, next) => {
 
       if (existingEmail.length > 0) {
         throw createError(
-          "Ya existe un usuario con el email proporcionado en la base de datos",
+          "Ya existe un usuario en la base de datos con el email proporcionado",
           409
         );
       }
@@ -120,20 +148,20 @@ const editUser = async (req, res, next) => {
     }
 
     // Si el usuario es administrador, le permitimos dar o retirar permisos de administrador a otros usuarios
-    if (req.userAuth.admin && admin) {
-      updateFields.push(`admin=${Number(admin)}`);
+    if (req.userAuth.admin) {
+      if (admin) updateFields.push(`admin=${Number(admin)}`);
+      if (deleted) updateFields.push(`deleted=${Number(deleted)}`);
     }
 
     // Aplicamos las modificaciones al usuario en cuestión
-    console.log(updateFields.join(","));
-    updateFields.join(",");
+    console.log(updateFields);
     await connection.query(
       `
       UPDATE users
-      SET ${updateFields}
+      SET ${updateFields.join(",")}
       WHERE id=?
       `,
-      [name, surname, nif, company, tel, new Date(), user_id]
+      [name, surname, company, new Date(), user_id]
     );
 
     //Enviamos una respuesta favorable si todo ha salido bien

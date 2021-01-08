@@ -24,7 +24,7 @@ const reservationSchema = Joi.object().keys({
     "number.base": `"space_id" debe ser de tipo 'number'`,
     "number.empty": `"space_id" no puede estar vacío`,
     "number.positive": `"space_id" debe ser un valor positivo`,
-    "number.integer": `"space_id" debe ser un valor entero`,
+    "number.integer": `"space_id" debe ser un valor entero`,  
   }),
 });
 
@@ -315,6 +315,56 @@ const newReviewSchema = Joi.object().keys({
   }),
 });
 
+
+const filterReviewsSchema = Joi.object().keys({
+  type: Joi.string()
+    .valid(      "Sala de reuniones",
+    "Oficina individual",
+    "Auditorio",
+    "Sala audiovisual",
+    "Oficina compartida")
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
+      "any.required": `"type" es un campo requerido`,
+    }),
+  review_id: Joi.number().positive().integer().messages({
+    "number.base": `"score" debe ser de tipo 'number'`,
+    "number.empty": `"score" no puede estar vacio`,
+    "number.positive": `"score" debe ser un valor positivo`,
+    "number.integer": `"score" debe ser un valor entero`,
+    "string.max": `"score" no puede ser mayor de {#limit} `,
+    "string.min": `"score" no puede ser menor que {#limit} `,
+  }),
+
+  user_id: Joi.number().positive().integer().messages({
+    "number.base": `"score" debe ser de tipo 'number'`,
+    "number.empty": `"score" no puede estar vacio`,
+    "number.positive": `"score" debe ser un valor positivo`,
+    "number.integer": `"score" debe ser un valor entero`,
+    "string.max": `"score" no puede ser mayor de {#limit} `,
+    "string.min": `"score" no puede ser menor que {#limit} `,
+  }),
+  review_date: Joi.date().messages({
+    "date.base": `"end_date" debe ser de tipo 'date'`,
+    "date.empty": `"end_date" no puede estar vacio`,
+    "any.required": `"end_date" es un campo requerido`,
+  }),
+  order: Joi.string()
+    .valid("space_id", "user_id", "type", "review_date")
+    .messages({
+      "string.base": `"type" debe ser de tipo 'string'`,
+      "string.empty": `"type" no puede estar vacio`,
+    }),
+
+  direction: Joi.string().valid("ASC", "DESC").messages({
+    "string.base": `"type" debe ser de tipo 'string'`,
+    "string.empty": `"type" no puede estar vacio`,
+    "string.valid": `"type" solo acepta los valores ASC y DESC`,
+  }),
+});
+
 module.exports = {
   reservationSchema,
   userSchema,
@@ -326,4 +376,5 @@ module.exports = {
   filterSpaceSchema,
   newPackSchema,
   newReviewSchema,
+  filterReviewsSchema,
 };

@@ -1,10 +1,13 @@
 const { formatDateToDB, validator } = require("../../helpers");
-
+const {filterReviewsSchema}=require("../../schemas")
 const filterReviews = async (req, res, next) => {
   let connection;
   try {
     connection = await req.app.locals.getDB();
 
+
+    //Verifico los datos del query
+    await validator(filterReviewsSchema, req.query);
     //Filtrar por id/usuario/tipo de espacio/fecha
     const {
       review_id,

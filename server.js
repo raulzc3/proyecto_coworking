@@ -224,7 +224,7 @@ app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
 
 // PUT - /users/:id
 // Edita los datos de un usuario ✅
-app.put("/users/:user_id", userExists, isAuthorized, editUser);
+app.put("/users/:user_id", isAuthorized, userExists, editUser);
 
 //POST Contactar un usuario
 app.post("/contact/:user_id", isAdmin, userExists, contactUser);

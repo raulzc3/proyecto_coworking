@@ -4,51 +4,68 @@ const {
   generateRandomString,
   sendMail,
   createError,
+  validator,
+  createGreetings,
 } = require("../../helpers");
+
+// Controller que permite modificar los datos de un usuario que ya existe en nuestra base de datos
+const { editUserSchema } = require("../../schemas");
 
 const editUser = async (req, res, next) => {
   let connection;
+  let mailMessage = "";
+  let updateFields = [
+    "name=?",
+    "surname=?",
+    "nif=?",
+    "company=?",
+    "tel=?",
+    "last_auth_date=?",
+  ];
 
   try {
     connection = await getDB();
-    //nombre, nif, apellidos, empresa, telefono, email
-    // Cosas que podemos editar: email, nombre, avatar
-    // Sacar id de req.params
-    const { user_id } = req.params; // este es el id de usuario que queremos editar
-    console.log(req.params);
-    console.log(req.body);
-    console.log(req.userAuth);
-    // Sacar name y email de req.body
-    const { name, surname, nif, company, tel, email, admin } = req.body;
-    // Si el usuario solicitado coíncide con el del token se muestran los datos --> middleware isAuthorized ✅
 
-    // Sacar la información actual del usuario en la base de datos
-    const [currentUserInfo] = await connection.query(
+    // Obtenemos id de req.params
+    const { user_id } = req.params; // este es el id de usuario que queremos editar
+
+    // Obtenemos los datos pasados por req.body
+    const {
+      name,
+      surname,
+      nif,
+      company,
+      tel,
+      email,
+      admin,
+      deletePhoto,
+    } = req.body;
+
+    //Validamos los datos introducidos
+    await validator(editUserSchema, {
+      name,
+      surname,
+      nif,
+      company,
+      tel,
+      email,
+      admin,
+      deletePhoto,
+    });
+
+    // Obtenemos el email actual del usuario
+    const [currentEmail] = await connection.query(
       `
-      SELECT name, surname,nif, company,tel,email
+      SELECT email
       FROM users
       WHERE id=?
       `,
       [user_id]
     );
 
-    console.log(currentUserInfo[0]);
-    if (req.files && req.files.photo) {
-      // Se está subiendo un photo
-      const userPhoto = await savePhoto(req.files.photo, "users");
-      await connection.query(
-        `
-        UPDATE users
-        SET photo=?
-        WHERE id=?
-        `,
-        [userPhoto, user_id]
-      );
-    }
-
-    // Si el email enviado es diferente al de la base de datos procesar el nuevo email
-    if (email && email !== currentUserInfo[0].email) {
-      // Comprobar que no exista otro usuario con el nuevo email
+    // Si el email recibido es diferente al que tenía anteriormente el usuario, lo procesamos
+    if (email && email !== currentEmail[0].email) {
+      // Comprobamos que no exista el nuevo email en la base de datos
       const [existingEmail] = await connection.query(
         `
         SELECT id
@@ -64,11 +81,15 @@ const editUser = async (req, res, next) => {
           409
         );
       }
-      console.log("linea 66");
-      // Creo un código de registro (contraseña temporal de un solo uso)
-      const registrationCode = generateRandomString(40);
 
-      // Mando un mail al usuario con el link de confirmación de email
+      // Creamos un código de validación (contraseña temporal de un solo uso)
+      const registrationCode = generateRandomString(40);
+      updateFields.push(
+        `email='${email}'`,
+        `validation_code='${registrationCode}'`
+      );
+
+      // Enviamos un mail al usuario con el link de confirmación de email
       const emailBody = `
 
     Acabas de modificar tu email de registro en <strong>COWORKIT</strong>.
@@ -80,62 +101,46 @@ const editUser = async (req, res, next) => {
         subject: `Valida tu nuevo email para continuar la sinergia en COWORKIT`,
         body: emailBody,
         name,
-        introMessage: "Hola",
+        introMessage: createGreetings(),
       });
-      console.log(req.userAuth);
-      // Actualizar el resto de los datos
-      console.log("este usuario es: ", req.userAuth.admin);
-      await connection.query(
-        `
+
+      // Añadimos aviso para revisar correo a la respuesta
+      mailMessage = " Revisa tu email para validar la nueva dirección";
+      updateFields.push("verified = 0");
+    }
+
+    //Si recibimos una foto, la procesamos
+    if (req.files && req.files.photo) {
+      // Subimos la imagen al servidor
+      const userPhoto = await savePhoto(req.files.photo, "users");
+      updateFields.push(`photo='${userPhoto}'`);
+    } else if (Number(deletePhoto) === 1) {
+      //En caso de que no se envíe una foto y se solicite que se elimine la actual, establecemos la foto por defecto
+      updateFields.push(`photo='default.png'`);
+    }
+
+    // Si el usuario es administrador, le permitimos dar o retirar permisos de administrador a otros usuarios
+    if (req.userAuth.admin && admin) {
+      updateFields.push(`admin=${Number(admin)}`);
+    }
+
+    // Aplicamos las modificaciones al usuario en cuestión
+    console.log(updateFields.join(","));
+    updateFields.join(",");
+    await connection.query(
+      `
       UPDATE users
-      SET name=?,surname=?, nif=?,company=?, tel=?, email=?, last_auth_date=?, verified=0, validation_code=?
+      SET ${updateFields}
       WHERE id=?
       `,
-        [
-          name,
-          surname,
-          nif,
-          company,
-          tel,
-          email,
-          new Date(),
-          registrationCode,
-          user_id,
-        ]
-      );
-      console.log(!req.userAuth.admin);
-      if (req.userAuth.admin) {
-        console.log("estoy dentro soy admin");
-        await connection.query(
-          `
-        UPDATE users
-        SET admin=? WHERE id=?
-        `,
-          [Number(admin), user_id]
-        );
-      }
+      [name, surname, nif, company, tel, new Date(), user_id]
+    );
 
-      // Dar una respuesta
-      res.send({
-        status: "ok",
-        message:
-          "Datos de usuario actualizados. Mira tu email para validar la nueva dirección",
-      });
-    } else {
-      await connection.query(
-        `
-        UPDATE users
-        SET name=?,surname=?, nif=?,company=?, tel=?
-        WHERE id=?
-        `,
-        [name, surname, nif, company, tel, user_id]
-      );
-
-      res.send({
-        status: "ok",
-        message: "Datos de usuario actualizados",
-      });
-    }
+    //Enviamos una respuesta favorable si todo ha salido bien
+    res.send({
+      status: "ok",
+      message: `Datos de usuario actualizados.${mailMessage}`,
+    });
   } catch (error) {
     next(error);
   } finally {

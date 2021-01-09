@@ -98,7 +98,7 @@ if (process.env.NODE_ENV === "development") {
 // #                     Endpoints de espacios                     #
 // #################################################################
 
-//GET - Petición para un espacio en concreto
+//GET - Petición para mostrar un espacio en concreto
 //URL ejemplo: http://localhost:3000/spaces/1
 app.get("/spaces/:space_id", spaceExists, getSpace);
 
@@ -108,19 +108,19 @@ app.get("/spaces", filterSpaces);
 
 // POST - Crear un espacio
 //URL ejemplo: http://localhost:3000/spaces
-app.post("/spaces", newSpace);
+app.post("/spaces", isAdmin, newSpace);
 
 //PUT - Editar un espacio
 //URL ejemplo: http://localhost:3000/spaces/3
-app.put("/spaces/:space_id", spaceExists, editSpace);
+app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
+
+//PUT - Cambiar estado espacio: habilitado/inhabilitado
+//URL ejemplo: http://localhost:3000/enableSpace/5
+app.put("/spaces/:space_id/enable", isAdmin, spaceExists, changeStateSpaces);
 
 //DELETE- Eliminar un espacio
 //URL ejemplo: http://localhost:3000/spaces/11
-app.delete("/spaces/:space_id", spaceExists, deleteSpace);
-
-//GET (PUT) - Cambiar estado espacio: habilitado/inhabilitado
-//URL ejemplo: http://localhost:3000//enableSpace/5
-app.get("/enableSpace/:space_id", spaceExists, changeStateSpaces);
+app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 
 // #################################################################
 // #                     Endpoints de reservas                     #
@@ -128,18 +128,24 @@ app.get("/enableSpace/:space_id", spaceExists, changeStateSpaces);
 
 //GET - Obtener reservas de un usuario concreto
 //URL ejemplo: http://localhost:3000/1/bookings
-app.get("/:user_id/bookings", userExists, getReservation);
+app.get("/:user_id/bookings", isAuthorized, userExists, getReservation);
 
 //POST - Crear una reserva
 //URL ejemplo: http://localhost:3000/space/1/1
-app.post("/space/:space_id/:user_id", userExists, spaceExists, newReservation);
+app.post(
+  "/space/:space_id/:user_id",
+  isAuthorized,
+  userExists,
+  spaceExists,
+  newReservation
+);
 
 //PUT - Modificar una reserva
 //URL ejemplo: http://localhost:3000/1/bookings/1
 app.put(
   "/:user_id/bookings/:reservation_id",
-  userExists,
   isAuthorized,
+  userExists,
   reservationExists,
   editReservation
 );
@@ -148,8 +154,8 @@ app.put(
 //URL ejemplo_ http://localhost:3000/1/bookings/1"
 app.delete(
   "/:user_id/bookings/:reservation_id",
-  userExists,
   isAuthorized,
+  userExists,
   reservationExists,
   deleteReservation
 );
@@ -160,11 +166,11 @@ app.delete(
 
 //GET - Obtener todos los packs
 //URL ejemplo: http://localhost:3000/packs
-app.get("/packs", isAdmin, getPack);
+app.get("/packs", getPack);
 
 //GET - Crear un pack
 //URL ejemplo http://localhost:3000/packs
-app.post("/packs", newPack);
+app.post("/packs", isAdmin, newPack);
 
 //PUT - Modificar un pack
 //URL ejemplo http://localhost:3000/packs/1
@@ -186,19 +192,19 @@ app.get("/reviews", isAdmin, filterReviews);
 //URL ejemplo: http://localhost:3000/review/3/2
 app.post(
   "/review/:space_id/:user_id",
+  isAuthorized,
   spaceExists,
   userExists,
-  isAuthorized,
   newReview
 );
 
 //PUT- Editar una valoración
 //URL ejemplo: http://localhost:3000/review/3
-app.put("/review/:review_id", reviewExists, isAuthorized, editReview);
+app.put("/review/:review_id", isAuthorized, reviewExists, editReview);
 
 //DELETE - Eliminar una valoración
 //URL ejemplo: http://localhost:3000/review/5/
-app.delete("/review/:review_id", reviewExists, isAuthorized, deleteReview);
+app.delete("/review/:review_id", isAuthorized, reviewExists, deleteReview);
 
 // #################################################################
 // #                     Endpoints de reportes                     #
@@ -237,6 +243,14 @@ app.delete("/report/:report_id", isAdmin, reportExists, deleteReport);
 //URL ejemplo_ http://localhost:3000/users/validate/a13a9ab9392...
 app.get("/users/validate/:validationCode", validateUser);
 
+//GET - Muestra información de un usuario
+//URL ejemplo_ http://localhost:3000/users/6
+app.get("/users/:user_id", isAuthorized, userExists, getUser);
+
+//GET - Filtrar usuarios (si no se filtra,, se muestran todos)
+//URL ejemplo_ http://localhost:3000/users/?user_id=&name=&surname=&...
+app.get("/users", isAdmin, filterUsers);
+
 //POST - Registrar un nuevo usuario
 //URL ejemplo_ http://localhost:3000/users
 app.post("/users", addUser);
@@ -245,33 +259,9 @@ app.post("/users", addUser);
 //URL ejemplo_ http://localhost:3000/users/login
 app.post("/users/login", loginUser);
 
-//GET - Muestra información de un usuario
-//URL ejemplo_ http://localhost:3000/users/6
-app.get("/users/:user_id", userExists, isAuthorized, getUser);
-
-//DELETE - Elimina un usuario (lo vuelve anónimo)
-//URL ejemplo_ http://localhost:3000/users/5
-app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
-
-//PUT - Modifica los datos de un usuario
-app.put("/users/:user_id", userExists, isAuthorized, editUser);
-
-//GET - Filtrar usuarios (si no se filtra,, se muestran todos)
-//URL ejemplo_ http://localhost:3000/users/?user_id=&name=&surname=&...
-app.get("/users", isAdmin, filterUsers);
-
 //POST - Enviar un email a un usuario
 //URL ejemplo: http://localhost:3000/users/contact/5
 app.post("/users/contact/:user_id", isAdmin, userExists, contactUser);
-
-//PUT - Modifica la contraseña de un usuario
-//URL ejemplo: http://localhost:3000/users/changePassword
-app.put(
-  "/users/:user_id/changePassword",
-  userExists,
-  isAuthorized,
-  editPassword
-);
 
 //POST - Recuperar contraseña (envia email al usuario, no modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/recoverPassword
@@ -280,6 +270,22 @@ app.post("/users/recoverPassword", recoverUserPassword);
 //POST - Resetear contraseña (modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/resetPassword
 app.post("/users/resetPassword", resetUserPassword);
+
+//PUT - Modifica los datos de un usuario
+app.put("/users/:user_id", isAuthorized, userExists, editUser);
+
+//PUT - Modifica la contraseña de un usuario
+//URL ejemplo: http://localhost:3000/users/changePassword
+app.put(
+  "/users/:user_id/changePassword",
+  isAuthorized,
+  userExists,
+  editPassword
+);
+
+//DELETE - Elimina un usuario (lo vuelve anónimo)
+//URL ejemplo_ http://localhost:3000/users/5
+app.delete("/users/:user_id", isAuthorized, userExists, deleteUser);
 
 // #################################################################
 // #                 Endpoints not found y error                   #

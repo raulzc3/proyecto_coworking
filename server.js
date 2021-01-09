@@ -6,6 +6,11 @@ const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const { PORT } = process.env;
 const getDB = require("./db");
+
+// #################################################################
+// #             Importamos controllers y middlewares              #
+// #################################################################
+
 //Controladores de espacios
 const {
   getSpace,
@@ -28,7 +33,7 @@ const {
   getPack,
 } = require("./controllers/packs");
 
-//Controladores de reviews
+//Controladores de valoraciones
 const {
   newReview,
   editReview,
@@ -36,7 +41,7 @@ const {
   filterReviews,
 } = require("./controllers/reviews");
 
-//Controladores de reports
+//Controladores de reportes
 const {
   newReport,
   filterReports,
@@ -71,59 +76,65 @@ const {
   isAdmin,
 } = require("./middlewares");
 
+// #################################################################
+// #                      Configuramos express                     #
+// #################################################################
+
 // Creamos la app de express
 const app = express();
-// Guardo db en el local de express
+// Guardamos db en el local de express
 app.locals.getDB = getDB;
 // Body parser (body en JSON)
 app.use(bodyParser.json());
 // Body parser (multipart form data <- subida de imágenes)
 app.use(fileUpload());
-// Logger
-app.use(morgan("dev"));
+// Logger (solo se empleará durante el desarrollo)
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
-/**
- * Espacios         Hecho 🦧
- */
+// #################################################################
+// #                     Endpoints de espacios                     #
+// #################################################################
 
-//GET - Petición para un espacio en concreto(:id)
-// http://localhost:3000/spaces/1
+//GET - Petición para un espacio en concreto
+//URL ejemplo: http://localhost:3000/spaces/1
 app.get("/spaces/:space_id", spaceExists, getSpace);
 
-//Filtrar espacios (si no se filtra, se muestran todos)
-// http://localhost:3000/spaces?aforo=23
+//GET - Filtrar espacios (si no se filtran, se muestran todos)
+//URL ejemplo: http://localhost:3000/spaces?aforo=23
 app.get("/spaces", filterSpaces);
 
-// Crear espacios
-// http://localhost:3000/spaces
+// POST - Crear un espacio
+//URL ejemplo: http://localhost:3000/spaces
 app.post("/spaces", newSpace);
 
-//Editar espacios
-//http://localhost:3000/spaces/3
+//PUT - Editar un espacio
+//URL ejemplo: http://localhost:3000/spaces/3
 app.put("/spaces/:space_id", spaceExists, editSpace);
 
-//Eliminar espacios
-//http://localhost:3000/spaces/11
+//DELETE- Eliminar un espacio
+//URL ejemplo: http://localhost:3000/spaces/11
 app.delete("/spaces/:space_id", spaceExists, deleteSpace);
 
-//Cambiar estado espacio: habilitado/inhabilitado
-
+//GET (PUT) - Cambiar estado espacio: habilitado/inhabilitado
+//URL ejemplo: http://localhost:3000//enableSpace/5
 app.get("/enableSpace/:space_id", spaceExists, changeStateSpaces);
 
-/**
- * reservas         Hecho 🦧
- */
+// #################################################################
+// #                     Endpoints de reservas                     #
+// #################################################################
 
-//GET - /:user_id/bookings--obtener reservas de usuario
-//http://localhost:3000/1/bookings
+//GET - Obtener reservas de un usuario concreto
+//URL ejemplo: http://localhost:3000/1/bookings
 app.get("/:user_id/bookings", userExists, getReservation);
 
-//POST - /space/:space_id/:user_id  --hacer una reserva
-//http://localhost:3000/space/1/1
+//POST - Crear una reserva
+//URL ejemplo: http://localhost:3000/space/1/1
 app.post("/space/:space_id/:user_id", userExists, spaceExists, newReservation);
 
-//PUT - /:user_id/bookings/:reservation_id -- modificar una reserva
-//http://localhost:3000/1/bookings/1"
+//PUT - Modificar una reserva
+//URL ejemplo: http://localhost:3000/1/bookings/1
 app.put(
   "/:user_id/bookings/:reservation_id",
   userExists,
@@ -131,8 +142,9 @@ app.put(
   reservationExists,
   editReservation
 );
-//DELETE - /id_user/bookings:id_reservation --eliminar una reserva
-//http://localhost:3000/1/bookings/1"
+
+//DELETE - Eliminar una reserva
+//URL ejemplo_ http://localhost:3000/1/bookings/1"
 app.delete(
   "/:user_id/bookings/:reservation_id",
   userExists,
@@ -141,34 +153,36 @@ app.delete(
   deleteReservation
 );
 
-/**
- * packs             Hecho 🦧
- */
+// #################################################################
+// #                       Endpoints de packs                      #
+// #################################################################
 
-// ver packs
-// http://localhost:3000/packs
+//GET - Obtener todos los packs
+//URL ejemplo: http://localhost:3000/packs
 app.get("/packs", isAdmin, getPack);
 
-// Añadir packs
-// http://localhost:3000/packs
+//GET - Crear un pack
+//URL ejemplo http://localhost:3000/packs
 app.post("/packs", newPack);
 
-//Editar packs
-// http://localhost:3000/packs/1
+//PUT - Modificar un pack
+//URL ejemplo http://localhost:3000/packs/1
 app.put("/packs/:pack_id", isAdmin, packExists, editPack);
 
-// Eliminar packs
-// http://localhost:3000/packs/5
+//DELETE - Eliminar un pack
+//URL ejemplo http://localhost:3000/packs/5
 app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 
-/**
- * Reviews         (Falta get valoraciones)
- */
+// #################################################################
+// #                      Endpoints de reseñas                     #
+// #################################################################
 
-//filtrar reviews de un espacio por review_id,user_id,type,review_date
+//GET - Filtrar valoraciones (si no se filtran, se mustran todas)
+//URL ejemplo: http://localhost:3000/reviews
 app.get("/reviews", isAdmin, filterReviews);
 
-//Crear valoracion
+//POST - Crear una valoración
+//URL ejemplo: http://localhost:3000/review/3/2
 app.post(
   "/review/:space_id/:user_id",
   spaceExists,
@@ -177,74 +191,77 @@ app.post(
   newReview
 );
 
-//Editar valoración
+//PUT- Editar una valoración
+//URL ejemplo: http://localhost:3000/review/3
 app.put("/review/:review_id", reviewExists, isAuthorized, editReview);
-//Eliminar valoraciones
+
+//DELETE - Eliminar una valoración
+//URL ejemplo: http://localhost:3000/review/5/
 app.delete("/review/:review_id", reviewExists, isAuthorized, deleteReview);
 
-/**
- * Reportes
- */
+// #################################################################
+// #                     Endpoints de reportes                     #
+// #################################################################
 
-// GET Filtrar reportes
-//URL de ejemplo: http://localhost:3000/report/
+//GET - Filtrar reportes (si no se filtran, se muestran todos)
+//URL ejemplo: http://localhost:3000/report/
 app.get("/report", isAdmin, filterReports);
 
-// POST Nuevos reportes
-// URL ejemplo: http://localhost:3000/report/1/3
+//POST - Crear un reporte
+//URL ejemplo: http://localhost:3000/report/1/3
 app.post(
   "/report/:user_id/:space_id",
-  isAuthorized,
   userExists,
+  isAuthorized,
   spaceExists,
   newReport
 );
 
-// POST Responder reportes
-// URL de ejemplo: http://localhost:3000/report/1
+//POST - Responder un reporte
+//URL ejemplo: http://localhost:3000/report/1
 app.post("/report/:report_id", isAdmin, reportExists, answerReports);
 
-// PUT Editar reportes
-// URL de ejemplo: http://localhost:3000/report/1
+//PUT - Editar un reporte
+//URL ejemplo: http://localhost:3000/report/1
 app.put("/report/:report_id", isAdmin, reportExists, editReport);
 
-/**
- * Usuarios
- */
+// #################################################################
+// #                     Endpoints de usuarios                     #
+// #################################################################
 
-//POST - /users --registrar un nuevo usuario
-//http://localhost:3000/users
-app.post("/users", addUser);
-
-// GET - /users/validate/:validationcode
-// Valida un usuario que se acaba de registrar
+//GET - Validar el email de un usuario (en el registro o en el cambio de correo)
+//URL ejemplo_ http://localhost:3000/users/validate/a13a9ab9392...
 app.get("/users/validate/:validationCode", validateUser);
 
-// POST - /users/login
-// Hace login de un usuario
+//POST - Registrar un nuevo usuario
+//URL ejemplo_ http://localhost:3000/users
+app.post("/users", addUser);
+
+//POST - Iniciar sesión (le da un token al usuario)
+//URL ejemplo_ http://localhost:3000/users/login
 app.post("/users/login", loginUser);
 
-// GET - /users/:id
-// Muestra información de usuario ✅
+//GET - Muestra información de un usuario
+//URL ejemplo_ http://localhost:3000/users/6
 app.get("/users/:user_id", userExists, isAuthorized, getUser);
 
-// DELETE - /users/:id
-// Anonimiza un usuario ✅
+//DELETE - Elimina un usuario (lo vuelve anónimo)
+//URL ejemplo_ http://localhost:3000/users/5
 app.delete("/users/:user_id", userExists, isAuthorized, deleteUser);
 
-// PUT - /users/:id
-// Edita los datos de un usuario ✅
+//PUT - Modifica los datos de un usuario
 app.put("/users/:user_id", userExists, isAuthorized, editUser);
 
-// GET - /users/?user_id=&name=&surname=&company=&admin=&verified=&deleted=&registration_date= --filtra los usuarios
-// Filtra los datos de un usuario ✅
+//GET - Filtrar usuarios (si no se filtra,, se muestran todos)
+//URL ejemplo_ http://localhost:3000/users/?user_id=&name=&surname=&...
 app.get("/users", isAdmin, filterUsers);
 
-//POST Contactar un usuario
-app.post("/contact/:user_id", isAdmin, userExists, contactUser);
+//POST - Enviar un email a un usuario
+//URL ejemplo: http://localhost:3000/users/contact/5
+app.post("/users/contact/:user_id", isAdmin, userExists, contactUser);
 
-// PUT - /users/:id/changePassword
-// Modifica la contraseña de un usuario
+//PUT - Modifica la contraseña de un usuario
+//URL ejemplo: http://localhost:3000/users/changePassword
 app.put(
   "/users/:user_id/changePassword",
   userExists,
@@ -252,11 +269,17 @@ app.put(
   editPassword
 );
 
-//POST recuperar contraseña
+//POST - Recuperar contraseña (envia email al usuario, no modifica la contraseña)
+//URL ejemplo: http://localhost:3000/users/recoverPassword
 app.post("/users/recoverPassword", recoverUserPassword);
 
-//POST resetear contraseña
+//POST - Resetear contraseña (modifica la contraseña)
+//URL ejemplo: http://localhost:3000/users/resetPassword
 app.post("/users/resetPassword", resetUserPassword);
+
+// #################################################################
+// #                 Endpoints not found y error                   #
+// #################################################################
 
 // Middleware de error
 app.use((error, req, res, next) => {

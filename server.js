@@ -47,6 +47,7 @@ const {
   filterReports,
   editReport,
   answerReports,
+  deleteReport,
 } = require("./controllers/reports");
 
 //Controladores de usuarios
@@ -174,7 +175,7 @@ app.put("/packs/:pack_id", isAdmin, packExists, editPack);
 app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 
 // #################################################################
-// #                      Endpoints de reseñas                     #
+// #                    Endpoints de valoraciones                  #
 // #################################################################
 
 //GET - Filtrar valoraciones (si no se filtran, se mustran todas)
@@ -224,6 +225,9 @@ app.post("/report/:report_id", isAdmin, reportExists, answerReports);
 //PUT - Editar un reporte
 //URL ejemplo: http://localhost:3000/report/1
 app.put("/report/:report_id", isAdmin, reportExists, editReport);
+
+//DELETE - Eliminar una reseña
+app.delete("/report/:report_id", isAdmin, reportExists, deleteReport);
 
 // #################################################################
 // #                     Endpoints de usuarios                     #

@@ -16,6 +16,7 @@ const filterReviews = async (req, res, next) => {
       review_date,
       order,
       direction,
+      space_id
     } = req.query;
 
     const validOrderFields = ["space_id", "user_id", "type", "review_date"];
@@ -31,31 +32,27 @@ const filterReviews = async (req, res, next) => {
 
     let results;
 
-    if (review_id || user_id || type || review_date) {
-      [results] = await connection.query(
-        `
-    SELECT DISTINCT r.ID, r.comment, r.score, DATE(r.review_date),r.user_id,e.type
-    FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-    WHERE (r.ID = ? OR ?) AND (r.user_id =? OR ?) AND (e.type LIKE ? OR ?) AND (DATE(r.review_date)=DATE(?) OR ?)
-    ORDER BY "${orderBy}", "${orderDirection}";
-    `,
-        [
-          review_id,
-          !review_id,
-          user_id,
-          !user_id,
-          type,
-          !type,
-          formatedReviewDate,
-          !formatedReviewDate,
-        ]
-      );
-    } else {
-      [results] = await connection.query(`
-      SELECT DISTINCT r.ID, r.comment, r.score, DATE(r.review_date),r.user_id,e.type
-      FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-      ORDER BY "${orderBy}", "${orderDirection}";`);
-    }
+    [results] = await connection.query(
+      `
+  SELECT DISTINCT *
+  FROM reviews
+  WHERE (ID = ? OR ?) AND (user_id =? OR ?)AND (space_id =? OR ?) AND  (DATE(review_date)=DATE(?) OR ?)
+  ORDER BY "${orderBy}", "${orderDirection}";
+  `,
+      [
+        review_id,
+        !review_id,
+        user_id,
+        !user_id,
+        space_id,
+        !space_id,
+        type,
+        !type,
+        formatedReviewDate,
+        !formatedReviewDate,
+      ]
+    );
+    
 
     res.send({
       status: "ok",

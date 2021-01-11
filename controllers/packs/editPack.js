@@ -1,9 +1,4 @@
-const {
-  createError,
-  deletePhoto,
-  savePhoto,
-  validator,
-} = require("../../helpers");
+const { deletePhoto, savePhoto, validator } = require("../../helpers");
 const { newPackSchema } = require("../../schemas");
 const editPack = async (req, res, next) => {
   let connection;

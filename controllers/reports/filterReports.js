@@ -20,7 +20,6 @@ const filterReports = async (req, res, next) => {
       solved,
     });
 
-    console.log(date);
     const [results] = await connection.query(
       `
         SELECT *

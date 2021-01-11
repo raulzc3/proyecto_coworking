@@ -10,7 +10,6 @@ const getPack = async (req, res, next) => {
       GROUP BY ID;`
     );
 
-    console.log(result);
     res.send({
       status: "ok",
       data: {

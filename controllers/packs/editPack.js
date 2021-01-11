@@ -17,15 +17,6 @@ const editPack = async (req, res, next) => {
     //Saco los campos del body not null del body: tipo, texto_contenido,precio,foto
     const { type, content, price } = req.body;
 
-    //Compruebo que existen
-    if (!type || !content || !price) {
-      throw createError("Faltan campos", 400);
-    }
-    //Compruebo que son válidos
-    const typeArray = ["Básico", "Intermedio", "Audiovisual", "Informático"];
-    if (!typeArray.includes(type) || content.length > 60000 || price < 0) {
-      throw createError("campo inválido", 400);
-    }
     //Obtengo el nombre de la foto
     const [photoQuery] = await connection.query(
       `

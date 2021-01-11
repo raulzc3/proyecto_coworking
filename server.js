@@ -306,7 +306,7 @@ app.delete("/users/:user_id", isAuthorized, userExists, deleteUser);
 // #################################################################
 
 // Middleware de error
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
   console.error(error);
   res.status(error.httpStatus || 500).send({
     status: "error",

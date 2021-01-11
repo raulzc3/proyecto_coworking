@@ -1,11 +1,10 @@
-const getDB = require("../db");
 const { createError, isId } = require("../helpers");
 
 const userExists = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { pack_id } = req.params;
 

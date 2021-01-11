@@ -1,10 +1,9 @@
-const getDB = require("../../db");
 const { formatDateToDB, validator } = require("../../helpers");
 const { filterSpaceSchema } = require("../../schemas");
 const filterSpaces = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     //      Valido datos del body
     //      Quiero: idEspacio,typeEspacio,nombreEspacio,price,capacity,,,mediascores,fotos
@@ -67,7 +66,6 @@ const filterSpaces = async (req, res, next) => {
       ]
     );
 
-    console.log(results);
     res.send({
       status: "ok",
       data: {

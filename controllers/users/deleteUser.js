@@ -1,11 +1,9 @@
-const getDB = require("../../db");
 const { generateRandomString, createError } = require("../../helpers");
 
 const deleteUser = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
-
+    connection = await req.app.locals.getDB();
     // Sacamos de req.params el id de usuario que queremos anonimizar
     const { user_id } = req.params;
 

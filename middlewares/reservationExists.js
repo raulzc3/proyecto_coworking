@@ -1,10 +1,9 @@
-const getDB = require("../db");
 const { createError, isId } = require("../helpers");
 const reservationExists = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { reservation_id } = req.params;
 

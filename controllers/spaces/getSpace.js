@@ -1,9 +1,7 @@
-const getDB = require("../../db");
-
 const getSpace = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     //      Quiero: idEspacio, tipoEspacio,nameEspacio,price,aforo,,,mediaValoraciones,fotos
 
@@ -37,3 +35,13 @@ const getSpace = async (req, res, next) => {
   }
 };
 module.exports = getSpace;
+
+/**
+ * 
+ *     SELECT DISTINCT e.ID, e.type, e.name, e.price,v.comment,e.capacity,AVG(IFNULL(v.score,0)) AS score, f.url,e.description 
+    FROM spaces e LEFT JOIN reviews v ON (e.ID=v.space_id)
+    LEFT JOIN photos f ON (e.ID=f.space_id)
+    WHERE e.ID=2
+    GROUP BY e.ID,f.url,v.space_id;
+    
+ */

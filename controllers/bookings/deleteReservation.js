@@ -1,9 +1,7 @@
-const getDB = require("../../db");
-
 const deleteReservation = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { user_id, reservation_id } = req.params;
 
     // si el id de usuario no existe dar error --> middleware userExists ✅

@@ -1,4 +1,3 @@
-const getDB = require("../../db");
 const {
   formatDateToDB,
   createError,
@@ -10,7 +9,7 @@ const { reservationSchema } = require("../../schemas");
 const editReservation = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { user_id, reservation_id } = req.params;
     const { start_date, end_date, pack_id, space_id } = req.body;
 

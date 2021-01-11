@@ -1,12 +1,8 @@
-const getDB = require("../../db");
-//const { formatDateToDB } = require("../../helpers");
-//onst { createError } = require("../../helpers");
-
 const getReservation = async (req, res, next) => {
   let connection;
   let reservation = [];
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { user_id } = req.params;
     const { sort } = req.query;
     const validFieldsOfsSort = ["current", "pending", "finished"];

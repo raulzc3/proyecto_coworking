@@ -1,10 +1,9 @@
-const getDB = require("../../db");
 const { createError } = require("../../helpers");
 const validateUser = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { validationCode } = req.params;
 

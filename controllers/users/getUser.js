@@ -1,9 +1,7 @@
-const getDB = require("../../db");
-
 const getUser = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     // Saco la id de usuario de req.params
     const { user_id } = req.params;

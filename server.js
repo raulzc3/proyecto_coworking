@@ -15,15 +15,19 @@ const getDB = require("./db");
 const {
   getSpace,
   filterSpaces,
-  getReservation,
-  newReservation,
-  deleteReservation,
   editSpace,
   deleteSpace,
   newSpace,
-  editReservation,
   changeStateSpaces,
 } = require("./controllers/spaces");
+
+// Controladores de reservas
+const {
+  getReservation,
+  newReservation,
+  deleteReservation,
+  editReservation,
+} = require("./controllers/bookings");
 
 //Controladores de packs
 const {
@@ -108,19 +112,24 @@ app.get("/spaces", filterSpaces);
 
 // POST - Crear un espacio
 //URL ejemplo: http://localhost:3000/spaces
-app.post("/spaces", isAdmin, newSpace);
+app.post("/spaces/:user_id", isAdmin, newSpace);
 
 //PUT - Editar un espacio
 //URL ejemplo: http://localhost:3000/spaces/3
-app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
+app.put("/spaces/:space_id/:user_id", isAdmin, spaceExists, editSpace);
 
 //PUT - Cambiar estado espacio: habilitado/inhabilitado
 //URL ejemplo: http://localhost:3000/enableSpace/5
-app.put("/spaces/:space_id/enable", isAdmin, spaceExists, changeStateSpaces);
+app.put(
+  "/spaces/:space_id/enable/:user_id",
+  isAdmin,
+  spaceExists,
+  changeStateSpaces
+);
 
 //DELETE- Eliminar un espacio
 //URL ejemplo: http://localhost:3000/spaces/11
-app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
+app.delete("/spaces/:space_id/:user_id", isAdmin, spaceExists, deleteSpace);
 
 // #################################################################
 // #                     Endpoints de reservas                     #
@@ -128,12 +137,12 @@ app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 
 //GET - Obtener reservas de un usuario concreto
 //URL ejemplo: http://localhost:3000/1/bookings
-app.get("/:user_id/bookings", isAuthorized, userExists, getReservation);
+app.get("/bookings/:user_id", isAuthorized, userExists, getReservation);
 
 //POST - Crear una reserva
 //URL ejemplo: http://localhost:3000/space/1/1
 app.post(
-  "/space/:space_id/:user_id",
+  "/bookings/:space_id/:user_id",
   isAuthorized,
   userExists,
   spaceExists,
@@ -143,7 +152,7 @@ app.post(
 //PUT - Modificar una reserva
 //URL ejemplo: http://localhost:3000/1/bookings/1
 app.put(
-  "/:user_id/bookings/:reservation_id",
+  "/bookings/:user_id/:reservation_id",
   isAuthorized,
   userExists,
   reservationExists,
@@ -153,7 +162,7 @@ app.put(
 //DELETE - Eliminar una reserva
 //URL ejemplo_ http://localhost:3000/1/bookings/1"
 app.delete(
-  "/:user_id/bookings/:reservation_id",
+  "/bookings/:user_id/:reservation_id",
   isAuthorized,
   userExists,
   reservationExists,
@@ -170,15 +179,15 @@ app.get("/packs", getPack);
 
 //GET - Crear un pack
 //URL ejemplo http://localhost:3000/packs
-app.post("/packs", isAdmin, newPack);
+app.post("/packs/:user_id", isAdmin, newPack);
 
 //PUT - Modificar un pack
 //URL ejemplo http://localhost:3000/packs/1
-app.put("/packs/:pack_id", isAdmin, packExists, editPack);
+app.put("/packs/:pack_id/:user_id", isAdmin, packExists, editPack);
 
 //DELETE - Eliminar un pack
 //URL ejemplo http://localhost:3000/packs/5
-app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
+app.delete("/packs/:pack_id/:user_id", isAdmin, packExists, deletePack);
 
 // #################################################################
 // #                    Endpoints de valoraciones                  #
@@ -186,7 +195,7 @@ app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 
 //GET - Filtrar valoraciones (si no se filtran, se mustran todas)
 //URL ejemplo: http://localhost:3000/reviews
-app.get("/reviews", isAdmin, filterReviews);
+app.get("/reviews", filterReviews);
 
 //POST - Crear una valoración
 //URL ejemplo: http://localhost:3000/review/3/2
@@ -200,11 +209,16 @@ app.post(
 
 //PUT- Editar una valoración
 //URL ejemplo: http://localhost:3000/review/3
-app.put("/review/:review_id", isAuthorized, reviewExists, editReview);
+app.put("/review/:review_id/:user_id", isAuthorized, reviewExists, editReview);
 
 //DELETE - Eliminar una valoración
 //URL ejemplo: http://localhost:3000/review/5/
-app.delete("/review/:review_id", isAuthorized, reviewExists, deleteReview);
+app.delete(
+  "/review/:review_id/:user_id",
+  isAuthorized,
+  reviewExists,
+  deleteReview
+);
 
 // #################################################################
 // #                     Endpoints de reportes                     #
@@ -212,7 +226,7 @@ app.delete("/review/:review_id", isAuthorized, reviewExists, deleteReview);
 
 //GET - Filtrar reportes (si no se filtran, se muestran todos)
 //URL ejemplo: http://localhost:3000/report/
-app.get("/report", isAdmin, filterReports);
+app.get("/report/:user_id", isAdmin, filterReports);
 
 //POST - Crear un reporte
 //URL ejemplo: http://localhost:3000/report/1/3
@@ -226,14 +240,14 @@ app.post(
 
 //POST - Responder un reporte
 //URL ejemplo: http://localhost:3000/report/1
-app.post("/report/:report_id", isAdmin, reportExists, answerReports);
+app.post("/report/:report_id/:user_id", isAdmin, reportExists, answerReports);
 
 //PUT - Editar un reporte
 //URL ejemplo: http://localhost:3000/report/1
-app.put("/report/:report_id", isAdmin, reportExists, editReport);
+app.put("/report/:report_id/:user_id", isAdmin, reportExists, editReport);
 
 //DELETE - Eliminar una reseña
-app.delete("/report/:report_id", isAdmin, reportExists, deleteReport);
+app.delete("/report/:report_id/:user_id", isAdmin, reportExists, deleteReport);
 
 // #################################################################
 // #                     Endpoints de usuarios                     #
@@ -249,7 +263,7 @@ app.get("/users/:user_id", isAuthorized, userExists, getUser);
 
 //GET - Filtrar usuarios (si no se filtra,, se muestran todos)
 //URL ejemplo_ http://localhost:3000/users/?user_id=&name=&surname=&...
-app.get("/users", isAdmin, filterUsers);
+app.get("/users/:user_id", isAdmin, filterUsers);
 
 //POST - Registrar un nuevo usuario
 //URL ejemplo_ http://localhost:3000/users
@@ -292,7 +306,7 @@ app.delete("/users/:user_id", isAuthorized, userExists, deleteUser);
 // #################################################################
 
 // Middleware de error
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   console.error(error);
   res.status(error.httpStatus || 500).send({
     status: "error",

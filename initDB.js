@@ -1,10 +1,22 @@
 require("dotenv").config();
+const fs = require("fs").promises;
 const faker = require("faker");
 const { random } = require("lodash");
 const getDB = require("./db.js");
 const { formatDateToDB } = require("./helpers");
+const path = require("path");
 
 if (process.env.NODE_ENV !== "development") process.exit();
+
+async function createDataBase() {
+  const pathSQL = path.join(__dirname, "baseDatos", "creacionBaseDatos.sql");
+  console.log(pathSQL);
+  const scriptSQL = await fs.readFile(pathSQL, "utf-8");
+  console.log(scriptSQL);
+  const sql = scriptSQL.toString();
+  // console.log(sql);
+  await connection.query(`${sql}`);
+}
 /*
 
  ********************************************************************************************************************************
@@ -15,7 +27,6 @@ if (process.env.NODE_ENV !== "development") process.exit();
  no se produzcan colisiones con determinados campos UNIQUE
 
  */
-
 let connection;
 async function main() {
   try {
@@ -46,151 +57,153 @@ async function main() {
 
     //Creamos de nuevo las tablas
 
+    //createDataBase();
+
     // Crear tabla users
 
-    await connection.query(`
-    CREATE TABLE users (
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(50) NOT NULL,
-      surname VARCHAR(100) NOT NULL,
-      nif CHAR(9) UNIQUE,
-      password VARCHAR(512) NOT NULL,
-      photo VARCHAR(50) NOT NULL DEFAULT '/img/default.png', 
-      email VARCHAR(100) NOT NULL UNIQUE,
-      tel VARCHAR(30) UNIQUE, 
-      registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-      company VARCHAR(50), 
-      admin TINYINT DEFAULT 0, 
-      verified TINYINT DEFAULT 0, 
-      deleted TINYINT DEFAULT 0, 
-      validation_code CHAR(100),
-      recovery_code  CHAR(100), 
-      last_auth_date DATETIME,
-      CONSTRAINT users_admin_ck1 CHECK (admin = 1 OR admin = 0),
-      CONSTRAINT users_verified_ck2 CHECK (verified = 1 OR verified = 0),
-      CONSTRAINT users_deleted_ck3 CHECK (deleted = 1 OR deleted = 0)
-  );
-`);
-    console.log("Tabla users creados");
+    //     await connection.query(`
+    //     CREATE TABLE users (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       name VARCHAR(50) NOT NULL,
+    //       surname VARCHAR(100) NOT NULL,
+    //       nif CHAR(9) UNIQUE,
+    //       password VARCHAR(512) NOT NULL,
+    //       photo VARCHAR(50) NOT NULL DEFAULT '/img/default.png',
+    //       email VARCHAR(100) NOT NULL UNIQUE,
+    //       tel VARCHAR(30) UNIQUE,
+    //       registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    //       company VARCHAR(50),
+    //       admin TINYINT DEFAULT 0,
+    //       verified TINYINT DEFAULT 0,
+    //       deleted TINYINT DEFAULT 0,
+    //       validation_code CHAR(100),
+    //       recovery_code  CHAR(100),
+    //       last_auth_date DATETIME,
+    //       CONSTRAINT users_admin_ck1 CHECK (admin = 1 OR admin = 0),
+    //       CONSTRAINT users_verified_ck2 CHECK (verified = 1 OR verified = 0),
+    //       CONSTRAINT users_deleted_ck3 CHECK (deleted = 1 OR deleted = 0)
+    //   );
+    // `);
+    //     console.log("Tabla users creados");
 
-    //Crear tabla espacios
+    //     //Crear tabla espacios
 
-    await connection.query(`
-    CREATE TABLE spaces (
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      type ENUM("Sala de reuniones", "Oficina individual", "Auditorio", "Sala audiovisual", "Oficina compartida") NOT NULL, 
-      name VARCHAR(50) NOT NULL,
-      description TEXT NOT NULL, 
-      price SMALLINT UNSIGNED NOT NULL,
-      capacity SMALLINT UNSIGNED NOT NULL,
-      enabled TINYINT DEFAULT 1,
-    CONSTRAINT spaces_price_ck1 CHECK (price > 0),
-    CONSTRAINT spaces_capacity_ck2 CHECK (capacity > 0),
-    CONSTRAINT spaces_enabled_ck3 CHECK (enabled = 0 OR enabled = 1)
-  );
-        `);
-    console.log("Tabla spaces creada");
+    //     await connection.query(`
+    //     CREATE TABLE spaces (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       type ENUM("Sala de reuniones", "Oficina individual", "Auditorio", "Sala audiovisual", "Oficina compartida") NOT NULL,
+    //       name VARCHAR(50) NOT NULL,
+    //       description TEXT NOT NULL,
+    //       price SMALLINT UNSIGNED NOT NULL,
+    //       capacity SMALLINT UNSIGNED NOT NULL,
+    //       enabled TINYINT DEFAULT 1,
+    //     CONSTRAINT spaces_price_ck1 CHECK (price > 0),
+    //     CONSTRAINT spaces_capacity_ck2 CHECK (capacity > 0),
+    //     CONSTRAINT spaces_enabled_ck3 CHECK (enabled = 0 OR enabled = 1)
+    //   );
+    //         `);
+    //     console.log("Tabla spaces creada");
 
-    //Crear tabla photos
+    //     //Crear tabla photos
 
-    await connection.query(`
-    CREATE TABLE photos (
-        ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        url VARCHAR(50) UNIQUE NOT NULL, 
-        space_id INT UNSIGNED,  
-        CONSTRAINT spaces_photos_fk1 FOREIGN KEY (space_id)
-        REFERENCES spaces (ID)
-    );
-    `);
-    console.log("Tabla photos creada");
+    //     await connection.query(`
+    //     CREATE TABLE photos (
+    //         ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //         url VARCHAR(50) UNIQUE NOT NULL,
+    //         space_id INT UNSIGNED,
+    //         CONSTRAINT spaces_photos_fk1 FOREIGN KEY (space_id)
+    //         REFERENCES spaces (ID)
+    //     );
+    //     `);
+    //     console.log("Tabla photos creada");
 
-    //Crear tabla packs
+    //     //Crear tabla packs
 
-    await connection.query(`        
-    CREATE TABLE packs ( 
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      type ENUM('Básico', 'Intermedio', 'Audiovisual', 'Informático') NOT NULL, 
-      content TEXT NOT NULL, 
-      price SMALLINT UNSIGNED NOT NULL,
-      photo VARCHAR(50) NOT NULL 
-  );
-    `);
-    console.log("Tabla packs creada");
+    //     await connection.query(`
+    //     CREATE TABLE packs (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       type ENUM('Básico', 'Intermedio', 'Audiovisual', 'Informático') NOT NULL,
+    //       content TEXT NOT NULL,
+    //       price SMALLINT UNSIGNED NOT NULL,
+    //       photo VARCHAR(50) NOT NULL
+    //   );
+    //     `);
+    //     console.log("Tabla packs creada");
 
-    const frases = [
-      "¿Este ejercicio lo puse yo? Pues no tego ni puta idea de cómo se resuelve.",
-      "Algún día se acabarán tambien las IPs de IPv6, pero ese día ya no estaremos aquí. Por lo tanto: nos la suda.",
-      "Poner el WHERE en una sentencia DELETE FROM es una de las enseñanzas más importantes de la vida, pero no tanto como 'O viño non é auga'.",
-      "Teneis que seguir la regla RTFM: Read The Fucking Manual.",
-      "Lula, roncas como un minero con silicosis",
-      "Berto ha salido a pasear a Lula y no nos ha dejado más frases épicas :'(",
-    ];
+    //     const frases = [
+    //       "¿Este ejercicio lo puse yo? Pues no tego ni puta idea de cómo se resuelve.",
+    //       "Algún día se acabarán tambien las IPs de IPv6, pero ese día ya no estaremos aquí. Por lo tanto: nos la suda.",
+    //       "Poner el WHERE en una sentencia DELETE FROM es una de las enseñanzas más importantes de la vida, pero no tanto como 'O viño non é auga'.",
+    //       "Teneis que seguir la regla RTFM: Read The Fucking Manual.",
+    //       "Lula, roncas como un minero con silicosis",
+    //       "Berto ha salido a pasear a Lula y no nos ha dejado más frases épicas :'(",
+    //     ];
 
-    //Crear tabla reviews
+    //     //Crear tabla reviews
 
-    await connection.query(`
-    CREATE TABLE reviews (
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-      comment VARCHAR(500) NOT NULL, 
-      score TINYINT UNSIGNED DEFAULT 5, 
-      review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      user_id INT UNSIGNED NOT NULL, 
-      space_id INT UNSIGNED NOT NULL,     
-      CONSTRAINT reviews_users_fk1 FOREIGN KEY (user_id) 
-          REFERENCES users (ID), 
-      CONSTRAINT reviews_spaces_fk2 FOREIGN KEY (space_id) 
-          REFERENCES spaces (ID), 
-      CONSTRAINT reviews_score_ck1 CHECK (score BETWEEN 1 AND 10)
-    );`);
-    console.log("Tabla reviews creada");
+    //     await connection.query(`
+    //     CREATE TABLE reviews (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       comment VARCHAR(500) NOT NULL,
+    //       score TINYINT UNSIGNED DEFAULT 5,
+    //       review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //       user_id INT UNSIGNED NOT NULL,
+    //       space_id INT UNSIGNED NOT NULL,
+    //       CONSTRAINT reviews_users_fk1 FOREIGN KEY (user_id)
+    //           REFERENCES users (ID),
+    //       CONSTRAINT reviews_spaces_fk2 FOREIGN KEY (space_id)
+    //           REFERENCES spaces (ID),
+    //       CONSTRAINT reviews_score_ck1 CHECK (score BETWEEN 1 AND 10)
+    //     );`);
+    //     console.log("Tabla reviews creada");
 
-    //Crear tabla reports
+    //     //Crear tabla reports
 
-    await connection.query(`
-    CREATE TABLE reports (
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      category ENUM('Hardware', 'Software', 'Conectividad', 'Limpieza', 'Atención al cliente', 'Otros') NOT NULL, 
-      description VARCHAR(500) NOT NULL,
-      solved TINYINT DEFAULT 0, 
-      report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      photo VARCHAR(50) UNIQUE,
-      user_id INT UNSIGNED NOT NULL,
-      space_id INT UNSIGNED NOT NULL,
-      CONSTRAINT reports_users_fk1 FOREIGN KEY (user_id)
-          REFERENCES users (ID),
-      CONSTRAINT reports_spaces_fk2 FOREIGN KEY (space_id)
-          REFERENCES spaces (ID),
-      CONSTRAINT reports_solved_ck1 CHECK (solved IN (0 , 1)) 
-    );
-  
-        `);
-    console.log("Tabla reports creada");
+    //     await connection.query(`
+    //     CREATE TABLE reports (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       category ENUM('Hardware', 'Software', 'Conectividad', 'Limpieza', 'Atención al cliente', 'Otros') NOT NULL,
+    //       description VARCHAR(500) NOT NULL,
+    //       solved TINYINT DEFAULT 0,
+    //       report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //       photo VARCHAR(50) UNIQUE,
+    //       user_id INT UNSIGNED NOT NULL,
+    //       space_id INT UNSIGNED NOT NULL,
+    //       CONSTRAINT reports_users_fk1 FOREIGN KEY (user_id)
+    //           REFERENCES users (ID),
+    //       CONSTRAINT reports_spaces_fk2 FOREIGN KEY (space_id)
+    //           REFERENCES spaces (ID),
+    //       CONSTRAINT reports_solved_ck1 CHECK (solved IN (0 , 1))
+    //     );
 
-    //Crear tabla pedidos
+    //         `);
+    //     console.log("Tabla reports creada");
 
-    await connection.query(`
-    CREATE TABLE orders (
-      ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-      start_date DATE NOT NULL, 
-      end_date DATE NOT NULL,	
-      price SMALLINT UNSIGNED NOT NULL, 
-      user_id INT UNSIGNED NOT NULL,
-      space_id INT UNSIGNED NOT NULL,
-      pack_id INT UNSIGNED NOT NULL,
-      CONSTRAINT orders_users_fk1 FOREIGN KEY (user_id)
-          REFERENCES users (ID),
-      CONSTRAINT orders_spaces_fk2 FOREIGN KEY (space_id)
-          REFERENCES spaces (ID),
-      CONSTRAINT orders_packs_fk3 FOREIGN KEY (pack_id)
-          REFERENCES packs (ID),
-      CONSTRAINT spaces_start_date_uq1 UNIQUE (space_id, start_date),
-      CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date), 
-      CONSTRAINT orders_price_ck1 CHECK(price > 0),
-      CONSTRAINT orders_dates_ck2 CHECK(start_date <= end_date AND order_date <= start_date)
-    );
-      `);
-    console.log("Tabla orders creada");
+    //     //Crear tabla pedidos
+
+    //     await connection.query(`
+    //     CREATE TABLE orders (
+    //       ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //       order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //       start_date DATE NOT NULL,
+    //       end_date DATE NOT NULL,
+    //       price SMALLINT UNSIGNED NOT NULL,
+    //       user_id INT UNSIGNED NOT NULL,
+    //       space_id INT UNSIGNED NOT NULL,
+    //       pack_id INT UNSIGNED NOT NULL,
+    //       CONSTRAINT orders_users_fk1 FOREIGN KEY (user_id)
+    //           REFERENCES users (ID),
+    //       CONSTRAINT orders_spaces_fk2 FOREIGN KEY (space_id)
+    //           REFERENCES spaces (ID),
+    //       CONSTRAINT orders_packs_fk3 FOREIGN KEY (pack_id)
+    //           REFERENCES packs (ID),
+    //       CONSTRAINT spaces_start_date_uq1 UNIQUE (space_id, start_date),
+    //       CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date),
+    //       CONSTRAINT orders_price_ck1 CHECK(price > 0),
+    //       CONSTRAINT orders_dates_ck2 CHECK(start_date <= end_date AND order_date <= start_date)
+    //     );
+    //       `);
+    //     console.log("Tabla orders creada");
 
     //Introducimos datos de prueba:
     console.log(

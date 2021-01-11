@@ -1,12 +1,11 @@
 const jwt = require("jsonwebtoken");
-const getDB = require("../../db");
 const { createError, validator } = require("../../helpers");
 const { loginSchema } = require("../../schemas");
 const loginUser = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     // Recoger el email y password de req.body
     const { email, password } = req.body;

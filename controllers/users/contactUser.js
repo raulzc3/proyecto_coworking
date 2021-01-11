@@ -1,17 +1,13 @@
-const getDB = require("../../db");
 const { createError, sendMail, createGreetings } = require("../../helpers");
 
 const contactUser = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
-
+    connection = await req.app.locals.getDB();
     const { user_id } = req.params;
 
     let { subject, emailBody } = req.body;
-
-    console.log(req.body);
 
     if (subject.length === 0) {
       throw createError("Es necesario crear un asunto para el email", 400);

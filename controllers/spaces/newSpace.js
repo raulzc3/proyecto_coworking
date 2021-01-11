@@ -1,12 +1,10 @@
-const getDB = require("../../db");
 const { validator } = require("../../helpers");
 const { newSpaceSchema } = require("../../schemas");
 const newSpace = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
-
+    connection = await req.app.locals.getDB();
     //validar los valores del body ✅
     await validator(newSpaceSchema, req.body);
     const { type, description, name, price, capacity } = req.body;

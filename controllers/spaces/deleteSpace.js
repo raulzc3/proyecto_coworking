@@ -1,15 +1,10 @@
-const getDB = require("../../db");
-
 const deleteSpace = async (req, res, next) => {
   let connection;
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { id } = req.params;
 
-    await connection.query(
-      `DELETE FROM spaces WHERE ID= ?;`,
-      [id]
-    );
+    await connection.query(`DELETE FROM spaces WHERE ID= ?;`, [id]);
 
     res.send({
       stats: "ok",

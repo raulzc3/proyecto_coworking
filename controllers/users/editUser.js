@@ -1,4 +1,3 @@
-const getDB = require("../../db");
 const {
   savePhoto,
   generateRandomString,
@@ -17,7 +16,7 @@ const editUser = async (req, res, next) => {
   let updateFields = ["name=?", "surname=?", "company=?", "last_auth_date=?"];
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     // Obtenemos id de req.params
     const { user_id } = req.params; // este es el id de usuario que queremos editar

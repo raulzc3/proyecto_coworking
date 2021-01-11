@@ -1,4 +1,3 @@
-const getDB = require("../../db");
 const {
   generateRandomString,
   sendMail,
@@ -12,7 +11,7 @@ const addUser = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     // Recojo de req.body el email y la password
     let { name, surname, nif, email, password } = req.body;

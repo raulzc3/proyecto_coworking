@@ -1,4 +1,3 @@
-const getDB = require("../db");
 const jwt = require("jsonwebtoken");
 const { createError, isId } = require("../helpers");
 
@@ -6,7 +5,7 @@ const isAdmin = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
 
     const { authorization } = req.headers;
     const { user_id } = req.params;

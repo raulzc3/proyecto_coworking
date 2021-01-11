@@ -1,14 +1,13 @@
-const getDB = require("../../db");
-const {newSpaceSchema}=require("../../schemas")
+const { newSpaceSchema } = require("../../schemas");
+const { validator } = require("../../helpers");
+
 const editSpace = async (req, res, next) => {
   let connection;
 
   try {
-    connection = await getDB();
+    connection = await req.app.locals.getDB();
     const { space_id } = req.params;
 
-
-    
     //validar los valores del body ✅
     await validator(newSpaceSchema, req.body);
 

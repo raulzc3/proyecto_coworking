@@ -1,10 +1,10 @@
-const { formatDateToDB, validator } = require("../../helpers");
-const {filterReviewsSchema}=require("../../schemas")
+const { validator } = require("../../helpers");
+const { filterReviewsSchema } = require("../../schemas");
+
 const filterReviews = async (req, res, next) => {
   let connection;
   try {
     connection = await req.app.locals.getDB();
-
 
     //Verifico los datos del query
     await validator(filterReviewsSchema, req.query);
@@ -22,8 +22,8 @@ const filterReviews = async (req, res, next) => {
     const validOrderDirection = ["DESC", "ASC"];
 
     const formatedReviewDate = review_date
-      ? formatDateToDB(new Date(review_date))
-      : formatDateToDB(new Date(1111 - 11 - 11));
+      ? new Date(review_date)
+      : new Date(1111 - 11 - 11);
     const orderBy = validOrderFields.includes(order) ? order : "score";
     const orderDirection = validOrderDirection.includes(direction)
       ? direction
@@ -50,11 +50,6 @@ const filterReviews = async (req, res, next) => {
           !formatedReviewDate,
         ]
       );
-    } else {
-      [results] = await connection.query(`
-      SELECT DISTINCT r.ID, r.comment, r.score, DATE(r.review_date),r.user_id,e.type
-      FROM spaces e LEFT JOIN reviews r ON (e.ID=r.space_id)
-      ORDER BY "${orderBy}", "${orderDirection}";`);
     }
 
     res.send({

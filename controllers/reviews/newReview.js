@@ -32,10 +32,6 @@ const newReview = async (req, res, next) => {
       );
       error.httpStatus = 400;
       throw error;
-    } else if (!comment) {
-      const error = new Error("El campo 'comment' es obligatorio");
-      error.httpStatus = 400;
-      throw error;
     }
 
     //Ejecutamos la inserción en la base de datos
@@ -67,5 +63,4 @@ const newReview = async (req, res, next) => {
     if (connection) connection.release();
   }
 };
-
 module.exports = newReview;

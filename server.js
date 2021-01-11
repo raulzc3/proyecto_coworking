@@ -152,7 +152,7 @@ app.post(
 //PUT - Modificar una reserva
 //URL ejemplo: http://localhost:3000/1/bookings/1
 app.put(
-  "/bookings/:user_id/:reservation_id",
+  "/bookings/:reservation_id/:user_id",
   isAuthorized,
   userExists,
   reservationExists,
@@ -162,7 +162,7 @@ app.put(
 //DELETE - Eliminar una reserva
 //URL ejemplo_ http://localhost:3000/1/bookings/1"
 app.delete(
-  "/bookings/:user_id/:reservation_id",
+  "/bookings/:reservation_id/:user_id",
   isAuthorized,
   userExists,
   reservationExists,

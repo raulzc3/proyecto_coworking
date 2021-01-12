@@ -12,7 +12,6 @@ const changeStateSpace = async (req, res, next) => {
           UPDATE spaces s1, spaces s2 
           SET s1.enabled = IF(s2.enabled = 0, 1,0)     
           WHERE s1.ID = s2.ID and s1.ID = ?;
-    
         `,
       [space_id]
     );

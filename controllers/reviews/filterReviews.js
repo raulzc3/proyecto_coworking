@@ -1,10 +1,10 @@
-const { formatDateToDB, validator } = require("../../helpers");
-const {filterReviewsSchema}=require("../../schemas")
+const { validator } = require("../../helpers");
+const { filterReviewsSchema } = require("../../schemas");
+
 const filterReviews = async (req, res, next) => {
   let connection;
   try {
     connection = await req.app.locals.getDB();
-
 
     //Verifico los datos del query
     await validator(filterReviewsSchema, req.query);
@@ -16,15 +16,14 @@ const filterReviews = async (req, res, next) => {
       review_date,
       order,
       direction,
-      space_id
+      space_id,
     } = req.query;
-
     const validOrderFields = ["space_id", "user_id", "type", "review_date"];
     const validOrderDirection = ["DESC", "ASC"];
 
     const formatedReviewDate = review_date
-      ? formatDateToDB(new Date(review_date))
-      : formatDateToDB(new Date(1111 - 11 - 11));
+      ? new Date(review_date)
+      : new Date(1111 - 11 - 11);
     const orderBy = validOrderFields.includes(order) ? order : "score";
     const orderDirection = validOrderDirection.includes(direction)
       ? direction
@@ -52,7 +51,6 @@ const filterReviews = async (req, res, next) => {
         !formatedReviewDate,
       ]
     );
-    
 
     res.send({
       status: "ok",

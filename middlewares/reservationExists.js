@@ -7,7 +7,7 @@ const reservationExists = async (req, res, next) => {
 
     const { reservation_id } = req.params;
 
-    isId(reservation_id);
+    if (reservation_id) isId(reservation_id);
 
     // Comprobamos que existe una reserva con ese id
 

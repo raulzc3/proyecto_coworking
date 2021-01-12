@@ -8,10 +8,6 @@ const isAdmin = async (req, res, next) => {
     connection = await req.app.locals.getDB();
 
     const { authorization } = req.headers;
-    const { user_id } = req.params;
-
-    // Comprobamos que el id introducido es un número
-    if (user_id) isId(user_id);
 
     // Si no authorization está vacío devuelvo un error
     if (!authorization) {

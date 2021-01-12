@@ -1,16 +1,26 @@
-const { validator } = require("../../helpers");
+const { validator, createError } = require("../../helpers");
+const jwt = require("jsonwebtoken");
 const { newReviewSchema } = require("../../schemas");
 
 const editPack = async (req, res, next) => {
   let connection;
   try {
     connection = await req.app.locals.getDB();
+
     //obtengo el id del pack a modificar del endpoint
-    const { review_id } = req.params;
+    const { review_id, user_id } = req.params;
     //Verifico los datos del body
     await validator(newReviewSchema, req.body);
     //Saco los campos del body not null del body: tipo, texto_contenido,precio,foto
     const { comment, score } = req.body;
+    //Si eres admin no puedes modificarlo
+    const { authorization } = req.headers;
+    tokenInfo = jwt.verify(authorization, process.env.SECRET);
+    if (tokenInfo.id !== user_id)
+      throw createError(
+        "No tienes permisos para modificar las valoraciones",
+        401
+      );
 
     //Obtengo el user_id=?y space_id de la review
     const [photoQuery] = await connection.query(
@@ -19,7 +29,7 @@ const editPack = async (req, res, next) => {
       WHERE  ID=?`,
       [review_id]
     );
-    const user_id = photoQuery[0].user_id;
+
     const space_id = photoQuery[0].space_id;
 
     //hago un query de SQL Update para editar los datos

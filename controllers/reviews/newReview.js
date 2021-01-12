@@ -1,4 +1,5 @@
-const { validator } = require("../../helpers");
+const { validator, createError } = require("../../helpers");
+const jwt = require("jsonwebtoken");
 const { newReviewSchema } = require("../../schemas");
 
 const newReview = async (req, res, next) => {
@@ -13,6 +14,14 @@ const newReview = async (req, res, next) => {
     // Obtenemos los campos necesarios de req.body
     const { comment, score } = req.body;
 
+    //Si eres admin no puedes modificarlo
+    const { authorization } = req.headers;
+    tokenInfo = jwt.verify(authorization, process.env.SECRET);
+    if (tokenInfo.id !== user_id)
+      throw createError(
+        "No tienes permisos para modificar las valoraciones",
+        401
+      );
     // Comprobamos que exista un pedido pasado para el usuario y espacio introducidos
     let [order] = await connection.query(
       `
@@ -30,10 +39,6 @@ const newReview = async (req, res, next) => {
       const error = new Error(
         "No existe ninguna reserva pasada para la combinación usuario-espacio introducida"
       );
-      error.httpStatus = 400;
-      throw error;
-    } else if (!comment) {
-      const error = new Error("El campo 'comment' es obligatorio");
       error.httpStatus = 400;
       throw error;
     }

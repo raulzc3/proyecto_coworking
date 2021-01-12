@@ -10,7 +10,6 @@ const deleteReservation = async (req, res, next) => {
     const bookings = await connection.query(`DELETE FROM orders WHERE ID = ?`, [
       reservation_id,
     ]);
-    console.log(bookings[0][0]);
     res.send({
       status: "ok",
       message: `Reserva  con ID ${reservation_id} ha sido eliminada`,

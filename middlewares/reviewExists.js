@@ -6,15 +6,14 @@ const reviewExists = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    const { id_review } = req.params;
-
-    isId(id_review);
+    const { review_id } = req.params;
+    if (review_id) isId(review_id);
 
     const [user] = await connection.query(
       `
-      SELECT id FROM review WHERE ID=?
+      SELECT id FROM reviews WHERE ID=?
     `,
-      [id_review]
+      [review_id]
     );
 
     if (user.length === 0) {

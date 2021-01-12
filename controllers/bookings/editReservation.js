@@ -11,10 +11,9 @@ const editReservation = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
     const { user_id, reservation_id } = req.params;
-    const { start_date, end_date, pack_id, space_id } = req.body;
-
     //validar los valores del body ✅
     await validator(reservationSchema, req.body);
+    const { start_date, end_date, pack_id, space_id } = req.body;
 
     // comprobar que el espacio existe
 
@@ -67,10 +66,6 @@ const editReservation = async (req, res, next) => {
       Math.abs(new Date().getTime() - new Date(dateOfReservation).getTime()) /
         (1000 * 3600)
     );
-    // console.log(bookings[0][0]);
-    // console.log(dateOfReservation);
-    // console.log(new Date());
-    // console.log(numOfHours);
 
     if (numOfHours >= 48) {
       throw createError(

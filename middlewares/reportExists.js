@@ -8,7 +8,7 @@ const reportExists = async (req, res, next) => {
 
     const { report_id } = req.params;
 
-    isId(report_id);
+    if (report_id) isId(report_id);
 
     const [user] = await connection.query(
       `

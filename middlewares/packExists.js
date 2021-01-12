@@ -8,7 +8,7 @@ const userExists = async (req, res, next) => {
 
     const { pack_id } = req.params;
 
-    isId(pack_id);
+    if (pack_id) isId(pack_id);
 
     const [user] = await connection.query(
       `

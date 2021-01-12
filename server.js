@@ -112,24 +112,19 @@ app.get("/spaces", filterSpaces);
 
 // POST - Crear un espacio
 //URL ejemplo: http://localhost:3000/spaces
-app.post("/spaces/:user_id", isAdmin, newSpace);
+app.post("/spaces", isAdmin, newSpace);
 
 //PUT - Editar un espacio
 //URL ejemplo: http://localhost:3000/spaces/3
-app.put("/spaces/:space_id/:user_id", isAdmin, spaceExists, editSpace);
+app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
 
 //PUT - Cambiar estado espacio: habilitado/inhabilitado
 //URL ejemplo: http://localhost:3000/enableSpace/5
-app.put(
-  "/spaces/:space_id/enable/:user_id",
-  isAdmin,
-  spaceExists,
-  changeStateSpaces
-);
+app.put("/spaces/:space_id/enable", isAdmin, spaceExists, changeStateSpaces);
 
 //DELETE- Eliminar un espacio
 //URL ejemplo: http://localhost:3000/spaces/11
-app.delete("/spaces/:space_id/:user_id", isAdmin, spaceExists, deleteSpace);
+app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 
 // #################################################################
 // #                     Endpoints de reservas                     #
@@ -137,14 +132,13 @@ app.delete("/spaces/:space_id/:user_id", isAdmin, spaceExists, deleteSpace);
 
 //GET - Obtener reservas de un usuario concreto
 //URL ejemplo: http://localhost:3000/1/bookings
-app.get("/bookings/:user_id", isAuthorized, userExists, getReservation);
+app.get("/bookings/:user_id", isAuthorized, getReservation);
 
 //POST - Crear una reserva
 //URL ejemplo: http://localhost:3000/space/1/1
 app.post(
   "/bookings/:space_id/:user_id",
   isAuthorized,
-  userExists,
   spaceExists,
   newReservation
 );
@@ -154,7 +148,6 @@ app.post(
 app.put(
   "/bookings/:user_id/:reservation_id",
   isAuthorized,
-  userExists,
   reservationExists,
   editReservation
 );
@@ -164,7 +157,6 @@ app.put(
 app.delete(
   "/bookings/:user_id/:reservation_id",
   isAuthorized,
-  userExists,
   reservationExists,
   deleteReservation
 );
@@ -179,15 +171,15 @@ app.get("/packs", getPack);
 
 //GET - Crear un pack
 //URL ejemplo http://localhost:3000/packs
-app.post("/packs/:user_id", isAdmin, newPack);
+app.post("/packs", isAdmin, newPack);
 
 //PUT - Modificar un pack
 //URL ejemplo http://localhost:3000/packs/1
-app.put("/packs/:pack_id/:user_id", isAdmin, packExists, editPack);
+app.put("/packs/:pack_id", isAdmin, packExists, editPack);
 
 //DELETE - Eliminar un pack
 //URL ejemplo http://localhost:3000/packs/5
-app.delete("/packs/:pack_id/:user_id", isAdmin, packExists, deletePack);
+app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 
 // #################################################################
 // #                    Endpoints de valoraciones                  #
@@ -199,13 +191,7 @@ app.get("/reviews", filterReviews);
 
 //POST - Crear una valoración
 //URL ejemplo: http://localhost:3000/review/3/2
-app.post(
-  "/review/:space_id/:user_id",
-  isAuthorized,
-  spaceExists,
-  userExists,
-  newReview
-);
+app.post("/review/:space_id/:user_id", isAuthorized, spaceExists, newReview);
 
 //PUT- Editar una valoración
 //URL ejemplo: http://localhost:3000/review/3
@@ -226,28 +212,22 @@ app.delete(
 
 //GET - Filtrar reportes (si no se filtran, se muestran todos)
 //URL ejemplo: http://localhost:3000/report/
-app.get("/report/:user_id", isAdmin, filterReports);
+app.get("/report", isAdmin, filterReports);
 
 //POST - Crear un reporte
 //URL ejemplo: http://localhost:3000/report/1/3
-app.post(
-  "/report/:user_id/:space_id",
-  userExists,
-  isAuthorized,
-  spaceExists,
-  newReport
-);
+app.post("/report/:user_id/:space_id", isAuthorized, spaceExists, newReport);
 
 //POST - Responder un reporte
 //URL ejemplo: http://localhost:3000/report/1
-app.post("/report/:report_id/:user_id", isAdmin, reportExists, answerReports);
+app.post("/report/:report_id", isAdmin, reportExists, answerReports);
 
 //PUT - Editar un reporte
 //URL ejemplo: http://localhost:3000/report/1
-app.put("/report/:report_id/:user_id", isAdmin, reportExists, editReport);
+app.put("/report/:report_id", isAdmin, reportExists, editReport);
 
 //DELETE - Eliminar una reseña
-app.delete("/report/:report_id/:user_id", isAdmin, reportExists, deleteReport);
+app.delete("/report/:report_id", isAdmin, reportExists, deleteReport);
 
 // #################################################################
 // #                     Endpoints de usuarios                     #
@@ -259,11 +239,11 @@ app.get("/users/validate/:validationCode", validateUser);
 
 //GET - Muestra información de un usuario
 //URL ejemplo_ http://localhost:3000/users/6
-app.get("/users/:user_id", isAuthorized, userExists, getUser);
+app.get("/users/:user_id", isAuthorized, getUser);
 
 //GET - Filtrar usuarios (si no se filtra,, se muestran todos)
 //URL ejemplo_ http://localhost:3000/users/?user_id=&name=&surname=&...
-app.get("/users/:user_id", isAdmin, filterUsers);
+app.get("/users", isAdmin, filterUsers);
 
 //POST - Registrar un nuevo usuario
 //URL ejemplo_ http://localhost:3000/users
@@ -286,27 +266,22 @@ app.post("/users/recoverPassword", recoverUserPassword);
 app.post("/users/resetPassword", resetUserPassword);
 
 //PUT - Modifica los datos de un usuario
-app.put("/users/:user_id", isAuthorized, userExists, editUser);
+app.put("/users/:user_id", isAuthorized, editUser);
 
 //PUT - Modifica la contraseña de un usuario
 //URL ejemplo: http://localhost:3000/users/changePassword
-app.put(
-  "/users/:user_id/changePassword",
-  isAuthorized,
-  userExists,
-  editPassword
-);
+app.put("/users/:user_id/changePassword", isAuthorized, editPassword);
 
 //DELETE - Elimina un usuario (lo vuelve anónimo)
 //URL ejemplo_ http://localhost:3000/users/5
-app.delete("/users/:user_id", isAuthorized, userExists, deleteUser);
+app.delete("/users/:user_id", isAuthorized, deleteUser);
 
 // #################################################################
 // #                 Endpoints not found y error                   #
 // #################################################################
 
 // Middleware de error
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
   console.error(error);
   res.status(error.httpStatus || 500).send({
     status: "error",

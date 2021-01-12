@@ -4,7 +4,7 @@ const spaceExists = async (req, res, next) => {
 
   try {
     connection = await req.app.locals.getDB();
-
+    console.log("LLegó2");
     const { space_id } = req.params;
 
     isId(space_id);

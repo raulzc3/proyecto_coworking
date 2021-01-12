@@ -1,24 +1,24 @@
 const { validator } = require("../../helpers");
 const { filterReportSchema } = require("../../schemas");
+
 const filterReports = async (req, res, next) => {
   let connection;
 
   try {
     connection = await req.app.locals.getDB();
 
-    // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
-
     let {
       report_id,
       user,
       space,
-      date,
       category,
+      date,
       solved,
       orderBy,
       orderDirection,
     } = req.query;
 
+    //Modificamos algunos campos para que no den problemas a la hora de validarlos
     if (category) category = category.toLowerCase();
     if (orderBy) orderBy = orderBy.toLowerCase();
     orderBy = orderBy ? orderBy.toLowerCase() : "report_date";

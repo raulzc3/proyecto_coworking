@@ -1,50 +1,44 @@
-const { validator } = require("../../helpers");
-const { getBookingsSchema } = require("../../schemas");
 const getReservation = async (req, res, next) => {
   let connection;
   let reservation = [];
   try {
     connection = await req.app.locals.getDB();
     const { user_id } = req.params;
-    const { type, orderDirection } = req.query;
-    // const validFieldsOfType = ["current", "pending", "finished"];
-    // const validFieldsOfOrder = ["ASC", "DEsc"];
-    // const typeOfReservation = validFieldsOfType.includes(type) ? type : " ";
-    // console.log(type);
-
-    await validator(getBookingsSchema, req.query);
+    const { type } = req.query;
+    const validFieldsOfType = ["current", "pending", "finished"];
+    const typeOfReservation = validFieldsOfType.includes(type) ? type : " ";
 
     // si el id de usuario no existe dar error --> middleware userExists ✅
 
     //si existe se enlistan las reservas hechas según el fintro indicado ✅
     let orders;
 
-    switch (type) {
+    switch (typeOfReservation) {
       case "current":
         orders = await connection.query(
           `
-           SELECT * FROM orders WHERE user_id = ? AND (DATE(?) BETWEEN start_date AND end_date) ORDER BY start_date end_date order_Date ?;`,
-          [user_id, new Date(), orderDirection]
+           SELECT * FROM orders WHERE user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) ORDER BY start_date, end_date , order_Date;`,
+          [user_id]
         );
         break;
 
       case "pending":
         orders = await connection.query(
           `
-             SELECT * FROM orders WHERE user_id = ? AND DATE(?) < start_date ORDER BY ID;`,
+             SELECT * FROM orders WHERE user_id = ? AND CURDATE() < start_date ORDER BY start_date , end_date , order_Date;`,
           [user_id, new Date()]
         );
         break;
       case "finished":
         orders = await connection.query(
           `
-               SELECT * FROM orders WHERE user_id = ? AND DATE(?) > end_date ORDER BY ID ;`,
-          [user_id, new Date()]
+               SELECT * FROM orders WHERE user_id = ? AND CURDATE()  > end_date ORDER BY start_date, end_date , order_Date;`,
+          [user_id]
         );
         break;
       default:
         orders = await connection.query(
-          `SELECT * FROM orders WHERE user_id = ?;`,
+          `SELECT * FROM orders WHERE user_id = ? ORDER BY start_date;`,
           [user_id]
         );
         break;

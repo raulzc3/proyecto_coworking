@@ -18,26 +18,24 @@ const filterReviews = async (req, res, next) => {
       direction,
       space_id,
     } = req.query;
-    const validOrderFields = ["space_id", "user_id", "type", "review_date"];
-    const validOrderDirection = ["DESC", "ASC"];
 
-    const formatedReviewDate = review_date
-      ? new Date(review_date)
-      : new Date(1111 - 11 - 11);
-    const orderBy = validOrderFields.includes(order) ? order : "score";
-    const orderDirection = validOrderDirection.includes(direction)
-      ? direction
-      : "ASC";
-
-    let results;
-
-    [results] = await connection.query(
+    review_date ? new Date(review_date) : new Date(1111 - 11 - 11);
+    const orderBy = order ? order : `score`;
+    const orderDirection = direction ? direction : `ASC`;
+    console.log(orderBy, orderDirection);
+    console.log(`order by ${orderBy}\n direction ${orderDirection}`);
+    const [results] = await connection.query(
       `
   SELECT DISTINCT *
   FROM reviews
   WHERE (ID = ? OR ?) AND (user_id =? OR ?)AND (space_id =? OR ?) AND  (DATE(review_date)=DATE(?) OR ?)
-  ORDER BY "${orderBy}", "${orderDirection}";
+  ORDER BY ${orderBy} ${orderDirection};
   `,
+      /**
+   *   SELECT DISTINCT *
+  FROM reviews
+    ORDER BY score ASC;
+   */
       [
         review_id,
         !review_id,
@@ -45,10 +43,8 @@ const filterReviews = async (req, res, next) => {
         !user_id,
         space_id,
         !space_id,
-        type,
-        !type,
-        formatedReviewDate,
-        !formatedReviewDate,
+        review_date,
+        !review_date,
       ]
     );
 

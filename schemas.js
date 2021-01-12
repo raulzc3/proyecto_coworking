@@ -371,20 +371,6 @@ const newReviewSchema = Joi.object().keys({
 });
 
 const filterReviewsSchema = Joi.object().keys({
-  type: Joi.string()
-    .valid(
-      "Sala de reuniones",
-      "Oficina individual",
-      "Auditorio",
-      "Sala audiovisual",
-      "Oficina compartida"
-    )
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacio`,
-      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
-      "any.required": `"type" es un campo requerido`,
-    }),
   review_id: Joi.number().positive().integer().messages({
     "number.base": `"score" debe ser de tipo 'number'`,
     "number.empty": `"score" no puede estar vacio`,
@@ -408,7 +394,7 @@ const filterReviewsSchema = Joi.object().keys({
     "any.required": `"end_date" es un campo requerido`,
   }),
   order: Joi.string()
-    .valid("space_id", "user_id", "type", "review_date")
+    .valid("space_id", "user_id", "score", "review_date")
     .messages({
       "string.base": `"type" debe ser de tipo 'string'`,
       "string.empty": `"type" no puede estar vacio`,

@@ -4,20 +4,20 @@ const spaceExists = async (req, res, next) => {
 
   try {
     connection = await req.app.locals.getDB();
-    console.log("LLegó2");
+
     const { space_id } = req.params;
 
+    if (!space_id) throw createError("Necesita un id", 404);
     isId(space_id);
-
     const [space] = await connection.query(
       `
       SELECT ID FROM spaces WHERE ID=?
     `,
       [space_id]
     );
-    //console.log(space);
+
     if (space.length === 0) {
-      throw createError("Esta espacio no existe", 404);
+      throw createError("Este espacio no existe", 404);
     }
 
     next();

@@ -44,15 +44,8 @@ const deleteReservation = async (req, res, next) => {
       );
     }
     //si el id de espacio no existe dar error --> middleware spaceExists ✅
-<<<<<<< HEAD
-    //conprobar que el usuario de la reserva coincide con el usuario que desea eliminar la reserva [PENDIENTE]
-    const bookings = await connection.query(`DELETE FROM orders WHERE ID = ?`, [
-      reservation_id,
-    ]);
-=======
     //conprobar que el usuario de la reserva coincide con el usuario que desea eliminar la reserva   --> middleware isAuthorized ✅
     await connection.query(`DELETE FROM orders WHERE ID = ?`, [reservation_id]);
->>>>>>> 182bb1725c9c118e804f13fc9763e81c3448e818
     res.send({
       status: "ok",
       message: `Reserva  con ID ${reservation_id} ha sido eliminada`,

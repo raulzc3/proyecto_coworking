@@ -86,8 +86,6 @@ async function sendMail({ to, subject, body, name, introMessage }) {
           <br>
           <strong><i><u>Coworkit</u> "Let's synergy <u>together</u>"</i></strong>
         </div>
-        
-
       `,
     };
 
@@ -151,7 +149,6 @@ function formatName(firstName) {
       formatedName += ` ${capitalize(firstName[i])}`;
     }
   }
-
   return formatedName;
 }
 //Crea un saludo en función de la hora actual
@@ -168,6 +165,12 @@ function createGreetings() {
   }
 }
 
+function distanceDateInHours(startDistance, endDistance) {
+  return Math.ceil(
+    Math.abs(endDistance.getTime() - startDistance.getTime()) / (1000 * 3600)
+  );
+}
+
 module.exports = {
   formatDateToDB,
   savePhoto,
@@ -181,4 +184,5 @@ module.exports = {
   capitalize,
   formatName,
   createGreetings,
+  distanceDateInHours,
 };

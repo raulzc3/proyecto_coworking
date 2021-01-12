@@ -1,7 +1,8 @@
 const {
   formatDateToDB,
   createError,
-  dateValidator,
+  //dateValidator,
+  distanceDateInHours,
   validator,
 } = require("../../helpers");
 const { reservationSchema } = require("../../schemas");
@@ -16,20 +17,17 @@ const editReservation = async (req, res, next) => {
     const { start_date, end_date, pack_id, space_id } = req.body;
 
     // comprobar que el espacio existe
-
     const [space] = await connection.query(
       `
       SELECT ID FROM spaces WHERE ID=?
     `,
       [space_id]
     );
-    //console.log(space);
     if (space.length === 0) {
-      throw createError("Esta espacio no existe", 404);
+      throw createError("Este espacio no existe", 404);
     }
 
     // comprobar que el pack existe
-
     const [packList] = await connection.query(
       `
     SELECT id FROM packs WHERE ID=?
@@ -44,37 +42,50 @@ const editReservation = async (req, res, next) => {
       );
     }
 
-    //comprobar si el usuario existe --> middleware userExists ✅
-    //comprobar si el reserva existe --> middleware reservationExists ✅
+    ////la fecha de inicio no puede ser posterior a la fecha actual ✅
+    //if (!dateValidator(new Date(start_date)))
+    //  throw createError("La fecha inicial debe ser posterior a la actual", 400);
 
-    //la fecha de inicio no puede ser posterior a la fecha actual ✅
-    if (!dateValidator(new Date(start_date)))
-      throw createError("La fecha inicial debe ser posterior a la actual", 400);
-
-    //comprobar si usuario coincide con el usuario que hizo la reserva [PENDIENTE]
     //comprobar que no han pasado más de un número máximo de horas desde la fecha de pedido para poder hacer modificaciones en la reserva
     const hoursLimit = 48;
     const bookings = await connection.query(
       `
-    SELECT order_date FROM orders WHERE ID = ?`,
+ SELECT order_date, start_date FROM orders WHERE ID = ?`,
       [reservation_id]
     );
 
     const dateOfReservation = bookings[0][0].order_date;
+    const dateOfStartReservation = bookings[0][0].start_date;
 
-    const numOfHours = Math.ceil(
-      Math.abs(new Date().getTime() - new Date(dateOfReservation).getTime()) /
-        (1000 * 3600)
+    const numOfHoursSinceOrder = distanceDateInHours(
+      new Date(),
+      new Date(dateOfReservation)
     );
 
-    if (numOfHours >= 48) {
+    const numOfHoursBetweenOrderAndStart = distanceDateInHours(
+      new Date(dateOfStartReservation),
+      new Date(dateOfReservation)
+    );
+
+    console.log(numOfHoursSinceOrder);
+    console.log(numOfHoursBetweenOrderAndStart);
+
+    //comprobar que la distancia entre la fecha de pedido y la fecha de inicio de reserva es mayor de 48 horas, de no ser así no se puede editar la reserva
+    if (numOfHoursBetweenOrderAndStart <= 48 && !req.userAuth.admin) {
       throw createError(
-        `límite de ${hoursLimit} horas superado. No es posible modificar reserva`,
+        `Esta reserva a está a ${hoursLimit} horas o menos de empezar. No es posible editarla`,
         405
       );
     }
-    // comprobar que la fecha de inicio es posterio a la de fin dar un error ✅
+    //comprobar que la distancia entre la fecha de pedido si la fecha actual es de 48 horas, de ser así no se puede editar la reserva
+    if (numOfHoursSinceOrder >= 48 && !req.userAuth.admin) {
+      throw createError(
+        `límite de ${hoursLimit} horas superado. No es posible editar la reserva`,
+        405
+      );
+    }
 
+    // comprobar que la fecha de inicio es posterio a la de fin dar un error ✅
     if (new Date(start_date) > new Date(end_date)) {
       throw await createError(
         "La fecha de fin debe ser posterior a la inicial",

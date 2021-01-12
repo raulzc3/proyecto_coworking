@@ -11,8 +11,11 @@ const newPack = async (req, res, next) => {
     const { type, content, price } = req.body;
 
     //Compruebo si se envió foto y si es correcta
-    if (!req.files || Object.keys(req.files).length !== 1) {
-      throw createError("La foto introducida no sirve", 400);
+    if (!req.files) {
+      throw createError("Tienes que añadir una foto ", 400);
+    }
+    if (Object.keys(req.files).length !== 1) {
+      throw createError("Solo se permite subir una foto", 400);
     }
     // Guardar la imagen y conseguir el nombre del fichero
     const photo = await savePhoto(req.files.photo, "packs");

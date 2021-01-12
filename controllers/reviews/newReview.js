@@ -72,5 +72,4 @@ const newReview = async (req, res, next) => {
     if (connection) connection.release();
   }
 };
-
 module.exports = newReview;

@@ -16,7 +16,7 @@ const loginUser = async (req, res, next) => {
     // Seleccionar el usuario de la base de datos con ese email y password
     const [user] = await connection.query(
       `
-      SELECT id, admin, verified
+      SELECT id, admin, verified, recovery_code
       FROM users
       WHERE email=? AND password=SHA2(?, 512)
     `,
@@ -33,6 +33,17 @@ const loginUser = async (req, res, next) => {
       throw createError(
         "El usuario existe pero está pendiente de validar. Comprueba tu email.",
         401
+      );
+    }
+    // Si el usuario tiene un código de recuperación, lo eliminamos
+    if (user[0].recovery_code !== null) {
+      await connection.query(
+        `
+      UPDATE users 
+      SET recovery_code=NULL
+      WHERE id = ?;
+      `,
+        [user[0].id]
       );
     }
 

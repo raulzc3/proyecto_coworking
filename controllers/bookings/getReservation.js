@@ -26,7 +26,7 @@ const getReservation = async (req, res, next) => {
         orders = await connection.query(
           `
              SELECT * FROM orders WHERE user_id = ? AND CURDATE() < start_date ORDER BY start_date , end_date , order_Date;`,
-          [user_id, new Date()]
+          [user_id]
         );
         break;
       case "finished":

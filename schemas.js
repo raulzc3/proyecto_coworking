@@ -179,7 +179,6 @@ const filterReportSchema = Joi.object().keys({
   }),
   orderBy: Joi.string().valid(
     "id",
-    "category",
     "report_date",
     "solved",
     "user_id",

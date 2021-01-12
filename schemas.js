@@ -177,6 +177,16 @@ const filterReportSchema = Joi.object().keys({
     "number.min": `'solved' debe ser 0 o 1`,
     "number.max": `'solved' debe ser 0 o 1`,
   }),
+  orderBy: Joi.string().valid(
+    "id",
+    "category",
+    "report_date",
+    "solved",
+    "user_id",
+    "space_id"
+  ),
+
+  orderDirection: Joi.string().valid("ASC", "DESC"),
 });
 const newSpaceSchema = Joi.object().keys({
   type: Joi.string()

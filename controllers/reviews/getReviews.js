@@ -11,7 +11,7 @@ const getReviews = async (req, res, next) => {
 
     const [results] = await connection.query(
       `
-        SELECT CONCAT(u.name, " ",u.surname) "username", u.company, u.photo, r.score, r.comment, r.review_date
+        SELECT u.name, u.surname, u.company, u.photo, r.score, r.comment, r.review_date
         FROM reviews r JOIN users u ON r.user_id = u.id
         WHERE r.space_id = (SELECT id
                             FROM spaces

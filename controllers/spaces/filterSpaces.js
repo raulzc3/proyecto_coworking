@@ -1,4 +1,5 @@
-const { formatDateToDB, validator } = require("../../helpers");
+const { result } = require("lodash");
+const { validator } = require("../../helpers");
 const { filterSpaceSchema } = require("../../schemas");
 const filterSpaces = async (req, res, next) => {
   let connection;
@@ -26,14 +27,13 @@ const filterSpaces = async (req, res, next) => {
     let results;
 
     if (start_date && end_date) {
-      start_date = formatDateToDB(new Date(start_date));
-      end_date = formatDateToDB(new Date(end_date));
+      start_date = new Date(start_date);
+      end_date = new Date(end_date);
     }
 
     [results] = await connection.query(
       `
-
-          SELECT * 
+      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
           FROM spaces s JOIN photos p ON s.id = p.space_id
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
@@ -65,7 +65,6 @@ const filterSpaces = async (req, res, next) => {
         !capacity,
       ]
     );
-
     res.send({
       status: "ok",
       data: {
@@ -79,3 +78,23 @@ const filterSpaces = async (req, res, next) => {
   }
 };
 module.exports = filterSpaces;
+
+/**
+ * 
+ * 
+ * SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url 
+          FROM spaces s JOIN photos p ON s.id = p.space_id
+          WHERE s.id NOT IN (
+          SELECT DISTINCT space_id 
+          FROM orders
+           WHERE (? BETWEEN start_date AND end_date) 
+           or (? BETWEEN start_date AND end_date)
+           or (? < start_date  AND ? > end_date)
+           )
+           AND s.id NOT IN (
+            SELECT DISTINCT space_id
+            FROM reviews
+            GROUP BY space_id
+            HAVING AVG(score)<?
+           ) 
+ */

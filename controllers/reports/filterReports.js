@@ -1,15 +1,28 @@
 const { validator } = require("../../helpers");
 const { filterReportSchema } = require("../../schemas");
+
 const filterReports = async (req, res, next) => {
   let connection;
 
   try {
     connection = await req.app.locals.getDB();
 
-    // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
+    let {
+      report_id,
+      user,
+      space,
+      category,
+      date,
+      solved,
+      orderBy,
+      orderDirection,
+    } = req.query;
 
-    let { report_id, user, space, date, category, solved } = req.query;
+    //Modificamos algunos campos para que no den problemas a la hora de validarlos
     if (category) category = category.toLowerCase();
+    if (orderBy) orderBy = orderBy.toLowerCase();
+    orderBy = orderBy ? orderBy.toLowerCase() : "report_date";
+    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
 
     await validator(filterReportSchema, {
       report_id,
@@ -18,6 +31,8 @@ const filterReports = async (req, res, next) => {
       category,
       date,
       solved,
+      orderBy,
+      orderDirection,
     });
 
     const [results] = await connection.query(
@@ -29,7 +44,8 @@ const filterReports = async (req, res, next) => {
                 AND (space_id = ? OR ?) 
                 AND (DATE(report_date) = DATE(?) OR ?) 
                 AND (category = ? OR ?) 
-                AND (solved = ? OR ?);
+                AND (solved = ? OR ?)
+        ORDER BY ${orderBy} ${orderDirection};
     `,
       [
         report_id,

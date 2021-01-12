@@ -8,8 +8,21 @@ const filterReports = async (req, res, next) => {
 
     // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
 
-    let { report_id, user, space, date, category, solved } = req.query;
+    let {
+      report_id,
+      user,
+      space,
+      date,
+      category,
+      solved,
+      orderBy,
+      orderDirection,
+    } = req.query;
+
     if (category) category = category.toLowerCase();
+    if (orderBy) orderBy = orderBy.toLowerCase();
+    orderBy = orderBy ? orderBy.toLowerCase() : "report_date";
+    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
 
     await validator(filterReportSchema, {
       report_id,
@@ -18,6 +31,8 @@ const filterReports = async (req, res, next) => {
       category,
       date,
       solved,
+      orderBy,
+      orderDirection,
     });
 
     const [results] = await connection.query(
@@ -29,7 +44,8 @@ const filterReports = async (req, res, next) => {
                 AND (space_id = ? OR ?) 
                 AND (DATE(report_date) = DATE(?) OR ?) 
                 AND (category = ? OR ?) 
-                AND (solved = ? OR ?);
+                AND (solved = ? OR ?)
+        ORDER BY ${orderBy} ${orderDirection};
     `,
       [
         report_id,

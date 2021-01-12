@@ -60,8 +60,8 @@ const addUser = async (req, res, next) => {
     // Meto el usuario en la base de datos desactivado y con ese código de registro
     await connection.query(
       `
-      INSERT INTO users(name, surname, nif, email, password, validation_code )
-      VALUES(?,?,?,?,SHA2(?, 512),?)
+      INSERT INTO users(name, surname, nif, email, password, validation_code , last_auth_date)
+      VALUES(?,?,?,?,SHA2(?, 512),?,CURDATE())
       `,
       [name, surname, nif, email, password, registrationCode]
     );

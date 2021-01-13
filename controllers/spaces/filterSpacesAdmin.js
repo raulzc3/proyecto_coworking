@@ -1,15 +1,15 @@
 const { result } = require("lodash");
 const { validator } = require("../../helpers");
-const { filterSpaceSchema } = require("../../schemas");
+const { filterSpaceAdminSchema } = require("../../schemas");
 const jwt = require("jsonwebtoken");
-const filterSpaces = async (req, res, next) => {
+const filterSpacesAdmin = async (req, res, next) => {
   let connection;
   try {
     connection = await req.app.locals.getDB();
 
     //      Valido datos del body
     //      Quiero: idEspacio,typeEspacio,nombreEspacio,price,capacity,,,mediascores,fotos
-    await validator(filterSpaceSchema, req.body);
+    await validator(filterSpaceAdminSchema, req.body);
     //    Saco la propiedad id de los parámetros de ruta
     let {
       type,
@@ -18,6 +18,7 @@ const filterSpaces = async (req, res, next) => {
       capacity,
       start_date,
       end_date,
+      enabled,
       order,
       direction,
     } = req.query;
@@ -51,7 +52,7 @@ const filterSpaces = async (req, res, next) => {
            ) AND (s.price <= ? OR ?) 
            AND (s.type LIKE ? OR ?) 
            AND (s.capacity >=? OR ?) 
-           AND s.enabled=1
+           AND  (s.enabled=? OR ?)
            ORDER BY "${orderBy}", "${orderDirection}";`,
       [
         start_date,
@@ -65,6 +66,8 @@ const filterSpaces = async (req, res, next) => {
         !type,
         capacity,
         !capacity,
+        enabled,
+        !enabled,
       ]
     );
 
@@ -80,24 +83,4 @@ const filterSpaces = async (req, res, next) => {
     if (connection) connection.release();
   }
 };
-module.exports = filterSpaces;
-
-/**
- * 
- * 
- * SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url 
-          FROM spaces s JOIN photos p ON s.id = p.space_id
-          WHERE s.id NOT IN (
-          SELECT DISTINCT space_id 
-          FROM orders
-           WHERE (? BETWEEN start_date AND end_date) 
-           or (? BETWEEN start_date AND end_date)
-           or (? < start_date  AND ? > end_date)
-           )
-           AND s.id NOT IN (
-            SELECT DISTINCT space_id
-            FROM reviews
-            GROUP BY space_id
-            HAVING AVG(score)<?
-           ) 
- */
+module.exports = filterSpacesAdmin;

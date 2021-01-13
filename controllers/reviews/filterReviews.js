@@ -12,7 +12,6 @@ const filterReviews = async (req, res, next) => {
     const {
       review_id,
       user_id,
-      type,
       review_date,
       order,
       direction,
@@ -22,8 +21,6 @@ const filterReviews = async (req, res, next) => {
     review_date ? new Date(review_date) : new Date(1111 - 11 - 11);
     const orderBy = order ? order : `score`;
     const orderDirection = direction ? direction : `ASC`;
-    console.log(orderBy, orderDirection);
-    console.log(`order by ${orderBy}\n direction ${orderDirection}`);
     const [results] = await connection.query(
       `
   SELECT DISTINCT *

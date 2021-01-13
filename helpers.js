@@ -6,21 +6,27 @@ const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 const Joi = require("joi");
 require("dotenv").config();
-
 const { ensureDir, unlink } = require("fs-extra");
-
 const { UPLOADS_DIRECTORY } = process.env;
 const uploadsDir = path.join(__dirname, UPLOADS_DIRECTORY);
 
-// Configuro sendgrid
+// Configuramos sendgrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Formatea un objeto de fecha a DATETIME de SQL
+/**
+ * Formatea un objeto de fecha a DATETIME de SQL
+ * @param {Date} dateObject - Fecha
+ * @returns {sqlDate} Fecha en en formato SQL
+ */
 function formatDateToDB(dateObject) {
   return format(dateObject, "yyyy-MM-dd HH:mm:ss");
 }
 
-// Borra un fichero en el directorio de uploads
+/**
+ * Borra una imagen (o cualquier tipo de documento) en el directorio de uploads
+ * @param {string} photo - Nombre de la imagen
+ * @param {string} folder - Directorio en el que se ecuentra la imagen
+ */
 async function deletePhoto(photo, folder) {
   folder = folder === undefined ? "" : folder;
   const photoPath = path.join(uploadsDir, folder, photo);
@@ -28,12 +34,14 @@ async function deletePhoto(photo, folder) {
   await unlink(photoPath);
 }
 
-// Guarda una foto en el directorio de uploads o un directorio que se indique dentro de uploads
+/**
+ * Guarda una foto en el directorio de uploads o un directorio que se indique dentro de uploads
+ * @param {object} imageData - Objeto con la información de la imagen
+ * @param {string} folder - Directorio en el qeu se almacenará la imagen dentro de uploads (opcional)
+ * @param {Number} width - Ancho máximo de la foto (opcional)
+ * @returns {string} Nombre de la imagen almacenada (sin la ruta)
+ */
 async function savePhoto(imageData, folder = "", width = 1000) {
-  // imageData es el objeto con información de la imagen
-
-  // Asignamos valores por defecto en caso de que no se introduzcan los parámetros folder o width
-
   const photoDir = path.join(uploadsDir, folder);
   // Asegurarse que el directorio de subida de imagenes exista
   await ensureDir(photoDir);
@@ -61,15 +69,26 @@ async function savePhoto(imageData, folder = "", width = 1000) {
   // Guardar la imagen en el directorio de subida de imagenes
   await image.toFile(path.join(photoDir, savedImageName));
 
-  // Devolver en nombre del fichero
   return savedImageName;
 }
 
-// Genera una cadena de caracteres aleatoria
+/**
+ * Genera una cadena de caracteres aleatoria
+ * @param {number} length - Longitud que queremos que tenga la cadena
+ * @returns {string} Cadena de caracteres aleatorios
+ */
 function generateRandomString(length) {
   return crypto.randomBytes(length).toString("hex");
 }
 
+/**
+ * Envía un correo electrónico personalizado
+ * @param {string} to - Email del destinatario
+ * @param {string} subject - Asunto del correo
+ * @param {string} body - Contenido del correo
+ * @param {string} name - Nombre del destinatario
+ * @param {string} introMessage - Saludo inicial del correo (Buenos días, Hola, etc.)
+ */
 async function sendMail({ to, subject, body, name, introMessage }) {
   // Instrucciones: https://www.npmjs.com/package/@sendgrid/mail
   try {
@@ -95,34 +114,57 @@ async function sendMail({ to, subject, body, name, introMessage }) {
   }
 }
 
-// Devuelve un error con un mensaje y un codigo de error
+/**
+ *
+ * @param {string} message - Descripción del error
+ * @param {number} numHttpStatus - Código de error HTTP
+ * @returns {error} Error preparado para el endpoint de error
+ */
 function createError(message, numHttpStatus) {
   const error = new Error(message);
   error.httpStatus = numHttpStatus;
   return error;
 }
 
-//Comprueba que el id introducido como parámetro es un número
+/**
+ * Comprueba que el id introducido como parámetro es un número positivo
+ * @param {number} id - ID que queremos comprobar
+ * @throws {error} En caso de que el ID no cumpla con el formato establecido
+ * @returns {number} En caso de que el ID cumpla con el fomrato establecido
+ */
 function isId(id) {
   const schema = Joi.number().required().integer().positive();
   const validation = schema.validate(id);
 
   if (validation.error) {
     throw createError(
-      "El valor introducido no se corresponde con el formato de un ID",
+      "El ID es obligatorio y debe ser un número positivo",
       400
     );
   } else {
     return id;
   }
 }
-function dateValidator(startDateOrder) {
-  if (new Date().getTime() > startDateOrder.getTime()) {
+
+/**
+ * Comprueba que una fecha es posterior a la fecha actual
+ * @param {date} inputDate - Fecha a comprobar
+ * @returns {boolean} verdadero o falso
+ */
+function dateValidator(inputDate) {
+  if (new Date().getTime() > inputDate.getTime()) {
     return false;
   } else {
     return true;
   }
 }
+
+/**
+ * Valida datos con schemas de Joi
+ * @param {JoiSchema} schema - Esquema con el que validaremos los datos
+ * @param {object} valueToValidate  - Objeto con los datos a validar
+ * @throws {error} En caso de que los datos no superen la validación
+ */
 async function validator(schema, valueToValidate) {
   try {
     await schema.validateAsync(valueToValidate);
@@ -132,26 +174,38 @@ async function validator(schema, valueToValidate) {
   }
 }
 
-//Devuelve la cadena introducida con la primera letra en mayúscula y el resto en minúscula
+/**
+ * Devuelve la cadena introducida con la primera letra en mayúscula y el resto en minúscula
+ * @param {string} word - Palabra a modificar
+ * @returns {string} Palabra con la primera letra en mayúscula y el resto en minúscula
+ */
 function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1).toLowerCase();
 }
 
-//Aplica la función capitalize a todas las palabras separadas con espacios
-function formatName(firstName) {
-  firstName = firstName.toLowerCase().split(" ");
+/**
+ * Capitaliza todas las palabaras introducidas
+ * @param {string} wordsToCapitalize - Palabras que queremos capitalizar separadas por espacios en un solo string
+ * @returns {string} Palabras capitalizadas
+ */
+function formatName(wordsToCapitalize) {
+  wordsToCapitalize = wordsToCapitalize.toLowerCase().split(" ");
   let formatedName;
 
-  for (let i = 0; i < firstName.length; i++) {
+  for (let i = 0; i < wordsToCapitalize.length; i++) {
     if (i === 0) {
-      formatedName = capitalize(firstName[i]);
+      formatedName = capitalize(wordsToCapitalize[i]);
     } else {
-      formatedName += ` ${capitalize(firstName[i])}`;
+      formatedName += ` ${capitalize(wordsToCapitalize[i])}`;
     }
   }
   return formatedName;
 }
-//Crea un saludo en función de la hora actual
+
+/**
+ * Crea un saludo en función de la hora actual
+ * @returns {string} Saludo en función de la hora
+ */
 function createGreetings() {
   const now = new Date();
   const hour = now.getHours();
@@ -165,6 +219,12 @@ function createGreetings() {
   }
 }
 
+/**
+ * Obtiene la diferencia en horas entre dos fechas
+ * @param {*} startDistance - Fecha de inicio
+ * @param {*} endDistance  - Fecha de fin
+ * @returns {number} Horas de diferencia
+ */
 function distanceDateInHours(startDistance, endDistance) {
   return Math.ceil(
     Math.abs(endDistance.getTime() - startDistance.getTime()) / (1000 * 3600)

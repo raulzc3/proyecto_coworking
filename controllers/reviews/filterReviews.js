@@ -28,11 +28,6 @@ const filterReviews = async (req, res, next) => {
   WHERE (ID = ? OR ?) AND (user_id =? OR ?)AND (space_id =? OR ?) AND  (DATE(review_date)=DATE(?) OR ?)
   ORDER BY ${orderBy} ${orderDirection};
   `,
-      /**
-   *   SELECT DISTINCT *
-  FROM reviews
-    ORDER BY score ASC;
-   */
       [
         review_id,
         !review_id,

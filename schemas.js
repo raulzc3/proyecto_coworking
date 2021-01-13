@@ -529,7 +529,14 @@ const editPasswordSchema = Joi.object().keys({
     "any.required": `"newPassword" es un campo requerido`,
   }),
 });
-
+const getPackSchema = Joi.object().keys({
+  order: Joi.valid("ID", "type", "content", "price", "photo").messages({
+    valid: `"type" debe tener como valores (#values)`,
+  }),
+  direction: Joi.valid("ASC", "DESC").messages({
+    valid: `"type" debe tener como valores (#values)`,
+  }),
+});
 module.exports = {
   reservationSchema,
   userSchema,
@@ -547,4 +554,5 @@ module.exports = {
   resetUserPasswordSchema,
   editPasswordSchema,
   filterSpaceAdminSchema,
+  getPackSchema,
 };

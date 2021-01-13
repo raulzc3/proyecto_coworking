@@ -177,12 +177,17 @@ const filterReportSchema = Joi.object().keys({
     "number.min": `'solved' debe ser 0 o 1`,
     "number.max": `'solved' debe ser 0 o 1`,
   }),
+  user_name: Joi.string().allow("").max(150).messages({
+    "string.base": `"userName" debe ser de tipo 'string'`,
+    "string.max": `"userName" no puede ser mayor de {#limit} caracteres`,
+  }),
   orderBy: Joi.string().valid(
     "id",
     "report_date",
     "solved",
     "user_id",
-    "space_id"
+    "space_id",
+    "user_name"
   ),
 
   orderDirection: Joi.string().valid("ASC", "DESC"),

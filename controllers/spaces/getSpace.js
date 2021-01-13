@@ -14,7 +14,7 @@ const getSpace = async (req, res, next) => {
     SELECT DISTINCT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(v.score,0)) AS score, f.url,e.description 
     FROM spaces e LEFT JOIN reviews v ON (e.ID=v.space_id)
     LEFT JOIN photos f ON (e.ID=f.space_id)
-    WHERE e.ID=?
+    WHERE e.ID=? AND e.enabled=1
     GROUP BY e.ID,f.url
     
     ;`,

@@ -16,10 +16,10 @@ const editReservation = async (req, res, next) => {
     await validator(reservationSchema, req.body);
     const { start_date, end_date, pack_id, space_id } = req.body;
 
-    // comprobar que el espacio existe
+    // comprobar que el espacio existe y es disponible
     const [space] = await connection.query(
       `
-      SELECT ID FROM spaces WHERE ID=?
+      SELECT ID FROM spaces WHERE ID=? AND enabled=1
     `,
       [space_id]
     );

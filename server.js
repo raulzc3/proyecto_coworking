@@ -19,6 +19,7 @@ const {
   deleteSpace,
   newSpace,
   changeStateSpaces,
+  filterSpacesAdmin,
 } = require("./controllers/spaces");
 
 // Controladores de reservas
@@ -106,9 +107,12 @@ if (process.env.NODE_ENV === "development") {
 //URL ejemplo: http://localhost:3000/spaces/1
 app.get("/spaces/:space_id", spaceExists, getSpace);
 
-//GET - Filtrar espacios (si no se filtran, se muestran todos)
+//GET - Filtrar espacios (si no se filtran, se muestran todos) TODOS LOS USUSARIOS
 //URL ejemplo: http://localhost:3000/spaces?aforo=23
-app.get("/spaces", filterSpaces);
+app.get("/filterSpaces", filterSpaces);
+
+//GET -Filtrar espacios admin                                   USUARIOS ADMIN
+app.get("/filterSpaces/admin", isAdmin, filterSpacesAdmin);
 
 // POST - Crear un espacio
 //URL ejemplo: http://localhost:3000/spaces

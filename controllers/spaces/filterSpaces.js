@@ -81,23 +81,3 @@ const filterSpaces = async (req, res, next) => {
   }
 };
 module.exports = filterSpaces;
-
-/**
- * 
- * 
- * SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url 
-          FROM spaces s JOIN photos p ON s.id = p.space_id
-          WHERE s.id NOT IN (
-          SELECT DISTINCT space_id 
-          FROM orders
-           WHERE (? BETWEEN start_date AND end_date) 
-           or (? BETWEEN start_date AND end_date)
-           or (? < start_date  AND ? > end_date)
-           )
-           AND s.id NOT IN (
-            SELECT DISTINCT space_id
-            FROM reviews
-            GROUP BY space_id
-            HAVING AVG(score)<?
-           ) 
- */

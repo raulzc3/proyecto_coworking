@@ -110,10 +110,10 @@ app.get("/spaces/:space_id", spaceExists, getSpace);
 
 //GET - Filtrar espacios (si no se filtran, se muestran todos) TODOS LOS USUSARIOS
 //URL ejemplo: http://localhost:3000/spaces?aforo=23
-app.get("/filterSpaces", filterSpaces);
+app.get("/spaces", filterSpaces);
 
 //GET -Filtrar espacios admin                                   USUARIOS ADMIN
-app.get("/filterSpaces/admin", isAdmin, filterSpacesAdmin);
+app.get("/admin/spaces", isAdmin, filterSpacesAdmin);
 
 // POST - Crear un espacio
 //URL ejemplo: http://localhost:3000/spaces

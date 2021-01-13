@@ -148,14 +148,6 @@ const newReportSchema = Joi.object().keys({
   }),
 });
 
-const getBookingsSchema = Joi.object().keys({
-  type: Joi.any()
-    .allow("")
-    .optional("current")
-    .valid("current", "pending", "finished"),
-  orderDirection: Joi.any().allow("").optional("ASC").valid("ASC", "DESC"),
-});
-
 //Schema para filtrar reportes (los campos serán opcionales)
 const filterReportSchema = Joi.object().keys({
   report_id: Joi.number().allow("").integer().positive().messages({
@@ -554,9 +546,5 @@ module.exports = {
   filterUserSchema,
   resetUserPasswordSchema,
   editPasswordSchema,
-<<<<<<< HEAD
-  getBookingsSchema,
-=======
   filterSpaceAdminSchema,
->>>>>>> iago
 };

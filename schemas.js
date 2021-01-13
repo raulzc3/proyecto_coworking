@@ -417,6 +417,17 @@ const filterUserSchema = Joi.object().keys({
     "any.required": `"registration_date" es un campo requerido`,
     "date.max": `'registration_date' no puede ser mayor que {#limit}`,
   }),
+  orderBy: Joi.string().valid(
+    "id",
+    "name",
+    "surname",
+    "company",
+    "admin",
+    "verified",
+    "deleted",
+    "registration_date"
+  ),
+  orderDirection: Joi.string().valid("ASC", "DESC"),
 });
 
 const newPackSchema = Joi.object().keys({

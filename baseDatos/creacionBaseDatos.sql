@@ -54,7 +54,7 @@ CREATE TABLE photos (
 
 CREATE TABLE packs ( -- Los packs serán conjuntos preestablecidos de servicios que se incluirán en el pedido
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    type ENUM('Básico', 'Intermedio', 'Audiovisual', 'Informático') NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
+    type VARCHAR(50) NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
     content TEXT NOT NULL, -- Todos los servicios que incluirá cada pack (mayor velocidad de conexión, proyector, acceso a cafetería...)
     price SMALLINT UNSIGNED NOT NULL,
     photo VARCHAR(50) NOT NULL -- URL de la imagen

@@ -8,10 +8,7 @@ const filterUsers = async (req, res, next) => {
     connection = await req.app.locals.getDB();
 
     // Filtrar por id, usuario, espacio, categoria, fecha de incidencia y estado
-
-    await validator(filterUserSchema, req.query);
-
-    const {
+    let {
       user_id,
       name,
       surname,
@@ -20,7 +17,25 @@ const filterUsers = async (req, res, next) => {
       verified,
       deleted,
       registration_date,
+      orderBy,
+      orderDirection,
     } = req.query;
+
+    orderBy = orderBy ? orderBy.toLowerCase() : "id";
+    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
+
+    await validator(filterUserSchema, {
+      user_id,
+      name,
+      surname,
+      company,
+      admin,
+      verified,
+      deleted,
+      registration_date,
+      orderBy,
+      orderDirection,
+    });
 
     const [results] = await connection.query(
       `
@@ -34,6 +49,7 @@ const filterUsers = async (req, res, next) => {
                 AND (verified = ? OR ?) 
                 AND (deleted = ? OR ?) 
                 AND (DATE(registration_date) = DATE(?) OR ?) 
+        ORDER BY ${orderBy} ${orderDirection}
     `,
       [
         user_id,
@@ -52,6 +68,8 @@ const filterUsers = async (req, res, next) => {
         !deleted,
         registration_date,
         !registration_date,
+        orderBy,
+        orderDirection,
       ]
     );
 

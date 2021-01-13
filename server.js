@@ -79,6 +79,7 @@ const {
   isAuthorized,
   packExists,
   isAdmin,
+  spaceIsEnabled,
 } = require("./middlewares");
 
 // #################################################################
@@ -140,6 +141,7 @@ app.post(
   "/bookings/:space_id/:user_id",
   isAuthorized,
   spaceExists,
+  spaceIsEnabled,
   newReservation
 );
 

@@ -44,6 +44,7 @@ const {
   editReview,
   deleteReview,
   filterReviews,
+  getReviews,
 } = require("./controllers/reviews");
 
 //Controladores de reportes
@@ -191,9 +192,13 @@ app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 // #                    Endpoints de valoraciones                  #
 // #################################################################
 
-//GET - Filtrar valoraciones (si no se filtran, se mustran todas)
+//GET - Filtrar valoraciones (si no se filtran, se muestran todas)
 //URL ejemplo: http://localhost:3000/reviews
-app.get("/reviews", filterReviews);
+app.get("/reviews", isAdmin, filterReviews);
+
+//GET - Obtener las reseñas de un espacio
+//URL ejemplo: http://localhost:3000/
+app.get("/reviews/:space_id", getReviews);
 
 //POST - Crear una valoración
 //URL ejemplo: http://localhost:3000/review/3/2

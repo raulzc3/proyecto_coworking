@@ -436,15 +436,12 @@ const filterUserSchema = Joi.object().keys({
 });
 
 const newPackSchema = Joi.object().keys({
-  type: Joi.string()
-    .required()
-    .valid("Básico", "Intermedio", "Audiovisual", "Informático")
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
-      "any.required": `"type" es un campo requerido`,
-    }),
+  type: Joi.string().max(50).required().messages({
+    "string.base": `"type" debe ser de tipo 'string'`,
+    "string.empty": `"type" no puede estar vacío`,
+    "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
+    "any.required": `"type" es un campo requerido`,
+  }),
   content: Joi.string().required().max(400).messages({
     "string.base": `"description" debe ser de tipo 'string'`,
     "string.empty": `"description" no puede estar vacío`,

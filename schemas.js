@@ -178,8 +178,8 @@ const filterReportSchema = Joi.object().keys({
     "number.max": `'solved' debe ser 0 o 1`,
   }),
   user_name: Joi.string().allow("").max(150).messages({
-    "string.base": `"userName" debe ser de tipo 'string'`,
-    "string.max": `"userName" no puede ser mayor de {#limit} caracteres`,
+    "string.base": `"user_name" debe ser de tipo 'string'`,
+    "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
   }),
   orderBy: Joi.string().valid(
     "id",
@@ -201,13 +201,7 @@ const newSpaceSchema = Joi.object().keys({
       "Auditorio",
       "Sala audiovisual",
       "Oficina compartida"
-    )
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
-      "any.required": `"type" es un campo requerido`,
-    }),
+    ),
   description: Joi.string().required().max(60000).messages({
     "string.base": `"description" debe ser de tipo 'string'`,
     "string.empty": `"description" no puede estar vacío`,
@@ -233,20 +227,13 @@ const newSpaceSchema = Joi.object().keys({
   }),
 });
 const filterSpaceSchema = Joi.object().keys({
-  type: Joi.any()
-    .valid(
-      "Sala de reuniones",
-      "Oficina individual",
-      "Auditorio",
-      "Sala audiovisual",
-      "Oficina compartida"
-    )
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
-      "any.required": `"type" es un campo requerido`,
-    }),
+  type: Joi.any().valid(
+    "Sala de reuniones",
+    "Oficina individual",
+    "Auditorio",
+    "Sala audiovisual",
+    "Oficina compartida"
+  ),
   description: Joi.string().max(60000).messages({
     "string.base": `"description" debe ser de tipo 'string'`,
     "string.empty": `"description" no puede estar vacío`,
@@ -285,35 +272,25 @@ const filterSpaceSchema = Joi.object().keys({
       "any.required": `"end_date" es un campo requerido`,
     }),
 
-  order: Joi.string()
-    .valid("type", "price", "score", "capacity", "start_date", "end_date")
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-    }),
-
-  direction: Joi.string().valid("ASC", "DESC").messages({
-    "string.base": `"type" debe ser de tipo 'string'`,
-    "string.empty": `"type" no puede estar vacío`,
-    "string.valid": `"type" solo acepta los valores ASC y DESC`,
-  }),
+  order: Joi.string().valid(
+    "type",
+    "price",
+    "score",
+    "capacity",
+    "start_date",
+    "end_date"
+  ),
+  direction: Joi.string().valid("ASC", "DESC"),
 });
 
 const filterSpaceAdminSchema = Joi.object().keys({
-  type: Joi.any()
-    .valid(
-      "Sala de reuniones",
-      "Oficina individual",
-      "Auditorio",
-      "Sala audiovisual",
-      "Oficina compartida"
-    )
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-      "string.max": `"type" no puede ser mayor de {#limit} caracteres`,
-      "any.required": `"type" es un campo requerido`,
-    }),
+  type: Joi.any().valid(
+    "Sala de reuniones",
+    "Oficina individual",
+    "Auditorio",
+    "Sala audiovisual",
+    "Oficina compartida"
+  ),
   description: Joi.string().max(60000).messages({
     "string.base": `"description" debe ser de tipo 'string'`,
     "string.empty": `"description" no puede estar vacío`,
@@ -337,9 +314,7 @@ const filterSpaceAdminSchema = Joi.object().keys({
     "number.positive": `"capacity" debe ser un valor positivo`,
     "number.integer": `"capacity" debe ser un valor entero`,
   }),
-  enabled: Joi.number().valid(0, 1).messages({
-    "number.base": `"capacity" debe ser de tipo 'number'`,
-  }),
+  enabled: Joi.number().valid(0, 1),
   start_date: Joi.date().min(new Date()).messages({
     "date.base": `"start_date" debe ser de tipo 'date'`,
     "date.empty": `"start_date" no puede estar vacío`,
@@ -355,26 +330,16 @@ const filterSpaceAdminSchema = Joi.object().keys({
       "any.required": `"end_date" es un campo requerido`,
     }),
 
-  order: Joi.string()
-    .valid(
-      "type",
-      "price",
-      "score",
-      "capacity",
-      "start_date",
-      "end_date",
-      "enabled"
-    )
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacío`,
-    }),
-
-  direction: Joi.string().valid("ASC", "DESC").messages({
-    "string.base": `"type" debe ser de tipo 'string'`,
-    "string.empty": `"type" no puede estar vacío`,
-    "string.valid": `"type" solo acepta los valores ASC y DESC`,
-  }),
+  order: Joi.string().valid(
+    "type",
+    "price",
+    "score",
+    "capacity",
+    "start_date",
+    "end_date",
+    "enabled"
+  ),
+  direction: Joi.string().valid("ASC", "DESC"),
 });
 
 //user_id, name,surname,company,admin,verified,deleted,registration_date,
@@ -493,18 +458,19 @@ const filterReviewsSchema = Joi.object().keys({
     "date.empty": `"end_date" no puede estar vacio`,
     "any.required": `"end_date" es un campo requerido`,
   }),
-  order: Joi.string()
-    .valid("space_id", "user_id", "score", "review_date")
-    .messages({
-      "string.base": `"type" debe ser de tipo 'string'`,
-      "string.empty": `"type" no puede estar vacio`,
-      "string.valid": `"type" solo acepta los valores ASC y DESC`,
-    }),
-
-  direction: Joi.string().valid("ASC", "DESC").messages({
-    "string.base": `"type" debe ser de tipo 'string'`,
-    "string.empty": `"type" no puede estar vacio`,
-    "string.valid": `"type" solo acepta los valores ASC y DESC`,
+  order: Joi.string().valid(
+    "id",
+    "space_id",
+    "user_id",
+    "score",
+    "review_date",
+    "comment",
+    "user_name"
+  ),
+  direction: Joi.string().valid("ASC", "DESC"),
+  user_name: Joi.string().allow("").max(150).messages({
+    "string.base": `"user_name" debe ser de tipo 'string'`,
+    "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
   }),
 });
 const recoverUserPasswordSchema = Joi.object().keys({
@@ -543,12 +509,8 @@ const editPasswordSchema = Joi.object().keys({
   }),
 });
 const getPackSchema = Joi.object().keys({
-  order: Joi.valid("ID", "type", "content", "price", "photo").messages({
-    valid: `"type" debe tener como valores (#values)`,
-  }),
-  direction: Joi.valid("ASC", "DESC").messages({
-    valid: `"type" debe tener como valores (#values)`,
-  }),
+  order: Joi.valid("ID", "type", "content", "price", "photo"),
+  direction: Joi.valid("ASC", "DESC"),
 });
 module.exports = {
   reservationSchema,

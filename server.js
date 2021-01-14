@@ -28,6 +28,7 @@ const {
   newReservation,
   deleteReservation,
   editReservation,
+  filterbookings,
 } = require("./controllers/bookings");
 
 //Controladores de packs
@@ -138,6 +139,10 @@ app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 //GET - Obtener reservas de un usuario concreto
 //URL ejemplo: http://localhost:3000/1/bookings
 app.get("/bookings/:user_id", isAuthorized, getReservation);
+
+//GET - filtrar todas las reservas, sólo lo usa el admin
+//URL ejemplo: http://localhost:3000/admin/bookings
+app.get("/admin/bookings", isAdmin, filterbookings);
 
 //POST - Crear una reserva
 //URL ejemplo: http://localhost:3000/space/1/1

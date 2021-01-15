@@ -16,6 +16,7 @@ const filterReviews = async (req, res, next) => {
       order,
       direction,
       space_id,
+      user_name,
     } = req.query;
 
     review_date ? new Date(review_date) : new Date(1111 - 11 - 11);
@@ -23,19 +24,16 @@ const filterReviews = async (req, res, next) => {
     const orderDirection = direction ? direction : `ASC`;
     const [results] = await connection.query(
       `
-  SELECT DISTINCT *
-  FROM reviews
-  WHERE (ID = ? OR ?) AND (user_id =? OR ?)AND (space_id =? OR ?) AND  (DATE(review_date)=DATE(?) OR ?)
+  SELECT r.id as "id", CONCAT(name, " ", surname) "user_name", comment, score, review_date, user_id, space_id
+  FROM reviews r JOIN users u ON r.user_id = u.id
+  WHERE (r.ID = ? OR ?) AND (CONCAT(name, " ", surname) LIKE ? OR ?) AND (user_id =? OR ?) AND (space_id =? OR ?) AND (DATE(review_date)=DATE(?) OR ?)
   ORDER BY ${orderBy} ${orderDirection};
   `,
-      /**
-   *   SELECT DISTINCT *
-  FROM reviews
-    ORDER BY score ASC;
-   */
       [
         review_id,
         !review_id,
+        `%${user_name}%`,
+        !user_name,
         user_id,
         !user_id,
         space_id,
@@ -45,6 +43,7 @@ const filterReviews = async (req, res, next) => {
       ]
     );
 
+    console.log("dentro");
     res.send({
       status: "ok",
       data: {

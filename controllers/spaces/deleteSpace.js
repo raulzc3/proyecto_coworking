@@ -10,7 +10,6 @@ const deleteSpace = async (req, res, next) => {
       UPDATE spaces s1, spaces s2 
       SET s1.enabled = IF(s2.enabled = 0, 1, 0)     
       WHERE s1.id = s2.id AND s1.id = ?;
-
     `,
       [space_id]
     );

@@ -127,7 +127,7 @@ app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
 
 //PUT - Cambiar estado espacio: habilitado/inhabilitado
 //URL ejemplo: http://localhost:3000/enableSpace/5
-app.put("/spaces/:space_id/enable", isAdmin, spaceExists, changeStateSpaces);
+app.put("/spaces/enable/:space_id", isAdmin, spaceExists, changeStateSpaces);
 
 //DELETE- Eliminar un espacio
 //URL ejemplo: http://localhost:3000/spaces/11
@@ -201,10 +201,6 @@ app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 //URL ejemplo: http://localhost:3000/reviews
 app.get("/reviews", isAdmin, filterReviews);
 
-//GET - Obtener las reseñas de un espacio
-//URL ejemplo: http://localhost:3000/
-app.get("/reviews/:space_id", getReviews);
-
 //POST - Crear una valoración
 //URL ejemplo: http://localhost:3000/review/3/2
 app.post("/review/:space_id/:user_id", isAuthorized, spaceExists, newReview);
@@ -275,11 +271,11 @@ app.post("/users/contact/:user_id", isAdmin, userExists, contactUser);
 
 //POST - Recuperar contraseña (envia email al usuario, no modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/recoverPassword
-app.post("/users/recoverPassword", recoverUserPassword);
+app.get("/users/recoverPassword", recoverUserPassword);
 
 //POST - Resetear contraseña (modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/resetPassword
-app.post("/users/resetPassword", resetUserPassword);
+app.put("/users/resetPassword", resetUserPassword);
 
 //PUT - Modifica los datos de un usuario
 app.put("/users/:user_id", isAuthorized, editUser);

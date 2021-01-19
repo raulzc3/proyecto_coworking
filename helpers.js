@@ -189,7 +189,7 @@ function capitalize(word) {
  * @returns {string} Palabras capitalizadas
  */
 function formatName(wordsToCapitalize) {
-  wordsToCapitalize = wordsToCapitalize.toLowerCase().split(" ");
+  wordsToCapitalize = wordsToCapitalize.trim().toLowerCase().split(" ");
   let formatedName;
 
   for (let i = 0; i < wordsToCapitalize.length; i++) {

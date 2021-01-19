@@ -40,10 +40,11 @@ const isAuthorized = async (req, res, next) => {
       [tokenInfo.id]
     );
 
-    const lastAuthUpdate = new Date(result[0].last_auth_date);
+    //Si no hay last auth update, el token no será válido
+    const lastAuthUpdate = result[0] && new Date(result[0].last_auth_date);
     const tokenEmissionDate = new Date(tokenInfo.iat * 1000);
 
-    if (tokenEmissionDate < lastAuthUpdate) {
+    if (tokenEmissionDate < lastAuthUpdate || lastAuthUpdate === undefined) {
       throw createError("El token no es válido", 401);
     }
 

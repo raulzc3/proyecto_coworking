@@ -36,10 +36,10 @@ const filterSpacesAdmin = async (req, res, next) => {
     [results] = await connection.query(
       `
       SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
-          FROM spaces s JOIN photos p ON s.id = p.space_id
+          FROM spaces s JOIN photos p ON s.id = p.space_id p.limit 1
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
-          FROM orders
+          FROM orders 
            WHERE (? BETWEEN start_date AND end_date) 
            or (? BETWEEN start_date AND end_date)
            or (? < start_date  AND ? > end_date)

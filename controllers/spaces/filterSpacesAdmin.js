@@ -21,6 +21,7 @@ const filterSpacesAdmin = async (req, res, next) => {
       enabled,
       order,
       direction,
+      space_id,
     } = req.query;
 
     const orderBy = order ? order : "score";
@@ -36,7 +37,7 @@ const filterSpacesAdmin = async (req, res, next) => {
     [results] = await connection.query(
       `
       SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
-          FROM spaces s JOIN photos p ON s.id = p.space_id p.limit 1
+          FROM spaces s JOIN photos p ON s.id = p.space_id 
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
           FROM orders 
@@ -52,7 +53,8 @@ const filterSpacesAdmin = async (req, res, next) => {
            ) AND (s.price <= ? OR ?) 
            AND (s.type LIKE ? OR ?) 
            AND (s.capacity >=? OR ?) 
-           AND  (s.enabled=? OR ?)
+           AND  (s.enabled=? OR ?) 
+           AND (s.ID=? OR ?)
            ORDER BY "${orderBy}", "${orderDirection}";`,
       [
         start_date,
@@ -68,13 +70,22 @@ const filterSpacesAdmin = async (req, res, next) => {
         !capacity,
         enabled,
         !enabled,
+        space_id,
+        !space_id,
       ]
     );
+    let spacios = [];
+    const filtro = await results.filter((value) => {
+      if (!spacios.includes(value.ID)) {
+        spacios.push(value.ID);
+        return [value.url, value.ID];
+      }
+    });
 
     res.send({
       status: "ok",
       data: {
-        ...results,
+        ...filtro,
       },
     });
   } catch (error) {

@@ -139,7 +139,7 @@ app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 
 //GET - Obtener reservas de un usuario concreto
 //URL ejemplo: http://localhost:3000/1/bookings
-app.get("/bookings/:user_id", isAuthorized, getReservation);
+app.get("/bookings/:user_id", userExists, isAuthorized, getReservation);
 
 //GET - filtrar todas las reservas, sólo lo usa el admin
 //URL ejemplo: http://localhost:3000/admin/bookings

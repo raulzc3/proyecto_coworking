@@ -68,10 +68,13 @@ const newReservation = async (req, res, next) => {
     const packPrice = pack[0][0].price;
     //precio en función del número de días se deseen contratar
 
-    const numOfDays = Math.ceil(
-      Math.abs(new Date(end_date).getTime() - new Date(start_date).getTime()) /
-        (1000 * 3600 * 24)
-    );
+    const numOfDays =
+      Math.ceil(
+        Math.abs(
+          new Date(end_date).getTime() - new Date(start_date).getTime()
+        ) /
+          (1000 * 3600 * 24)
+      ) + 1;
 
     const totalPriceResservation = numOfDays * (spacePricePerDay + packPrice);
     console.log(totalPriceResservation);

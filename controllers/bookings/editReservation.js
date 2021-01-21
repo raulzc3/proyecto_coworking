@@ -50,9 +50,17 @@ const editReservation = async (req, res, next) => {
     const hoursLimit = 48;
     const bookings = await connection.query(
       `
- SELECT order_date, start_date FROM orders WHERE ID = ?`,
+ SELECT order_date, start_date, user_id FROM orders WHERE ID = ?`,
       [reservation_id]
     );
+
+    if (
+      bookings[0][0].user_id !== Number(req.params.user_id) &&
+      !req.userAuth.admin
+    ) {
+      console.log(bookings[0][0].user_id, Number(req.params.user_id));
+      throw createError("No estás autorizado para realizar esta acción", 401);
+    }
 
     const dateOfReservation = bookings[0][0].order_date;
     const dateOfStartReservation = bookings[0][0].start_date;
@@ -62,25 +70,23 @@ const editReservation = async (req, res, next) => {
       new Date(dateOfReservation)
     );
 
-    const numOfHoursBetweenOrderAndStart = distanceDateInHours(
+    const numOfHoursUntilStart = distanceDateInHours(
       new Date(dateOfStartReservation),
-      new Date(dateOfReservation)
+      new Date()
     );
 
-    console.log(numOfHoursSinceOrder);
-    console.log(numOfHoursBetweenOrderAndStart);
-
     //comprobar que la distancia entre la fecha de pedido y la fecha de inicio de reserva es mayor de 48 horas, de no ser así no se puede editar la reserva
-    if (numOfHoursBetweenOrderAndStart <= 48 && !req.userAuth.admin) {
+    if (numOfHoursUntilStart <= 48 && !req.userAuth.admin) {
       throw createError(
-        `Esta reserva a está a ${hoursLimit} horas o menos de empezar. No es posible editarla`,
+        `Esta reserva a está a ${hoursLimit} horas o menos de empezar. No es posible eliminarla`,
         405
       );
     }
+
     //comprobar que la distancia entre la fecha de pedido si la fecha actual es de 48 horas, de ser así no se puede editar la reserva
     if (numOfHoursSinceOrder >= 48 && !req.userAuth.admin) {
       throw createError(
-        `límite de ${hoursLimit} horas superado. No es posible editar la reserva`,
+        `Límite de ${hoursLimit} horas desde la creación de la reserva superado. No es posible eliminar reserva.`,
         405
       );
     }
@@ -118,10 +124,13 @@ const editReservation = async (req, res, next) => {
     );
     const packPrice = pack[0][0].price;
     //precio en función del número de días se deseen contratar
-    const numOfDays = Math.ceil(
-      Math.abs(new Date(end_date).getTime() - new Date(start_date).getTime()) /
-        (1000 * 3600 * 24)
-    );
+    const numOfDays =
+      Math.ceil(
+        Math.abs(
+          new Date(end_date).getTime() - new Date(start_date).getTime()
+        ) /
+          (1000 * 3600 * 24)
+      ) + 1;
     const totalPriceReservation = numOfDays * (spacePricePerDay + packPrice);
 
     await connection.query(

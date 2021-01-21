@@ -9,26 +9,33 @@
 			"name": "Bookings",
 			"item": [
 				{
-					"name": "ver reservas  por usuario",
+					"name": "Ver reservas  por usuario",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-								"description": "admin",
+								"description": "Administrador",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgq",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/bookings/12",
+							"raw": "http://localhost:3000/bookings/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -36,32 +43,31 @@
 							"port": "3000",
 							"path": [
 								"bookings",
-								"12"
+								"2"
 							],
 							"query": [
 								{
 									"key": "type",
 									"value": "current",
+									"description": "Reservas activas (iniciadas pero no finalizadas)",
 									"disabled": true
 								},
 								{
 									"key": "type",
 									"value": "pending",
+									"description": "Reservas futuras (no iniciadas)",
 									"disabled": true
 								},
 								{
 									"key": "type",
 									"value": "finished",
+									"description": "Reservas finalizadas (ya finalizadas)",
 									"disabled": true
 								},
 								{
 									"key": "type",
 									"value": null,
-									"disabled": true
-								},
-								{
-									"key": "direction",
-									"value": "ASC",
+									"description": "Todas las reservas",
 									"disabled": true
 								}
 							]
@@ -70,27 +76,33 @@
 					"response": []
 				},
 				{
-					"name": "filtrar reservas para el admin",
+					"name": "Filtrar reservas administrador",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
-								"description": "admin",
+								"description": "Administrador",
 								"key": "authorization",
 								"type": "text",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-								"disabled": true
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE"
 							},
 							{
-								"description": "user",
+								"description": "Usuario",
 								"key": "authorization",
 								"type": "text",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
+							},
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgq",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/admin/bookings/?orderBy=space_id",
+							"raw": "http://localhost:3000/admin/bookings/?reservation_id=16",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -104,65 +116,78 @@
 							"query": [
 								{
 									"key": "reservation_id",
-									"value": "",
-									"disabled": true
+									"value": "16",
+									"description": "ID de la reserva"
 								},
 								{
 									"key": "space_id",
-									"value": "",
+									"value": "3",
+									"description": "ID del espacio reservado",
 									"disabled": true
 								},
 								{
 									"key": "space_type",
 									"value": "Sala audiovisual",
+									"description": "Tipo del espacio reservado ",
 									"disabled": true
 								},
 								{
 									"key": "space_name",
-									"value": null,
+									"value": "espacio_7",
+									"description": "Nombre del espacio reservado (no tiene que ser exacto)",
 									"disabled": true
 								},
 								{
 									"key": "user_full_name",
-									"value": "",
+									"value": "norm",
+									"description": "Nombre del usuario de la reserva (busca por partes del nombre o apellidos)",
 									"disabled": true
 								},
 								{
 									"key": "user_id",
 									"value": "9",
+									"description": "ID del usuario de la reserva",
 									"disabled": true
 								},
 								{
 									"key": "pack",
 									"value": "Básico",
+									"description": "Pack contratado en la reserva",
 									"disabled": true
 								},
 								{
 									"key": "order_date",
-									"value": "",
+									"value": "2020-03-07",
+									"description": "Fecha de creación de la reserva",
 									"disabled": true
 								},
 								{
 									"key": "start_date",
-									"value": "",
+									"value": "2020-08-03",
+									"description": "Fecha de inicio de la reserva",
 									"disabled": true
 								},
 								{
 									"key": "end_date",
-									"value": null,
+									"value": "2021-02-06",
+									"description": "Fecha de finalización de la reserva",
 									"disabled": true
 								},
 								{
 									"key": "orderDirection",
 									"value": "desc",
+									"description": "Orden en el qeu se muestran los resultados",
 									"disabled": true
 								},
 								{
 									"key": "orderBy",
-									"value": "space_id"
+									"value": "space_id",
+									"description": "Campo por el que queremos ordenar los resultados",
+									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Permite filtrar todas las reservas por los campos deseados, solo lo puede hacer el administrador\n\n/admin/bookings"
 					},
 					"response": []
 				},
@@ -173,21 +198,28 @@
 						"header": [
 							{
 								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
+								"description": "Administrador",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text"
 							},
 							{
 								"key": "authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-								"description": "admin",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgq",
+								"description": "Token falso",
 								"type": "text",
 								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \n            \"start_date\": \"2030-01-08T00:00:00.000Z\",\n            \"end_date\": \"2030-01-09T00:00:00.000Z\",\n            \"pack_id\": 2\n}\n    ",
+							"raw": "{\n    \n            \"start_date\": \"2022-01-02T00:00:00.000Z\",\n            \"end_date\": \"2030-01-09T00:00:00.000Z\",\n            \"pack_id\": 2\n}\n    ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -195,7 +227,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/bookings/10/12",
+							"raw": "http://localhost:3000/bookings/6/5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -203,35 +235,42 @@
 							"port": "3000",
 							"path": [
 								"bookings",
-								"10",
-								"12"
+								"6",
+								"5"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "modificar reserva",
+					"name": "Modificar reserva",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-								"description": "admin",
-								"type": "text"
+								"description": "Administrador",
+								"type": "text",
+								"disabled": true
 							},
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lg3",
+								"description": "Token falso",
 								"type": "text",
 								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n            \"start_date\": \"2021-06-25T00:00:00.000Z\",\n            \"end_date\": \"2022-11-13T00:00:00.000Z\",\n            \"space_id\": 9,\n            \"pack_id\": 4\n}\n    ",
+							"raw": "{\n            \"start_date\": \"2030-01-22\",\n            \"end_date\": \"2030-01-22\",\n            \"space_id\": 10,\n            \"pack_id\": 4\n}\n    ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -239,7 +278,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/bookings/21/12/",
+							"raw": "http://localhost:3000/bookings/16/2/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -247,17 +286,9 @@
 							"port": "3000",
 							"path": [
 								"bookings",
-								"21",
-								"12",
+								"16",
+								"2",
 								""
-							],
-							"query": [
-								{
-									"key": "authorization",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-									"description": "admin",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -271,20 +302,26 @@
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
-								"description": "admin",
+								"description": "Administrador",
+								"type": "text"
+							},
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImFkbWluIjowLCJpYXQiOjE2MTAzODUwODAsImV4cCI6MTYxMjk3NzA4MH0.Ok676NWR3X2UdIYAcEm_z1WJ9wV9GHrWBJQ7pCbbVxY",
-								"description": "user",
+								"value": "eyJhbGciOiJIUzI1adsfadsfCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
 								"type": "text",
 								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/bookings/21/12?autorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+							"raw": "http://localhost:3000/bookings/23/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -292,21 +329,8 @@
 							"port": "3000",
 							"path": [
 								"bookings",
-								"21",
-								"12"
-							],
-							"query": [
-								{
-									"key": "authorization",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDE0MDIyMiwiZXhwIjoxNjEyNzMyMjIyfQ.2NwyIsVrQDbv76xpuB9OvtWVHHXaGaPayXQ5wMh3pXA",
-									"description": "admin",
-									"disabled": true
-								},
-								{
-									"key": "autorization",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-									"description": "user"
-								}
+								"23",
+								"2"
 							]
 						}
 					},

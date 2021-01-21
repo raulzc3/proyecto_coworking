@@ -58,7 +58,7 @@ const filterbookings = async (req, res, next) => {
         JOIN packs p ON o.pack_id = p.id
         WHERE (o.id = ? OR ?) 
                 AND (s.type = ? OR ?)
-                AND (s.name  = ? OR ?) 
+                AND (s.name  LIKE ? OR ?) 
                 AND (s.id = ? OR ?)
                 AND (CONCAT(u.name," ",u.surname) LIKE ? OR ?) 
                 AND (o.user_id = ? OR ?) 
@@ -73,7 +73,7 @@ const filterbookings = async (req, res, next) => {
         !reservation_id,
         space_type,
         !space_type,
-        space_name,
+        `%${space_name}%`,
         !space_name,
         space_id,
         !space_id,

@@ -1,4 +1,9 @@
-const { deletePhoto, savePhoto, validator } = require("../../helpers");
+const {
+  deletePhoto,
+  savePhoto,
+  validator,
+  createError,
+} = require("../../helpers");
 const { newPackSchema } = require("../../schemas");
 const editPack = async (req, res, next) => {
   let connection;
@@ -12,6 +17,14 @@ const editPack = async (req, res, next) => {
     //Saco los campos del body not null del body: tipo, texto_contenido,precio,foto
     const { type, content, price } = req.body;
 
+    const verificationType = await connection.query(
+      `
+SELECT * FROM packs WHERE type=? AND id <> ?`,
+      [type, pack_id]
+    );
+    if (verificationType[0].length !== 0) {
+      throw createError("El nombre del pack ya está usado ", 400);
+    }
     //Obtengo el nombre de la foto
     const [photoQuery] = await connection.query(
       `

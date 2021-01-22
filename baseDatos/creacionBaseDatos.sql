@@ -54,7 +54,7 @@ CREATE TABLE photos (
 
 CREATE TABLE packs ( -- Los packs serán conjuntos preestablecidos de servicios que se incluirán en el pedido
     ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    type VARCHAR(50) NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
+    type VARCHAR(50) UNIQUE NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
     content TEXT NOT NULL, -- Todos los servicios que incluirá cada pack (mayor velocidad de conexión, proyector, acceso a cafetería...)
     price SMALLINT UNSIGNED NOT NULL,
     photo VARCHAR(50) NOT NULL -- URL de la imagen
@@ -108,6 +108,6 @@ CREATE TABLE orders (
     CONSTRAINT spaces_start_date_uq1 UNIQUE (space_id, start_date), -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
     CONSTRAINT spaces_end_date_uq2 UNIQUE (space_id, end_date),  -- Nos aseguramos que no se puede reservar el mismo espacio en la misma fecha más de una vez
     CONSTRAINT orders_price_ck1 CHECK(price > 0),
-    CONSTRAINT orders_dates_ck2 CHECK(start_date <= end_date AND order_date <= start_date) /* Nos aseguramos de que la fecha de inicio de la reserva es anterior 																								antes del día en el que se realiza el pedido */    
+    CONSTRAINT orders_dates_ck2 CHECK(start_date <= end_date AND DATE(order_date) <= start_date) /* Nos aseguramos de que la fecha de inicio de la reserva es anterior 																								antes del día en el que se realiza el pedido */    
 	);       
     

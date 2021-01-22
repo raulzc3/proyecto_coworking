@@ -10,6 +10,17 @@ const newPack = async (req, res, next) => {
     //Saco los campos del body not null del body: tipo, texto_contenido,precio
     const { type, content, price } = req.body;
 
+    const verificationType = await connection.query(
+      `
+SELECT * FROM packs WHERE type=?`,
+      [type]
+    );
+
+    // Comprobamos que no exista un pack con ese nombre
+    if (verificationType[0].length !== 0) {
+      throw createError("El nombre del pack ya está usado ", 400);
+    }
+
     //Compruebo si se envió foto y si es correcta
     if (!req.files) {
       throw createError("Tienes que añadir una foto ", 400);

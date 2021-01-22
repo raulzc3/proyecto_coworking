@@ -197,6 +197,10 @@ app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 // #                    Endpoints de valoraciones                  #
 // #################################################################
 
+//GET - Obtener las valoraciones de un espacio en concreto
+//URL ejemplo: http://localhost:3000/reviews/5
+app.get("/reviews/:space_id", spaceExists, getReviews);
+
 //GET - Filtrar valoraciones (si no se filtran, se muestran todas)
 //URL ejemplo: http://localhost:3000/reviews
 app.get("/reviews", isAdmin, filterReviews);

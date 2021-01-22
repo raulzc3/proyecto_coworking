@@ -1,18 +1,36 @@
 const Joi = require("joi");
 
 const reservationSchema = Joi.object().keys({
-  start_date: Joi.date().required().min(new Date()).messages({
-    "date.base": `"start_date" debe ser de tipo 'date'`,
-    "date.empty": `"start_date" no puede estar vacío`,
-    "date.min": `"start_date" no puede ser anterior a la {#limit}`,
-    "any.required": `"start_date" es un campo requerido`,
-  }),
-  end_date: Joi.date().required().min(new Date()).messages({
-    "date.base": `"end_date" debe ser de tipo 'date'`,
-    "date.empty": `"end_date" no puede estar vacío`,
-    "date.min": `"end_date" no puede ser anterior a {#limit}`,
-    "any.required": `"end_date" es un campo requerido`,
-  }),
+  start_date: Joi.date()
+    .required()
+    .min(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    )
+    .messages({
+      "date.base": `"start_date" debe ser de tipo 'date'`,
+      "date.empty": `"start_date" no puede estar vacío`,
+      "date.min": `"start_date" no puede ser anterior a la {#limit}`,
+      "any.required": `"start_date" es un campo requerido`,
+    }),
+  end_date: Joi.date()
+    .required()
+    .min(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    )
+    .messages({
+      "date.base": `"end_date" debe ser de tipo 'date'`,
+      "date.empty": `"end_date" no puede estar vacío`,
+      "date.min": `"end_date" no puede ser anterior a {#limit}`,
+      "any.required": `"end_date" es un campo requerido`,
+    }),
   pack_id: Joi.number().required().positive().integer().messages({
     "number.base": `"pack_id" debe ser de tipo 'number'`,
     "number.empty": `"pack_id" no puede estar vacío`,
@@ -413,7 +431,7 @@ const newPackSchema = Joi.object().keys({
     "string.max": `"description" no puede ser mayor de {#limit} caracteres`,
     "any.required": `"description" es un campo requerido`,
   }),
-  price: Joi.number().required().positive().messages({
+  price: Joi.number().required().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
     "number.positive": `"price" debe ser un valor positivo`,

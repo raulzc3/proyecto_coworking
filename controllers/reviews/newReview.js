@@ -14,14 +14,30 @@ const newReview = async (req, res, next) => {
     // Obtenemos los campos necesarios de req.body
     const { comment, score } = req.body;
 
-    //Si eres admin no puedes modificarlo
+    //Si eres admin no puedes crear valoraciones
     const { authorization } = req.headers;
     tokenInfo = jwt.verify(authorization, process.env.SECRET);
-    if (tokenInfo.id !== user_id)
-      throw createError(
-        "No tienes permisos para modificar las valoraciones",
-        401
-      );
+
+    if (tokenInfo.admin === 1)
+      throw createError("No tienes permisos para crear valoraciones", 401);
+
+    //Comprobamos que el usuario no hubiera valorado el espacio anteriormente
+
+    const [reviewExists] = await connection.query(
+      `
+        SELECT * 
+        FROM reviews
+        WHERE user_id = ? AND space_id = ?;
+      `,
+      [user_id, space_id]
+    );
+
+    console.log(reviewExists);
+
+    if (reviewExists.length !== 0) {
+      throw createError("No se puede valorar un espacio más de una vez", 400);
+    }
+
     // Comprobamos que exista un pedido pasado para el usuario y espacio introducidos
     let [order] = await connection.query(
       `

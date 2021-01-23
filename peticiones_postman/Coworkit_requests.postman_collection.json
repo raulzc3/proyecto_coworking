@@ -61,7 +61,7 @@
 								{
 									"key": "type",
 									"value": "finished",
-									"description": "Reservas finalizadas (ya finalizadas)",
+									"description": "Reservas finalizadas",
 									"disabled": true
 								},
 								{
@@ -71,7 +71,8 @@
 									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Permite a un usuario ver sus propias reservas, filtrandolas por el estado de las mismas (pasadas, actuales o futuras). En caso de no aplicar ese filtrado, se mostrarán todas.\n\nEl admin puede visualizar las reservas de cualquier usuario.\n\n/bookings/:user_id"
 					},
 					"response": []
 				},
@@ -187,7 +188,7 @@
 								}
 							]
 						},
-						"description": "Permite filtrar todas las reservas por los campos deseados, solo lo puede hacer el administrador\n\n/admin/bookings"
+						"description": "Permite filtrar todas las reservas por los campos deseados. Si no se especifican filtros se mostrarán todas las reservas.\nSolo lo puede hacer el administrador.\n\n/admin/bookings"
 					},
 					"response": []
 				},
@@ -291,7 +292,8 @@
 								"2",
 								""
 							]
-						}
+						},
+						"description": "Permite a un usuario hacer modificaciones de sus propias reservas, siempre y cuando hayan transcurrido menos de 48 horas desde el momento de realización de las mismas.\n\nEl administrador puede modificar las reservas de cualquier usuario, independientemente de la limitación de 48 horas.\n\n/bookings/:reservation_id/:user_id"
 					},
 					"response": []
 				},
@@ -333,7 +335,8 @@
 								"23",
 								"2"
 							]
-						}
+						},
+						"description": "Permite a un usuario eliminar sus propias reservas, siempre y cuando hayan transcurrido menos de 48 horas desde el momento de realización de las mismas.\n\nEl administrador puede eliminar las reservas de cualquier usuario, independientemente de la limitación de 48 horas.\n\n/bookings/:reservation_id/:user_id"
 					},
 					"response": []
 				}
@@ -666,7 +669,7 @@
 								}
 							]
 						},
-						"description": "Permite obtener las incidencias filtrando por los campos indicados\n\nSolo lo puede hacer el administrador \n\n/report"
+						"description": "Permite obtener las incidencias filtrando por los campos indicados.\nEn caso de no aplicar ningún filtro, se mostrarán todos.\n\nSolo lo puede hacer el administrador \n\n/report"
 					},
 					"response": []
 				},
@@ -1117,20 +1120,27 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
+								"description": "Administador",
 								"type": "text"
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Usuario",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.asdfasdfadfssdf.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Token falso",
 								"type": "text",
 								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/review/5/2",
+							"raw": "http://localhost:3000/review/44/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1138,10 +1148,11 @@
 							"port": "3000",
 							"path": [
 								"review",
-								"5",
-								"2"
+								"44",
+								"1"
 							]
-						}
+						},
+						"description": "Permite a un usuario borrar sus propias valoraciones.\nEl administrador puede eliminar cualquier valoración.\n\n/bookings/:reservation_id/:user_id"
 					},
 					"response": []
 				}
@@ -1157,15 +1168,21 @@
 						"header": [
 							{
 								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admim",
+								"description": "Token falso",
 								"type": "text"
 							}
 						],
@@ -1227,7 +1244,8 @@
 									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Permite al administrador filtrar los espacios por distintos parámetros.\nEn caso de no aplicar filtros, se moostrarán todos.\n\n/admin/spaces"
 					},
 					"response": []
 				},
@@ -1235,9 +1253,31 @@
 					"name": "Mostrar un espacio",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Usuario",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOasdfasdfadf0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/spaces/1",
+							"raw": "http://localhost:3000/spaces/888",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1245,9 +1285,10 @@
 							"port": "3000",
 							"path": [
 								"spaces",
-								"1"
+								"888"
 							]
-						}
+						},
+						"description": "Permite obtener los detalles de un espacio a cualquier usuario, siempre y cuando el espacio esté habilitado.\n\n/spaces/:space_id"
 					},
 					"response": []
 				},
@@ -1259,16 +1300,22 @@
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
+								"description": "Administrador",
 								"type": "text",
 								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQasdfasdf",
+								"description": "Token falso",
+								"type": "text"
 							}
 						],
 						"url": {

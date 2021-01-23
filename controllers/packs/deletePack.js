@@ -24,7 +24,7 @@ const deletePack = async (req, res, next) => {
 
     res.send({
       stats: "ok",
-      message: `El pack con id ${pack_id} fue borrada de la tabla packs`,
+      message: `El pack con id ${pack_id} fue borrado de la tabla packs`,
     });
   } catch (error) {
     next(error);

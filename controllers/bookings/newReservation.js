@@ -94,16 +94,18 @@ const newReservation = async (req, res, next) => {
       ]
     );
 
+    const [result] = await connection.query(
+      `
+    SELECT *
+    FROM orders
+    WHERE id = (SELECT MAX(id) FROM orders)
+    `
+    );
+
     res.send({
       status: "ok",
       data: {
-        order_date: formatDateToDB(new Date()),
-        start_date: formatDateToDB(new Date(start_date)),
-        end_date: formatDateToDB(new Date(end_date)),
-        price: totalPriceResservation,
-        user_id,
-        space_id,
-        pack_id,
+        ...result[0],
       },
     });
   } catch (error) {

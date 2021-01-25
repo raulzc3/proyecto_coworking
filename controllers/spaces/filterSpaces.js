@@ -1,7 +1,5 @@
-const { result } = require("lodash");
 const { validator } = require("../../helpers");
 const { filterSpaceSchema } = require("../../schemas");
-const jwt = require("jsonwebtoken");
 const filterSpaces = async (req, res, next) => {
   let connection;
   try {
@@ -75,18 +73,11 @@ const filterSpaces = async (req, res, next) => {
       }
     });
 
-    const scoreAverage = connection.query(`SELECT DISTINCT space_id,AVG(score)
-    FROM reviews
-    GROUP BY space_id
-    HAVING AVG(score)<?
-   `);
-
     res.send({
       status: "ok",
       data: {
         ...filtro,
       },
-      scores: { ...scoreAverage },
     });
   } catch (error) {
     next(error);

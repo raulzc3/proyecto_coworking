@@ -24,7 +24,7 @@ const filterSpacesAdmin = async (req, res, next) => {
       space_id,
     } = req.query;
 
-    const orderBy = order ? order : "score";
+    const orderBy = order ? order : "ID";
     const orderDirection = direction ? direction : "ASC";
 
     let results;

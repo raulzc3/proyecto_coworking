@@ -22,7 +22,7 @@ const filterSpaces = async (req, res, next) => {
       direction,
     } = req.query;
 
-    const orderBy = order ? order : "score";
+    const orderBy = order ? order : "ID";
     const orderDirection = direction ? direction : "ASC";
 
     let results;
@@ -34,7 +34,7 @@ const filterSpaces = async (req, res, next) => {
 
     [results] = await connection.query(
       `
-      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
+      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,p.url
           FROM spaces s JOIN photos p ON s.id = p.space_id
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
@@ -75,11 +75,18 @@ const filterSpaces = async (req, res, next) => {
       }
     });
 
+    const scoreAverage = connection.query(`SELECT DISTINCT space_id,AVG(score)
+    FROM reviews
+    GROUP BY space_id
+    HAVING AVG(score)<?
+   `);
+
     res.send({
       status: "ok",
       data: {
         ...filtro,
       },
+      scores: { ...scoreAverage },
     });
   } catch (error) {
     next(error);

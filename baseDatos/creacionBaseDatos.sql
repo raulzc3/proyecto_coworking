@@ -57,7 +57,9 @@ CREATE TABLE packs ( -- Los packs serán conjuntos preestablecidos de servicios 
     type VARCHAR(50) NOT NULL, -- Algunos de los tipos de packs que existirán, se añadirán más durante el desarrollo del proyecto 
     content TEXT NOT NULL, -- Todos los servicios que incluirá cada pack (mayor velocidad de conexión, proyector, acceso a cafetería...)
     price SMALLINT UNSIGNED NOT NULL,
-    photo VARCHAR(50) NOT NULL -- URL de la imagen
+    enabled TINYINT DEFAULT 1,
+    photo VARCHAR(50) NOT NULL, -- URL de la imagen
+     CONSTRAINT packs_enabled_ck1 CHECK (enabled = 0 OR enabled = 1)
 );
 
 CREATE TABLE reviews (

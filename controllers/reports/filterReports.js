@@ -33,7 +33,6 @@ const filterReports = async (req, res, next) => {
       category,
       date,
       solved,
-      user_name,
       orderBy,
       orderDirection,
     });

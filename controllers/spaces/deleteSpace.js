@@ -6,19 +6,20 @@ const deleteSpace = async (req, res, next) => {
     connection = await req.app.locals.getDB();
     //Obtengo el id del espacio que voy a deshabilitar (eliminar)
     const { space_id } = req.params;
-    //Busco las fotos del espacio en cuestión en la carpeta /space/:id_space
-    //Obtengo el nomre de sus fotos en el servidor
-    const [photoQuery] = await connection.query(
-      `
-    SELECT url FROM photos
-    WHERE space_id=?;`,
-      [space_id]
-    );
 
-    for (const item of photoQuery) {
-      //Borro las photos del servidor
-      await deletePhoto(item.url, `spaces/${space_id}`);
-    }
+    //? //Busco las fotos del espacio en cuestión en la carpeta /space/:id_space
+    //? //Obtengo el nomre de sus fotos en el servidor
+    //const [photoQuery] = await connection.query(
+    //  `
+    //SELECT url FROM photos
+    //WHERE space_id=?;`,
+    //  [space_id]
+    //);
+
+    //for (const item of photoQuery) {
+    //? //Borro las photos del servidor
+    //  await deletePhoto(item.url, `spaces/${space_id}`);
+    //}
 
     //elimino Dichas fotos con dicho id de la tabla photo? no puedo... esta como FK en spaces
     //await connection.query(`DELETE FROM photos WHERE space_id= ? ;`, [space_id]);

@@ -1,7 +1,6 @@
 const {
   formatDateToDB,
   createError,
-  //dateValidator,
   distanceDateInHours,
   validator,
 } = require("../../helpers");
@@ -17,14 +16,50 @@ const editReservation = async (req, res, next) => {
     const { start_date, end_date, pack_id, space_id } = req.body;
 
     // comprobar que el espacio existe y es disponible
-    const [space] = await connection.query(
+    // const [space] = await connection.query(
+    //   `
+    //   SELECT ID FROM spaces WHERE ID=? AND enabled=1
+    // `,
+    //   [space_id]
+    // );
+    // if (space.length === 0) {
+    //   throw createError("Este espacio no existe", 404);
+    // }
+
+    //comprobamos que la modificación de la reserva no involucra ningun pack ni ningún espacio que estén inabilitados
+
+    const [oldReservation] = await connection.query(
       `
-      SELECT ID FROM spaces WHERE ID=? AND enabled=1
+    SELECT o.space_id as "oldSpace_id", o.pack_id as "oldPack_id", s.enabled as "space_enabled", p.enabled as "pack_enabled" FROM orders o 
+    JOIN spaces s ON  o.space_id = s.ID 
+    JOIN packs p ON o.pack_id = p.ID 
+    WHERE o.ID=?;
     `,
-      [space_id]
+      [reservation_id]
     );
-    if (space.length === 0) {
-      throw createError("Este espacio no existe", 404);
+    console.log(oldReservation[0]);
+    const {
+      oldSpace_id,
+      oldPack_id,
+      space_enabled,
+      pack_enabled,
+    } = oldReservation[0];
+
+    if (
+      space_id === oldSpace_id &&
+      space_enabled === 0 &&
+      !req.userAuth.admin
+    ) {
+      throw createError(
+        "No puedes modificar tu reserva con este espacio, escoge otro espacio",
+        401
+      );
+    }
+    if (pack_id === oldPack_id && pack_enabled === 0 && !req.userAuth.admin) {
+      throw createError(
+        "No puedes modificar tu reserva con este pack, escoge otro pack",
+        401
+      );
     }
 
     // comprobar que el pack existe

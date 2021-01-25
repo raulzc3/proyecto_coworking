@@ -275,7 +275,6 @@ const filterSpaceSchema = Joi.object().keys({
   order: Joi.string().valid(
     "type",
     "price",
-    "score",
     "capacity",
     "start_date",
     "end_date"

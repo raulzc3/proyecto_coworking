@@ -71,14 +71,14 @@ async function main() {
 
     // Inserición de usuario administrador
     await connection.query(`
-      INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
-      VALUES("SUPERADMIN","SUPERADMIN", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1,"2020-01-01")
-      `);
+    INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
+    VALUES("SUPERADMIN","SUPERADMIN", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1,"2020-01-01")
+    `);
     // Inserición de usuario normal
     await connection.query(`
-    INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
-    VALUES("Normal","user", "123456788",SHA2("${process.env.ADMIN_PASSWORD}", 512),"normaluser_coworkit@gmail.com","000000001","COWORKIT", 1,0,"2020-01-01")
-    `);
+  INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
+  VALUES("Normal","user", "123456788",SHA2("${process.env.ADMIN_PASSWORD}", 512),"normaluser_coworkit@gmail.com","000000001","COWORKIT", 1,0,"2020-01-01")
+  `);
 
     // Inserición de usuarios aleatorios
     const users = 10;
@@ -200,14 +200,6 @@ async function main() {
     console.log("Datos de reports añadidos");
 
     // Inserción de pedidos
-    //pedidos del usuario
-    await connection.query(`
-    INSERT INTO orders (order_date, start_date, end_date, price, user_id, space_id, pack_id) 
-    VALUES ("1993-12-12","1993-12-24", "1993-12-31", 500, 2, 1, 1),
-           ("2030-12-12","2030-12-24", "2038-12-31", 500, 2, 2, 2),
-           (CURDATE(), ADDDATE(CURDATE(), INTERVAL 1 DAY), ADDDATE(CURDATE(), INTERVAL 2 DAY), 500, 2, 3, 3),
-           ("2020-12-24", ADDDATE(CURDATE(), INTERVAL 20 DAY), ADDDATE(CURDATE(), INTERVAL 30 DAY), 1000,2,4,4);
-`);
     const orders = 20;
 
     for (let i = 0; i < orders; i++) {
@@ -227,6 +219,7 @@ async function main() {
       const userID = random(1, users);
       const packID = random(1, 4);
       const spaceID = random(1, numSpaces);
+
       const [
         result,
       ] = await connection.query(`SELECT SUM(s.price+p.price) as "price" 

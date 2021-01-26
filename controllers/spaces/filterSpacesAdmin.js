@@ -77,7 +77,7 @@ const filterSpacesAdmin = async (req, res, next) => {
     res.send({
       status: "ok",
       data: {
-        ...spacios,
+        ...filtro,
       },
     });
   } catch (error) {

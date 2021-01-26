@@ -13,7 +13,6 @@ const filterSpacesAdmin = async (req, res, next) => {
     let {
       type,
       price,
-      score,
       capacity,
       start_date,
       end_date,
@@ -32,11 +31,10 @@ const filterSpacesAdmin = async (req, res, next) => {
       start_date = new Date(start_date);
       end_date = new Date(end_date);
     }
-
     [results] = await connection.query(
       `
       SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
-          FROM spaces s JOIN photos p ON s.id = p.space_id 
+          FROM spaces s JOIN photos p ON s.id = p.space_id
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
           FROM orders 
@@ -44,12 +42,7 @@ const filterSpacesAdmin = async (req, res, next) => {
            or (? BETWEEN start_date AND end_date)
            or (? < start_date  AND ? > end_date)
            )
-           AND s.id NOT IN (
-            SELECT DISTINCT space_id
-            FROM reviews
-            GROUP BY space_id
-            HAVING AVG(score)<?
-           ) AND (s.price <= ? OR ?) 
+           AND (s.price <= ? OR ?) 
            AND (s.type LIKE ? OR ?) 
            AND (s.capacity >=? OR ?) 
            AND  (s.enabled=? OR ?) 
@@ -60,7 +53,6 @@ const filterSpacesAdmin = async (req, res, next) => {
         end_date,
         start_date,
         end_date,
-        score,
         price,
         !price,
         type,
@@ -73,18 +65,11 @@ const filterSpacesAdmin = async (req, res, next) => {
         !space_id,
       ]
     );
-    let spacios = [];
-    const filtro = await results.filter((value) => {
-      if (!spacios.includes(value.ID)) {
-        spacios.push(value.ID);
-        return [value.url, value.ID];
-      }
-    });
 
     res.send({
       status: "ok",
       data: {
-        ...filtro,
+        ...results,
       },
     });
   } catch (error) {

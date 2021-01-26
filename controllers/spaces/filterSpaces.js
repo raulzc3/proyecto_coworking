@@ -32,8 +32,8 @@ const filterSpaces = async (req, res, next) => {
 
     [results] = await connection.query(
       `
-      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,p.url
-          FROM spaces s JOIN photos p ON s.id = p.space_id
+      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,p.url, AVG(IFNULL(r.score, 0)) 'score'
+          FROM spaces s JOIN photos p ON s.id = p.space_id LEFT JOIN reviews r ON s.id = r.space_id
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 
           FROM orders
@@ -41,28 +41,26 @@ const filterSpaces = async (req, res, next) => {
            or (? BETWEEN start_date AND end_date)
            or (? < start_date  AND ? > end_date)
            )
-           AND s.id NOT IN (
-            SELECT DISTINCT space_id
-            FROM reviews
-            GROUP BY space_id
-            HAVING AVG(score)<?
-           ) AND (s.price <= ? OR ?) 
+           AND (s.price <= ? OR ?) 
            AND (s.type LIKE ? OR ?) 
            AND (s.capacity >=? OR ?) 
            AND s.enabled=1
-           ORDER BY "${orderBy}", "${orderDirection}";`,
+           GROUP BY s.id, r.space_id
+           HAVING (score > ? OR ?) 
+           ORDER BY ${orderBy} ${orderDirection};`,
       [
         start_date,
         end_date,
         start_date,
         end_date,
-        score,
         price,
         !price,
         type,
         !type,
         capacity,
         !capacity,
+        score,
+        !score,
       ]
     );
     let spacios = [];

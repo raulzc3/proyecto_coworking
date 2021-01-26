@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const { PORT } = process.env;
 const getDB = require("./db");
+const cors = require("cors");
 
 // #################################################################
 // #             Importamos controllers y middlewares              #
@@ -94,6 +95,10 @@ const app = express();
 app.locals.getDB = getDB;
 // Body parser (body en JSON)
 app.use(bodyParser.json());
+// Cors (permite peticiones externas)
+app.use(cors());
+//Archivos estaticos (habilitar carpeta uploads)
+app.use("/uploads", express.static("uploads"));
 // Body parser (multipart form data <- subida de imágenes)
 app.use(fileUpload());
 // Logger (solo se empleará durante el desarrollo)
@@ -146,6 +151,7 @@ app.post(
   "/bookings/:space_id/:user_id",
   isAuthorized,
   spaceExists,
+  packExists,
   spaceIsEnabled,
   newReservation
 );
@@ -270,9 +276,9 @@ app.post("/users/contact/:user_id", isAdmin, userExists, contactUser);
 
 //POST - Recuperar contraseña (envia email al usuario, no modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/recoverPassword
-app.get("/users/recoverPassword", recoverUserPassword);
+app.post("/users/recoverPassword", recoverUserPassword);
 
-//POST - Resetear contraseña (modifica la contraseña)
+//PUT - Resetear contraseña (modifica la contraseña)
 //URL ejemplo: http://localhost:3000/users/resetPassword
 app.put("/users/resetPassword", resetUserPassword);
 

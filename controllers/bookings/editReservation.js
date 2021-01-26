@@ -15,17 +15,6 @@ const editReservation = async (req, res, next) => {
     await validator(reservationSchema, req.body);
     const { start_date, end_date, pack_id, space_id } = req.body;
 
-    // comprobar que el espacio existe y es disponible
-    // const [space] = await connection.query(
-    //   `
-    //   SELECT ID FROM spaces WHERE ID=? AND enabled=1
-    // `,
-    //   [space_id]
-    // );
-    // if (space.length === 0) {
-    //   throw createError("Este espacio no existe", 404);
-    // }
-
     //comprobamos que la modificación de la reserva no involucra ningun pack ni ningún espacio que estén inabilitados
 
     const [oldReservation] = await connection.query(

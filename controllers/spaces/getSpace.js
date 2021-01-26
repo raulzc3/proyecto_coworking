@@ -11,22 +11,27 @@ const getSpace = async (req, res, next) => {
     //      Hago el SELECT en la bd
     const [result] = await connection.query(
       `
-    SELECT DISTINCT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(v.score,0)) AS score, f.url,e.description 
+    SELECT DISTINCT e.ID, e.type, e.name, e.price,e.capacity,AVG(IFNULL(v.score,0)) AS score,e.description 
     FROM spaces e LEFT JOIN reviews v ON (e.ID=v.space_id)
-    LEFT JOIN photos f ON (e.ID=f.space_id)
     WHERE e.ID=? AND e.enabled=1
-    GROUP BY e.ID,f.url
+    GROUP BY e.ID
     
     ;`,
       [space_id]
     );
 
-    console.log(result);
+    const [
+      photos,
+    ] = await connection.query(`SELECT url FROM photos WHERE space_id=?;`, [
+      space_id,
+    ]);
+
     res.send({
       status: "ok",
       data: {
         ...result,
       },
+      photos: { ...photos },
     });
   } catch (error) {
     next(error);

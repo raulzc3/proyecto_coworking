@@ -1,3 +1,5 @@
+const path = require("path");
+
 const getUser = async (req, res, next) => {
   let connection;
   try {
@@ -18,11 +20,22 @@ const getUser = async (req, res, next) => {
 
     // Si el usuario solicitado coíncide con el del token se muestran los datos --> middleware isAuthorized ✅
 
+    const { photo } = user[0];
+    const photoUrl = path.join(
+      __dirname,
+      "..",
+      "..",
+      "static",
+      "uploads",
+      "users",
+      photo
+    );
+
     const userInfo = {
       name: user[0].name,
       surname: user[0].surname,
       nif: user[0].nif,
-      photo: user[0].photo,
+      photo: photoUrl,
       email: user[0].email,
       tel: user[0].tel,
       registration_date: user[0].registration_date,

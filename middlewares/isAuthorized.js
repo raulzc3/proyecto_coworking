@@ -10,9 +10,9 @@ const isAuthorized = async (req, res, next) => {
     const { authorization } = req.headers;
     const { user_id } = req.params;
 
+    console.log(authorization);
     // Comprobamos que el id introducido es un número
     if (user_id) isId(user_id);
-    // TODO: la cabecera de autorización puede tener otro formato (Bearer)
 
     // Si no authorization está vacío devuelvo un error
     if (!authorization) {

@@ -66,10 +66,18 @@ const filterSpacesAdmin = async (req, res, next) => {
       ]
     );
 
+    let spacios = [];
+    const filtro = await results.filter((value) => {
+      if (!spacios.includes(value.ID)) {
+        spacios.push(value.ID);
+        return [value.url, value.ID];
+      }
+    });
+
     res.send({
       status: "ok",
       data: {
-        ...results,
+        ...spacios,
       },
     });
   } catch (error) {

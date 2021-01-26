@@ -16,7 +16,6 @@ const {
   getSpace,
   filterSpaces,
   editSpace,
-  deleteSpace,
   newSpace,
   changeStateSpaces,
   filterSpacesAdmin,
@@ -114,7 +113,7 @@ app.get("/spaces/:space_id", spaceExists, getSpace);
 //URL ejemplo: http://localhost:3000/spaces?aforo=23
 app.get("/spaces", filterSpaces);
 
-//GET -Filtrar espacios admin                                   USUARIOS ADMIN
+//GET -Filtrar espacios admin
 app.get("/admin/spaces", isAdmin, filterSpacesAdmin);
 
 // POST - Crear un espacio
@@ -128,10 +127,6 @@ app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
 //PUT - Cambiar estado espacio: habilitado/inhabilitado
 //URL ejemplo: http://localhost:3000/enableSpace/5
 app.put("/spaces/enable/:space_id", isAdmin, spaceExists, changeStateSpaces);
-
-//DELETE- Eliminar un espacio
-//URL ejemplo: http://localhost:3000/spaces/11
-app.delete("/spaces/:space_id", isAdmin, spaceExists, deleteSpace);
 
 // #################################################################
 // #                     Endpoints de reservas                     #

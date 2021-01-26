@@ -47,7 +47,7 @@ const filterSpacesAdmin = async (req, res, next) => {
            AND (s.capacity >=? OR ?) 
            AND  (s.enabled=? OR ?) 
            AND (s.ID=? OR ?)
-           ORDER BY "${orderBy}", "${orderDirection}";`,
+           ORDER BY ${orderBy} ${orderDirection};`,
       [
         start_date,
         end_date,

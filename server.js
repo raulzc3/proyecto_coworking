@@ -98,7 +98,7 @@ app.use(bodyParser.json());
 // Cors (permite peticiones externas)
 app.use(cors());
 //Archivos estaticos (habilitar carpeta uploads)
-app.use("/uploads", express.static("uploads"));
+app.use("/static", express.static("static"));
 // Body parser (multipart form data <- subida de imágenes)
 app.use(fileUpload());
 // Logger (solo se empleará durante el desarrollo)

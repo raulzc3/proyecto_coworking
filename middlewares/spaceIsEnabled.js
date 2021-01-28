@@ -5,7 +5,7 @@ const spaceIsEnabled = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    let space_id = req.params;
+    let { space_id } = req.params;
 
     if (space_id === undefined) {
       space_id = req.body.space_id;

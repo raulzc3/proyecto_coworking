@@ -6,6 +6,7 @@ const userExists = async (req, res, next) => {
     connection = await req.app.locals.getDB();
 
     let user_id = req.params;
+
     if (user_id === undefined) {
       user_id = req.body.user_id;
     }

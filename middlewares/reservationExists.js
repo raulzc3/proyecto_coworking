@@ -5,7 +5,7 @@ const reservationExists = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    let reservation_id = req.params;
+    let { reservation_id } = req.params;
 
     if (reservation_id === undefined) {
       reservation_id = req.body.reservation_id;

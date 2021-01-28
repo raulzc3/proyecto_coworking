@@ -6,7 +6,11 @@ const userExists = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    const { pack_id } = req.params;
+    let { pack_id } = req.params;
+
+    if (pack_id === undefined) {
+      pack_id = req.body.pack_id;
+    }
 
     if (pack_id) isId(pack_id);
 

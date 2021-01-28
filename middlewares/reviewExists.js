@@ -6,7 +6,10 @@ const reviewExists = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    const { review_id } = req.params;
+    if (review_id === undefined) {
+      review_id = req.body.review_id;
+    }
+
     if (review_id) isId(review_id);
 
     const [user] = await connection.query(

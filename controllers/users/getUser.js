@@ -22,10 +22,7 @@ const getUser = async (req, res, next) => {
 
     const { photo } = user[0];
     const photoUrl = path.join(
-      __dirname,
-      "..",
-      "..",
-      "static",
+      process.env.PUBLIC_HOST,
       "uploads",
       "users",
       photo

@@ -6,7 +6,11 @@ const reportExists = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    const { report_id } = req.params;
+    let report_id = req.params;
+
+    if (report_id === undefined) {
+      report_id = req.body.report_id;
+    }
 
     if (report_id) isId(report_id);
 

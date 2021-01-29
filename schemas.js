@@ -68,7 +68,6 @@ const dateValidator = (varName) => {
       "date.base": `${varName}  debe ser de tipo 'date'`,
       "date.empty": `${varName}  no puede estar vacío`,
       "date.min": `${varName}  no puede ser anterior a la {#limit}`,
-      "any.required": `${varName}  es un campo requerido`,
     });
 };
 /**
@@ -78,6 +77,7 @@ const dateValidator = (varName) => {
 const numberIntegerPositiveRequiredValidator = (varName) => {
   return Joi.number()
     .positive()
+    .required()
     .integer()
     .messages({
       "number.base": `${varName} debe ser de tipo 'number'`,
@@ -94,7 +94,6 @@ const numberIntegerPositiveRequiredValidator = (varName) => {
  */
 const numPositiveIntegerValidator = (varName) => {
   return Joi.number()
-    .required()
     .positive()
     .integer()
     .messages({

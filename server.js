@@ -20,6 +20,7 @@ const {
   newSpace,
   changeStateSpaces,
   filterSpacesAdmin,
+  deletePhotos,
 } = require("./controllers/spaces");
 
 // Controladores de reservas
@@ -132,6 +133,10 @@ app.put("/spaces/:space_id", isAdmin, spaceExists, editSpace);
 //PUT - Cambiar estado espacio: habilitado/inhabilitado
 //URL ejemplo: http://localhost:3000/enableSpace/5
 app.put("/spaces/enable/:space_id", isAdmin, spaceExists, changeStateSpaces);
+
+//DELETE - Eliminar fotos de un espacio
+//URL ejemplo: http://localhost:3000/spaces/3
+app.delete("/spaces/:space_id", isAdmin, spaceExists, deletePhotos);
 
 // #################################################################
 // #                     Endpoints de reservas                     #

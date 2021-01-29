@@ -4,6 +4,7 @@ const newSpace = require("./newSpace");
 const editSpace = require("./editSpace");
 const changeStateSpaces = require("./changeStateSpace");
 const filterSpacesAdmin = require("./filterSpacesAdmin");
+const deletePhotos = require("./deletePhotos");
 
 module.exports = {
   getSpace,
@@ -12,4 +13,5 @@ module.exports = {
   changeStateSpaces,
   editSpace,
   filterSpacesAdmin,
+  deletePhotos,
 };

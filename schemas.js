@@ -1,7 +1,7 @@
 const Joi = require("joi");
 //lista de funciones que devuelven validaciones usadas reiteredas veces en los schemas
 /**
- * 
+ *
  * @param {String} varName :Nombre del parámetro a validar
  * @param {Number} max :Número máximo de caracteres
  */
@@ -15,7 +15,7 @@ const maxTextValidator = (varName, max) => {
     });
 };
 /**
- * 
+ *
  * @param {String} varName :Nombre del parámetro a validar
  * @param {Number} max :Número máximo de caracteres
  * @param {Number} min :Número mínimo de caracteres
@@ -34,7 +34,7 @@ const textRequiredValidator = (varName, max, min = 0) => {
     });
 };
 /**
- * 
+ *
  * @param {String} varName :Nombre del parámetro a validar
  */
 const dateRequiredValidator = (varName) => {
@@ -55,7 +55,7 @@ const dateRequiredValidator = (varName) => {
     });
 };
 /**
- * 
+ *
  * @param {String} varName :Nombre del parámetro a validar
  */
 const dateValidator = (varName) => {
@@ -69,7 +69,7 @@ const dateValidator = (varName) => {
     });
 };
 /**
- * 
+ *
  * @param {String} varName :Nombre del parámetro a validar
  */
 const numberValidator = (varName) => {
@@ -451,6 +451,14 @@ const filterBookingsSchema = Joi.object().keys({
     }),
 });
 
+const deletePhotoSpaceSchema = Joi.object().keys({
+  url: Joi.string()
+    .required()
+    .messages({
+      "string.base": `"orderBy" debe ser de tipo 'string'`,
+      "any.required": `${varName}  es un campo requerido`,
+    }),
+});
 module.exports = {
   reservationSchema,
   userSchema,
@@ -470,4 +478,5 @@ module.exports = {
   filterSpaceAdminSchema,
   getPackSchema,
   filterBookingsSchema,
+  deletePhotoSpaceSchema,
 };

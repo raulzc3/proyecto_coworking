@@ -22,9 +22,7 @@ const getReviews = async (req, res, next) => {
 
     res.send({
       status: "ok",
-      data: {
-        ...results,
-      },
+      data: [...results],
     });
   } catch (error) {
     next(error);

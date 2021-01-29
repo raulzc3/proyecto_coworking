@@ -92,6 +92,23 @@ const numberIntegerPositiveRequiredValidator = (varName) => {
  *
  * @param {String} varName :Nombre de la variable number a validar
  */
+const numPositiveIntegerValidator = (varName) => {
+  return Joi.number()
+    .required()
+    .positive()
+    .integer()
+    .messages({
+      "number.base": `${varName} debe ser de tipo 'number'`,
+      "number.empty": `${varName} no puede estar vacío`,
+      "number.positive": `${varName} debe ser un valor positivo`,
+      "number.integer": `${varName} debe ser un valor entero`,
+    });
+};
+
+/**
+ *
+ * @param {String} varName :Nombre de la variable number a validar
+ */
 const numBetweenOneAndZeroValidator = (varName) => {
   return Joi.number()
     .allow("")
@@ -105,22 +122,7 @@ const numBetweenOneAndZeroValidator = (varName) => {
       "number.max": `${varName} debe ser 0 o 1`,
     });
 };
-/**
- *
- * @param {String} varName :Nombre de la variable number a validar
- */
-const numPositiveIntegerValidator = (varName) => {
-  return Joi.number()
-    .required()
-    .positive()
-    .integer()
-    .messages({
-      "number.base": `${varName} debe ser de tipo 'number'`,
-      "number.empty": `${varName} no puede estar vacío`,
-      "number.positive": `${varName} debe ser un valor positivo`,
-      "number.integer": `${varName} debe ser un valor entero`,
-    });
-};
+
 /**
  *
  * @param {String} varName : Nombre de la variable date a validar
@@ -183,7 +185,7 @@ const newReportSchema = Joi.object().keys({
 
 //Schema para filtrar reportes (los campos serán opcionales)
 const filterReportSchema = Joi.object().keys({
-  report_id: numberIntegerPositiveRequiredValidator("report_id"),
+  report_id: numPositiveIntegerValidator("report_id"),
   user: Joi.number().allow("").integer().positive().messages({
     "number.base": `'user_id' debe ser de tipo 'number'`,
   }),
@@ -229,8 +231,8 @@ const newSpaceSchema = Joi.object().keys({
       "Sala audiovisual",
       "Oficina compartida"
     ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().required().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
@@ -246,8 +248,8 @@ const filterSpaceSchema = Joi.object().keys({
     "Sala audiovisual",
     "Oficina compartida"
   ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
@@ -274,8 +276,8 @@ const filterSpaceAdminSchema = Joi.object().keys({
     "Sala audiovisual",
     "Oficina compartida"
   ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
@@ -300,7 +302,7 @@ const filterSpaceAdminSchema = Joi.object().keys({
 
 //user_id, name,surname,company,admin,verified,deleted,registration_date,
 const filterUserSchema = Joi.object().keys({
-  user_id: numberIntegerPositiveRequiredValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   name: maxTextValidator("name", 50),
   surname: maxTextValidator("surname", 100),
   company: Joi.string().allow("").max(50).messages({
@@ -349,9 +351,9 @@ const newReviewSchema = Joi.object().keys({
 });
 
 const filterReviewsSchema = Joi.object().keys({
-  review_id: numberIntegerPositiveRequiredValidator("review_id"),
+  review_id: numPositiveIntegerValidator("review_id"),
 
-  user_id: numberIntegerPositiveRequiredValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   review_date: Joi.date().messages({
     "date.base": `"end_date" debe ser de tipo 'date'`,
     "date.empty": `"end_date" no puede estar vacio`,
@@ -393,8 +395,8 @@ const getPackSchema = Joi.object().keys({
 });
 
 const filterBookingsSchema = Joi.object().keys({
-  reservation_id: numberIntegerPositiveRequiredValidator("reservation_id"),
-  space_id: numberIntegerPositiveRequiredValidator("space_id"),
+  reservation_id: numPositiveIntegerValidator("reservation_id"),
+  space_id: numPositiveIntegerValidator("space_id"),
   space_type: Joi.string()
     .valid(
       "Sala audiovisual",
@@ -410,7 +412,7 @@ const filterBookingsSchema = Joi.object().keys({
   space_name: Joi.string().allow("").messages({
     "string.base": `"space_name" debe ser de tipo 'string'`,
   }),
-  user_id: numberIntegerPositiveRequiredValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   user_full_name: Joi.string().allow("").max(150).messages({
     "string.base": `"user_full_name" debe ser de tipo 'string'`,
     "string.max": `"user_full_name" no puede ser mayor de {#limit} caracteres`,

@@ -94,9 +94,7 @@ const filterbookings = async (req, res, next) => {
     const filteredBookings = results[0];
     res.send({
       status: "ok",
-      data: {
-        ...filteredBookings,
-      },
+      data: [...filteredBookings],
     });
   } catch (error) {
     next(error);

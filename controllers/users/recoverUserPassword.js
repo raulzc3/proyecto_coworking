@@ -26,17 +26,11 @@ const recoverUserPassword = async (req, res, next) => {
    `,
       [email]
     );
-    if (currentEmail.length === 0) {
-      throw createError(
-        "El email introducido no está en la base de datos",
-        404
-      );
-    }
-
-    //Si todo va bien, generamos codigo de recuperación
-    const recoverCode = generateRandomString(20);
-    // Envío por mail el bonito código de recuperación
-    const emailBody = `
+    if (currentEmail.length !== 0) {
+      //Si todo va bien, generamos codigo de recuperación
+      const recoverCode = generateRandomString(20);
+      // Envío por mail el bonito código de recuperación
+      const emailBody = `
    Se ha solicitado un cambio de contraseña para el usuario registrado con este email en la página coworkit.company.com
    <br>
    <br>
@@ -51,24 +45,24 @@ const recoverUserPassword = async (req, res, next) => {
    <br>
    Un saludo desde el rincon de tus sueños, Coworkit 🏙
    `;
-    await connection.query(
-      `
+      await connection.query(
+        `
     UPDATE  users
     SET validation_code=?
     WHERE email=?
 `,
-      [recoverCode, email]
-    );
+        [recoverCode, email]
+      );
 
-    await sendMail({
-      to: email,
-      subject: "Cambio de contraseña de Coworkit",
-      body: emailBody,
-    });
+      await sendMail({
+        to: email,
+        subject: "Cambio de contraseña de Coworkit",
+        body: emailBody,
+      });
+    }
     res.send({
       status: "ok",
       message: "Email enviado",
-      recoverCode: recoverCode,
     });
   } catch (error) {
     next(error);

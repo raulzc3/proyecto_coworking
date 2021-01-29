@@ -49,7 +49,7 @@ const getReservation = async (req, res, next) => {
     }
     res.send({
       status: "ok",
-      data: { ...reservation },
+      data: [...reservation],
     });
   } catch (error) {
     next(error);

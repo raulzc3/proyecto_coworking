@@ -27,7 +27,6 @@ const loginUser = async (req, res, next) => {
     if (user.length === 0) {
       throw createError("El email o el password son incorrectos", 401);
     }
-    console.log(user[0]);
     // Si existe pero no está activo avisamos que está pendiente de activar
     if (!user[0].verified) {
       throw createError(

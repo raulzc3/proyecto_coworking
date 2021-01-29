@@ -26,7 +26,7 @@ const editReservation = async (req, res, next) => {
     `,
       [reservation_id]
     );
-    console.log(oldReservation[0]);
+
     const {
       oldSpace_id,
       oldPack_id,
@@ -82,7 +82,6 @@ const editReservation = async (req, res, next) => {
       bookings[0][0].user_id !== Number(req.params.user_id) &&
       !req.userAuth.admin
     ) {
-      console.log(bookings[0][0].user_id, Number(req.params.user_id));
       throw createError("No estás autorizado para realizar esta acción", 401);
     }
 

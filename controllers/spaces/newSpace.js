@@ -42,7 +42,6 @@ const newSpace = async (req, res, next) => {
     const urlPhotos = await Promise.all(
       photosData.map(async (photo) => {
         const namePhoto = await savePhoto(photo, folderOfPhotos);
-        console.log(namePhoto);
         //Introduzco las fotos en la BD
         await connection.query(
           `INSERT INTO photos (url,space_id)

@@ -136,7 +136,6 @@ const editUser = async (req, res, next) => {
     }
 
     // Aplicamos las modificaciones al usuario en cuestión
-    console.log(updateFields);
     await connection.query(
       `
       UPDATE users

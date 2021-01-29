@@ -1,6 +1,10 @@
 const Joi = require("joi");
 //lista de funciones que devuelven validaciones usadas reiteredas veces en los schemas
-
+/**
+ * 
+ * @param {String} varName :Nombre del parámetro a validar
+ * @param {Number} max :Número máximo de caracteres
+ */
 const maxTextValidator = (varName, max) => {
   return Joi.string()
     .allow("")
@@ -10,7 +14,12 @@ const maxTextValidator = (varName, max) => {
       "string.max": `${varName} no puede tener más de {#limit} caracteres`,
     });
 };
-
+/**
+ * 
+ * @param {String} varName :Nombre del parámetro a validar
+ * @param {Number} max :Número máximo de caracteres
+ * @param {Number} min :Número mínimo de caracteres
+ */
 const textRequiredValidator = (varName, max, min = 0) => {
   return Joi.string()
     .required()
@@ -24,7 +33,10 @@ const textRequiredValidator = (varName, max, min = 0) => {
       "any.required": `${varName} es un campo requerido`,
     });
 };
-
+/**
+ * 
+ * @param {String} varName :Nombre del parámetro a validar
+ */
 const dateRequiredValidator = (varName) => {
   return Joi.date()
     .required()
@@ -42,6 +54,10 @@ const dateRequiredValidator = (varName) => {
       "any.required": `${varName}  es un campo requerido`,
     });
 };
+/**
+ * 
+ * @param {String} varName :Nombre del parámetro a validar
+ */
 const dateValidator = (varName) => {
   return Joi.date()
     .min(new Date())
@@ -52,6 +68,10 @@ const dateValidator = (varName) => {
       "any.required": `${varName}  es un campo requerido`,
     });
 };
+/**
+ * 
+ * @param {String} varName :Nombre del parámetro a validar
+ */
 const numberValidator = (varName) => {
   return Joi.number()
     .positive()

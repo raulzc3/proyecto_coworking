@@ -46,28 +46,6 @@ const editUser = async (req, res, next) => {
       [user_id]
     );
 
-    // Si el nif recibido es diferente al que tenía anteriormente el usuario, lo procesamos
-    if (tel && tel !== currentData[0].tel) {
-      // Comprobamos que no exista el nuevo nif en la base de datos
-      const [existingNif] = await connection.query(
-        `
-      SELECT id
-      FROM users
-      WHERE nif=?
-      `,
-        [nif]
-      );
-
-      if (existingNif.length > 0) {
-        throw createError(
-          "Ya existe un usuario  en la base de datos con el nif proporcionado",
-          409
-        );
-      }
-
-      updateFields.push(`nif='${nif}'`);
-    }
-
     // Si el teléfono recibido es diferente al que tenía anteriormente el usuario, lo procesamos
     if (tel && tel !== currentData[0].tel) {
       // Comprobamos que no exista el nuevo teléfono en la base de datos

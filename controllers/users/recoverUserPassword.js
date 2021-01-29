@@ -16,7 +16,6 @@ const recoverUserPassword = async (req, res, next) => {
     await validator(recoverUserPasswordSchema, req.body);
     //Sacamos el email
     const { email } = req.body;
-    console.log(email);
     //Comprobamos que el email existe en la base de datos, saltan alarmas si no está
     const [currentEmail] = await connection.query(
       `

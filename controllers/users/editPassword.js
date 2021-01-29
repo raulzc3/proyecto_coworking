@@ -12,7 +12,6 @@ const editPassword = async (req, res, next) => {
     await validator(editPasswordSchema, req.body);
     // Recoger de req.body oldPassword y newPassword
     const { oldPassword, newPassword } = req.body;
-    console.log(req.body);
 
     // Comprobar que el usuario que viene del token es el mismo al que queremos cambiar la pass
     if (req.userAuth.id !== Number(user_id)) {

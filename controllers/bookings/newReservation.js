@@ -12,7 +12,6 @@ const newReservation = async (req, res, next) => {
     connection = await req.app.locals.getDB();
     const { user_id, space_id } = req.params;
     const { start_date, end_date, pack_id } = req.body;
-    console.log("espacio", space_id);
 
     //validar los valores del body ✅
     await validator(reservationSchema, req.body);
@@ -49,7 +48,6 @@ const newReservation = async (req, res, next) => {
     );
 
     if (bookingOfSpace[0].length !== 0) {
-      console.log(bookingOfSpace[0]);
       throw createError("Espacio no disponible en esas fechas", 400);
     }
 
@@ -77,7 +75,6 @@ const newReservation = async (req, res, next) => {
       ) + 1;
 
     const totalPriceResservation = numOfDays * (spacePricePerDay + packPrice);
-    console.log(totalPriceResservation);
 
     await connection.query(
       `

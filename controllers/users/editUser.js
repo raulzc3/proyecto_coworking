@@ -46,6 +46,11 @@ const editUser = async (req, res, next) => {
       [user_id]
     );
 
+    // Si el nif recibido es diferente al que tenía anteriormente el usuario, lo procesamos
+    if (nif && nif !== currentData[0].nif) {
+      updateFields.push(`nif='${nif}'`);
+    }
+
     // Si el teléfono recibido es diferente al que tenía anteriormente el usuario, lo procesamos
     if (tel && tel !== currentData[0].tel) {
       // Comprobamos que no exista el nuevo teléfono en la base de datos
@@ -131,7 +136,6 @@ const editUser = async (req, res, next) => {
     }
 
     // Aplicamos las modificaciones al usuario en cuestión
-    console.log(updateFields);
     await connection.query(
       `
       UPDATE users
@@ -141,10 +145,28 @@ const editUser = async (req, res, next) => {
       [name, surname, company, new Date(), user_id]
     );
 
+    const [newData] = await connection.query(
+      `
+    SELECT name, 
+           surname,
+           nif,
+           company,
+           tel,
+           email,
+           photo,
+           admin,
+           deleted
+    FROM users
+    WHERE id = ?;
+    `,
+      [user_id]
+    );
+
     //Enviamos una respuesta favorable si todo ha salido bien
     res.send({
       status: "ok",
       message: `Datos de usuario actualizados.${mailMessage}`,
+      data: newData[0],
     });
   } catch (error) {
     next(error);

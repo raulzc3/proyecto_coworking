@@ -231,6 +231,18 @@ function distanceDateInHours(startDistance, endDistance) {
   );
 }
 
+/**
+ *
+ * @param {string} fileName - Nombre de la imagen
+ * @param {string} folder - Nombre de la carpeta de destino (dentro de uploads)
+ * @returns {path} Url completa de la imagen en cuestión
+ */
+function setPhotoUrl(fileName, folder = "") {
+  const { PUBLIC_HOST, UPLOADS_DIRECTORY } = process.env;
+
+  return path.join(PUBLIC_HOST, UPLOADS_DIRECTORY, folder, fileName);
+}
+
 module.exports = {
   formatDateToDB,
   savePhoto,
@@ -245,4 +257,5 @@ module.exports = {
   formatName,
   createGreetings,
   distanceDateInHours,
+  setPhotoUrl,
 };

@@ -39,7 +39,7 @@ const newReport = async (req, res, next) => {
 
     if (req.files && Object.keys(req.files).length > 0) {
       reportPhoto = await savePhoto(req.files.photo, "reports");
-      console.log(req.files.photo);
+      req.files.photo;
     }
 
     //Ejecutamos la inserción en la base de datos

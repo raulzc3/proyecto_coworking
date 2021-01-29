@@ -43,7 +43,6 @@ const filterReviews = async (req, res, next) => {
       ]
     );
 
-    console.log("dentro");
     res.send({
       status: "ok",
       data: [...results],

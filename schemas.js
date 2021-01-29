@@ -1,8 +1,15 @@
 const Joi = require("joi");
-//lista de funciones que devuelven validaciones usadas reiteredas veces en los schemas
+//*******************************************************************************************
+//****lista de funciones que devuelven validaciones usadas reiteredas veces en los schemas***
+//*******************************************************************************************
+
 /**
  *
+<<<<<<< HEAD
  * @param {String} varName :Nombre del parámetro a validar
+=======
+ * @param {String} varName :Nombre de la variable string a validar
+>>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  * @param {Number} max :Número máximo de caracteres
  */
 const maxTextValidator = (varName, max) => {
@@ -16,7 +23,11 @@ const maxTextValidator = (varName, max) => {
 };
 /**
  *
+<<<<<<< HEAD
  * @param {String} varName :Nombre del parámetro a validar
+=======
+ * @param {String} varName :Nombre de la variable requerida de tipo string a ser validada
+>>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  * @param {Number} max :Número máximo de caracteres
  * @param {Number} min :Número mínimo de caracteres
  */
@@ -35,7 +46,11 @@ const textRequiredValidator = (varName, max, min = 0) => {
 };
 /**
  *
+<<<<<<< HEAD
  * @param {String} varName :Nombre del parámetro a validar
+=======
+ * @param {String} varName :Nombre de la variable requerida de tipo date a ser validada
+>>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
 const dateRequiredValidator = (varName) => {
   return Joi.date()
@@ -56,7 +71,11 @@ const dateRequiredValidator = (varName) => {
 };
 /**
  *
+<<<<<<< HEAD
  * @param {String} varName :Nombre del parámetro a validar
+=======
+ * @param {String} varName :Nombre de la variable requerida de tipo date a ser validada
+>>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
 const dateValidator = (varName) => {
   return Joi.date()
@@ -65,16 +84,20 @@ const dateValidator = (varName) => {
       "date.base": `${varName}  debe ser de tipo 'date'`,
       "date.empty": `${varName}  no puede estar vacío`,
       "date.min": `${varName}  no puede ser anterior a la {#limit}`,
-      "any.required": `${varName}  es un campo requerido`,
     });
 };
 /**
  *
+<<<<<<< HEAD
  * @param {String} varName :Nombre del parámetro a validar
+=======
+ * @param {String} varName :Nombre de la variable requerida de tipo number a ser validada
+>>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
-const numberValidator = (varName) => {
+const numberIntegerPositiveRequiredValidator = (varName) => {
   return Joi.number()
     .positive()
+    .required()
     .integer()
     .messages({
       "number.base": `${varName} debe ser de tipo 'number'`,
@@ -85,11 +108,61 @@ const numberValidator = (varName) => {
     });
 };
 
+/**
+ *
+ * @param {String} varName :Nombre de la variable number a validar
+ */
+const numPositiveIntegerValidator = (varName) => {
+  return Joi.number()
+    .positive()
+    .integer()
+    .messages({
+      "number.base": `${varName} debe ser de tipo 'number'`,
+      "number.empty": `${varName} no puede estar vacío`,
+      "number.positive": `${varName} debe ser un valor positivo`,
+      "number.integer": `${varName} debe ser un valor entero`,
+    });
+};
+
+/**
+ *
+ * @param {String} varName :Nombre de la variable number a validar
+ */
+const numBetweenOneAndZeroValidator = (varName) => {
+  return Joi.number()
+    .allow("")
+    .integer()
+    .min(0)
+    .max(1)
+    .messages({
+      "number.base": `${varName} debe ser de tipo 'number'`,
+      "number.integer": `${varName} debe ser un valor entero`,
+      "number.min": `${varName} debe ser 0 o 1`,
+      "number.max": `${varName} debe ser 0 o 1`,
+    });
+};
+
+/**
+ *
+ * @param {String} varName : Nombre de la variable date a validar
+ */
+const dateTypeValidator = (varName) => {
+  return Joi.date()
+    .allow("")
+    .messages({
+      "date.base": `${varName} debe ser de tipo 'date'`,
+    });
+};
+
+//*******************************************************************************************
+//*****************************Inicio de lista de schemas************************************
+//*******************************************************************************************
+
 const reservationSchema = Joi.object().keys({
   start_date: dateRequiredValidator("start_date"),
   end_date: dateRequiredValidator("end_date"),
-  pack_id: numberValidator("pack_id"),
-  space_id: numberValidator("space_id"),
+  pack_id: numberIntegerPositiveRequiredValidator("pack_id"),
+  space_id: numberIntegerPositiveRequiredValidator("space_id"),
 });
 
 const userSchema = Joi.object().keys({
@@ -112,21 +185,9 @@ const editUserSchema = Joi.object().keys({
   company: textRequiredValidator("company", 50),
   tel: textRequiredValidator("tel", 30),
   email: textRequiredValidator("email", 100),
-  admin: Joi.number().allow("").integer().min(0).max(1).messages({
-    "number.base": `'admin' debe ser de tipo 'number'`,
-    "number.min": `'admin' debe ser 0 o 1`,
-    "number.max": `'admin' debe ser 0 o 1`,
-  }),
-  deleted: Joi.number().allow("").integer().min(0).max(1).messages({
-    "number.base": `'deleted' debe ser de tipo 'number'`,
-    "number.min": `'deleted' debe ser 0 o 1`,
-    "number.max": `'deleted' debe ser 0 o 1`,
-  }),
-  deletePhoto: Joi.number().allow("").integer().min(0).max(1).messages({
-    "number.base": `'deletePhoto' debe ser de tipo 'number'`,
-    "number.min": `'deletePhoto' debe ser 0 o 1`,
-    "number.max": `'deletePhoto' debe ser 0 o 1`,
-  }),
+  admin: numBetweenOneAndZeroValidator("admin"),
+  deleted: numBetweenOneAndZeroValidator("deleted"),
+  deletePhoto: numBetweenOneAndZeroValidator("deletePhoto"),
 });
 
 const newReportSchema = Joi.object().keys({
@@ -143,7 +204,7 @@ const newReportSchema = Joi.object().keys({
 
 //Schema para filtrar reportes (los campos serán opcionales)
 const filterReportSchema = Joi.object().keys({
-  report_id: numberValidator("report_id"),
+  report_id: numPositiveIntegerValidator("report_id"),
   user: Joi.number().allow("").integer().positive().messages({
     "number.base": `'user_id' debe ser de tipo 'number'`,
   }),
@@ -163,11 +224,7 @@ const filterReportSchema = Joi.object().keys({
     "otros",
     ""
   ),
-  solved: Joi.number().allow("").integer().min(0).max(1).messages({
-    "number.base": `'solved' debe ser de tipo 'number'`,
-    "number.min": `'solved' debe ser 0 o 1`,
-    "number.max": `'solved' debe ser 0 o 1`,
-  }),
+  solved: numBetweenOneAndZeroValidator("solved"),
   user_name: Joi.string().allow("").max(150).messages({
     "string.base": `"user_name" debe ser de tipo 'string'`,
     "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
@@ -193,19 +250,14 @@ const newSpaceSchema = Joi.object().keys({
       "Sala audiovisual",
       "Oficina compartida"
     ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().required().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
     "number.positive": `"price" debe ser un valor positivo`,
   }),
-  capacity: Joi.number().required().positive().integer().messages({
-    "number.base": `"capacity" debe ser de tipo 'number'`,
-    "number.empty": `"capacity" no puede estar vacío`,
-    "number.positive": `"capacity" debe ser un valor positivo`,
-    "number.integer": `"capacity" debe ser un valor entero`,
-  }),
+  capacity: numPositiveIntegerValidator("capacity"),
 });
 const filterSpaceSchema = Joi.object().keys({
   type: Joi.any().valid(
@@ -215,19 +267,14 @@ const filterSpaceSchema = Joi.object().keys({
     "Sala audiovisual",
     "Oficina compartida"
   ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
     "number.positive": `"price" debe ser un valor positivo`,
   }),
-  capacity: Joi.number().positive().integer().messages({
-    "number.base": `"capacity" debe ser de tipo 'number'`,
-    "number.empty": `"capacity" no puede estar vacío`,
-    "number.positive": `"capacity" debe ser un valor positivo`,
-    "number.integer": `"capacity" debe ser un valor entero`,
-  }),
+  capacity: numPositiveIntegerValidator("capacity"),
   start_date: dateValidator("start_date"),
   end_date: dateValidator("end_date"),
   order: Joi.string().valid(
@@ -248,19 +295,14 @@ const filterSpaceAdminSchema = Joi.object().keys({
     "Sala audiovisual",
     "Oficina compartida"
   ),
-  description: textRequiredValidator("description", 4000),
-  name: textRequiredValidator("name", 50),
+  description: maxTextValidator("description", 4000),
+  name: maxTextValidator("name", 50),
   price: Joi.number().positive().messages({
     "number.base": `"price" debe ser de tipo 'number'`,
     "number.empty": `"price" no puede estar vacío`,
     "number.positive": `"price" debe ser un valor positivo`,
   }),
-  capacity: Joi.number().positive().integer().messages({
-    "number.base": `"capacity" debe ser de tipo 'number'`,
-    "number.empty": `"capacity" no puede estar vacío`,
-    "number.positive": `"capacity" debe ser un valor positivo`,
-    "number.integer": `"capacity" debe ser un valor entero`,
-  }),
+  capacity: numPositiveIntegerValidator("capacity"),
   enabled: Joi.number().valid(0, 1),
   start_date: dateValidator("start_date"),
   end_date: dateValidator("end_date"),
@@ -279,34 +321,16 @@ const filterSpaceAdminSchema = Joi.object().keys({
 
 //user_id, name,surname,company,admin,verified,deleted,registration_date,
 const filterUserSchema = Joi.object().keys({
-  user_id: numberValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   name: maxTextValidator("name", 50),
   surname: maxTextValidator("surname", 100),
   company: Joi.string().allow("").max(50).messages({
     "string.base": `'company' debe ser de tipo 'string'`,
     "string.max": `'company' no puede tener más de {#limit} caracteres`,
   }),
-  admin: Joi.number().allow("").optional(0).max(1).min(0).messages({
-    "number.base": `"admin" debe ser de tipo 'number'`,
-    "number.positive": `"admin" debe ser un valor positivo`,
-    "number.integer": `"admin" debe ser un valor entero`,
-    "number.min": `'admin' puede ser como mínimo {#limit}`,
-    "number.max": `'admin' puede ser como máximo {#limit}`,
-  }),
-  verified: Joi.number().allow("").optional(1).max(1).min(0).messages({
-    "number.base": `"verified" debe ser de tipo 'number'`,
-    "number.positive": `"verified" debe ser un valor positivo`,
-    "number.integer": `"verified" debe ser un valor entero`,
-    "number.min": `'verified' puede ser como mínimo {#limit}`,
-    "number.max": `'verified' puede ser como máximo {#limit}`,
-  }),
-  deleted: Joi.number().allow("").optional(0).max(1).min(0).messages({
-    "number.base": `"verified" debe ser de tipo 'number'`,
-    "number.positive": `"verified" debe ser un valor positivo`,
-    "number.integer": `"verified" debe ser un valor entero`,
-    "number.min": `'verified' puede ser como mínimo {#limit}`,
-    "number.max": `'verified' puede ser como máximo {#limit}`,
-  }),
+  admin: numBetweenOneAndZeroValidator("admin"),
+  verified: numBetweenOneAndZeroValidator("verified"),
+  deleted: numBetweenOneAndZeroValidator("deleted"),
   registration_date: Joi.date().allow("").max(new Date()).messages({
     "date.base": `"registration_date" debe ser de tipo 'date'`,
     "any.required": `"registration_date" es un campo requerido`,
@@ -341,14 +365,14 @@ const newReviewSchema = Joi.object().keys({
     "number.empty": `"score" no puede estar vacío`,
     "number.positive": `"score" debe ser un valor positivo`,
     "number.integer": `"score" debe ser un valor entero`,
-    "string.max": `"score" no puede ser mayor de {#limit} `,
+    "number.max": `"score" no puede ser mayor de {#limit} `,
   }),
 });
 
 const filterReviewsSchema = Joi.object().keys({
-  review_id: numberValidator("review_id"),
+  review_id: numPositiveIntegerValidator("review_id"),
 
-  user_id: numberValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   review_date: Joi.date().messages({
     "date.base": `"end_date" debe ser de tipo 'date'`,
     "date.empty": `"end_date" no puede estar vacio`,
@@ -390,8 +414,8 @@ const getPackSchema = Joi.object().keys({
 });
 
 const filterBookingsSchema = Joi.object().keys({
-  reservation_id: numberValidator("reservation_id"),
-  space_id: numberValidator("space_id"),
+  reservation_id: numPositiveIntegerValidator("reservation_id"),
+  space_id: numPositiveIntegerValidator("space_id"),
   space_type: Joi.string()
     .valid(
       "Sala audiovisual",
@@ -407,7 +431,7 @@ const filterBookingsSchema = Joi.object().keys({
   space_name: Joi.string().allow("").messages({
     "string.base": `"space_name" debe ser de tipo 'string'`,
   }),
-  user_id: numberValidator("user_id"),
+  user_id: numPositiveIntegerValidator("user_id"),
   user_full_name: Joi.string().allow("").max(150).messages({
     "string.base": `"user_full_name" debe ser de tipo 'string'`,
     "string.max": `"user_full_name" no puede ser mayor de {#limit} caracteres`,
@@ -417,15 +441,9 @@ const filterBookingsSchema = Joi.object().keys({
     .messages({
       "string.base": `"pack" debe ser de tipo 'string'`,
     }),
-  start_date: Joi.date().allow("").messages({
-    "date.base": `"start_date" debe ser de tipo 'date'`,
-  }),
-  end_date: Joi.date().allow("").messages({
-    "date.base": `"end_date" debe ser de tipo 'date'`,
-  }),
-  order_date: Joi.date().allow("").messages({
-    "date.base": `"order_date" debe ser de tipo 'date'`,
-  }),
+  start_date: dateTypeValidator("start_date"),
+  end_date: dateTypeValidator("end_date"),
+  order_date: dateTypeValidator("order_date"),
   orderDirection: Joi.string().valid("ASC", "DESC").messages({
     "string.base": `"orderDirection" debe ser de tipo 'string'`,
   }),

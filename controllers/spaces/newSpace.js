@@ -1,5 +1,4 @@
-const { promises } = require("fs-extra");
-const { validator, savePhoto } = require("../../helpers");
+const { validator, savePhoto, setPhotoUrl } = require("../../helpers");
 const { newSpaceSchema } = require("../../schemas");
 
 const newSpace = async (req, res, next) => {
@@ -39,17 +38,17 @@ const newSpace = async (req, res, next) => {
     const photosData = keysOfPhotos.map((value) => {
       return value[1];
     });
-    const urlPhotos = await Promise.all(
+    const photos = await Promise.all(
       photosData.map(async (photo) => {
         const namePhoto = await savePhoto(photo, folderOfPhotos);
-        console.log(namePhoto);
         //Introduzco las fotos en la BD
         await connection.query(
           `INSERT INTO photos (url,space_id)
   VALUES ( ?, ${insertId});`,
           [namePhoto]
         );
-        return namePhoto;
+
+        return setPhotoUrl(namePhoto, folderOfPhotos);
       })
     );
     //Envio la respuesta
@@ -62,7 +61,7 @@ const newSpace = async (req, res, next) => {
         name,
         price,
         capacity,
-        urlPhotos,
+        photos,
       },
     });
   } catch (error) {

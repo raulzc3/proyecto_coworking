@@ -22,7 +22,7 @@ const deleteUser = async (req, res, next) => {
     await connection.query(
       `
       UPDATE users
-      SET  nif=NULL, password=?, photo=?, tel= NULL,company= NULL, admin= 0, verified=0, deleted=1, last_auth_date=?
+      SET  nif=000000000, password=?, photo=?, tel= NULL, company= NULL, admin= 0, verified=0, deleted=1, last_auth_date=?
       WHERE ID=?
     `,
       [

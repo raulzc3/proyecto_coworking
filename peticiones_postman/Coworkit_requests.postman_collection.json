@@ -175,13 +175,13 @@
 									"disabled": true
 								},
 								{
-									"key": "orderDirection",
+									"key": "direction",
 									"value": "desc",
 									"description": "Orden en el qeu se muestran los resultados",
 									"disabled": true
 								},
 								{
-									"key": "orderBy",
+									"key": "order",
 									"value": "space_id",
 									"description": "Campo por el que queremos ordenar los resultados",
 									"disabled": true
@@ -201,14 +201,14 @@
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDM4NDc2NiwiZXhwIjoxNjEyOTc2NzY2fQ.MBABsHjg_XMFAHoT7zFadv5BfItAvy9m3d2EiL34lgE",
 								"description": "Administrador",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							},
 							{
 								"key": "authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"description": "Usuario",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							},
 							{
 								"key": "authorization",
@@ -220,7 +220,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\n            \"start_date\": \"2031-01-22\",\n            \"end_date\": \"2031-01-22\",\n            \"pack_id\": 1\n}\n    ",
+							"raw": "{\n\n            \"start_date\": \"2032-01-27\",\n            \"end_date\": \"2035-01-28\",\n            \"pack_id\": 5\n\n}\n    ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -228,7 +228,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/bookings/1/2",
+							"raw": "http://localhost:3000/bookings/2/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -236,7 +236,7 @@
 							"port": "3000",
 							"path": [
 								"bookings",
-								"1",
+								"2",
 								"2"
 							]
 						},
@@ -545,22 +545,29 @@
 					"response": []
 				},
 				{
-					"name": "Eliminar Pack",
+					"name": "Cambiar estado Pack",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
-								"type": "text"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -575,7 +582,7 @@
 								"1"
 							]
 						},
-						"description": "Permite eliminar un pack (solo el administrador)\n\n/packs/:pack_id"
+						"description": "Permite alternar el estado de un pack entre habilitado y deshabilitado (solo el administrador)\n\n/packs/:pack_id"
 					},
 					"response": []
 				}
@@ -653,18 +660,18 @@
 									"disabled": true
 								},
 								{
-									"key": "orderBy",
-									"value": "report_date",
+									"key": "user_name",
+									"value": "Jas",
 									"disabled": true
 								},
 								{
-									"key": "orderDirection",
+									"key": "order",
 									"value": "desc",
 									"disabled": true
 								},
 								{
-									"key": "user_name",
-									"value": "Jas",
+									"key": "direction",
+									"value": "desc",
 									"disabled": true
 								}
 							]
@@ -715,7 +722,7 @@
 								{
 									"key": "photo",
 									"type": "file",
-									"src": []
+									"src": "/home/raulgs/Imágenes/Captura de pantalla de 2021-01-25 23-31-48.png"
 								}
 							],
 							"options": {
@@ -725,7 +732,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/report/2/3",
+							"raw": "http://localhost:3000/report/2/4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -734,10 +741,10 @@
 							"path": [
 								"report",
 								"2",
-								"3"
+								"4"
 							]
 						},
-						"description": "Petición para la creación de una incidencia\nUn usuario puede crear incidencias unicamente para sus propios pedidos activos\n\nEl admin puede crear incidencias para cualquier usuario con una reserva activa"
+						"description": "Petición para la creación de una incidencia\nUn usuario puede crear incidencias unicamente para sus propios pedidos activos\n\nEl admin puede crear incidencias para cualquier usuario con una reserva activa\n\nreport/:user_id/:space_id"
 					},
 					"response": []
 				},
@@ -961,7 +968,7 @@
 					"response": []
 				},
 				{
-					"name": "filtrar valoración Copy",
+					"name": "Mostrar valoraciones de un espacio",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1162,7 +1169,7 @@
 			"name": "Spaces",
 			"item": [
 				{
-					"name": "filtrar espacios admin",
+					"name": "Filtrar espacios Administrador",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1187,7 +1194,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/admin/spaces",
+							"raw": "http://localhost:3000/admin/spaces?space_id=3&order&direction",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1242,6 +1249,18 @@
 									"key": "enabled",
 									"value": "1",
 									"disabled": true
+								},
+								{
+									"key": "space_id",
+									"value": "3"
+								},
+								{
+									"key": "order",
+									"value": null
+								},
+								{
+									"key": "direction",
+									"value": null
 								}
 							]
 						},
@@ -1293,21 +1312,21 @@
 					"response": []
 				},
 				{
-					"name": "filtrar espacios",
+					"name": "Filtrar espacios",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "Usuario",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "Administrador",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
@@ -1365,12 +1384,18 @@
 									"disabled": true
 								},
 								{
+									"key": "order",
+									"value": null,
+									"disabled": true
+								},
+								{
 									"key": "direction",
 									"value": "ASC",
 									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Permite a cualquier usuario filtrar espacios, si no se aplican filtros se mostrarán todos los espacios.\n\n/spaces"
 					},
 					"response": []
 				},
@@ -1382,13 +1407,20 @@
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
+								"description": "Administrador",
 								"type": "text"
 							},
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInRasdfasdfadsfsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
 								"type": "text",
 								"disabled": true
 							}
@@ -1448,7 +1480,8 @@
 							"path": [
 								"spaces"
 							]
-						}
+						},
+						"description": "Permite al administrador crear un espacio.\n\n/spaces"
 					},
 					"response": []
 				},
@@ -1459,16 +1492,23 @@
 						"header": [
 							{
 								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
-								"type": "text"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCIasdfasdfadsfasdfasdfTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1491,7 +1531,8 @@
 								"spaces",
 								"11"
 							]
-						}
+						},
+						"description": "Permite al administrador editar un espacio.\n\n/spaces/:space_id"
 					},
 					"response": []
 				},
@@ -1501,17 +1542,23 @@
 						"method": "PUT",
 						"header": [
 							{
-								"description": "user",
+								"description": "Administrador",
+								"key": "Authorization",
+								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw"
+							},
+							{
+								"description": "Usuario",
 								"key": "Authorization",
 								"type": "text",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
 							},
 							{
-								"description": "admin",
 								"key": "Authorization",
-								"type": "text",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyaiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBdfasdfasdfBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -1535,41 +1582,8 @@
 								"enable",
 								"1"
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Eliminar Espacios",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
-								"description": "admin",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:3000/spaces/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"spaces",
-								"1"
-							]
-						}
+						},
+						"description": "Permite al administrador habilitar o deshabilitar un espacio.\n\n/enable/:space_id"
 					},
 					"response": []
 				}
@@ -1595,31 +1609,39 @@
 								"validate",
 								"f3d6f4a50d494355941adcde66a7ca2a9969b9a38f59dd5b444f29a83cd53abf59137001fd0ca170"
 							]
-						}
+						},
+						"description": "Permite validar un usuario, es necesario hacerlo tras el registro y tras el cambio de email.\n\n/users/validate/:validationCode"
 					},
 					"response": []
 				},
 				{
-					"name": "informacion usuario",
+					"name": "Informacion usuario",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
-								"key": "authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "usuario normal",
+								"description": "Administrador",
+								"key": "Authorization",
 								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw"
+							},
+							{
+								"description": "Usuario",
+								"key": "Authorization",
+								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
 							},
 							{
-								"key": "authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYwOTk2NzkzMywiZXhwIjoxNjEyNTU5OTMzfQ.cTbG35cyHVEnNg86SLxVua8YXrZnf1UdZ3vQfd0nito",
-								"description": "usuario admin",
-								"type": "text"
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6asdTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/users/1",
+							"raw": "http://localhost:3000/users/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1627,46 +1649,15 @@
 							"port": "3000",
 							"path": [
 								"users",
-								"1"
+								"2"
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Recuperar contraseña",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\"email\":\"Jalon18@yahoo.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
 						},
-						"url": {
-							"raw": "http://localhost:3000/users/recoverPassword",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"users",
-								"recoverPassword"
-							]
-						}
+						"description": "Permite a un usuario visualizar sus propios datos, el admin puede visualizar los datos de los demás usuarios.\n\n/users/:user_id"
 					},
 					"response": []
 				},
 				{
-					"name": "filtrar usuarios",
+					"name": "Filtrar usuarios",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1674,17 +1665,25 @@
 						"method": "GET",
 						"header": [
 							{
-								"description": "usuario normal",
-								"key": "authorization",
+								"description": "Administrador",
+								"key": "Authorization",
+								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"disabled": true
+							},
+							{
+								"description": "Usuario",
+								"key": "Authorization",
 								"type": "text",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
 							},
 							{
-								"description": "usuario admin",
-								"key": "authorization",
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MasasdfadMywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEwd",
+								"description": "Token falso",
 								"type": "text",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDE0MDIyMiwiZXhwIjoxNjEyNzMyMjIyfQ.2NwyIsVrQDbv76xpuB9OvtWVHHXaGaPayXQ5wMh3pXA"
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1692,15 +1691,14 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "http://localhost:3000/users/?surname=",
+							"raw": "http://localhost:3000/users",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"users",
-								""
+								"users"
 							],
 							"query": [
 								{
@@ -1715,7 +1713,8 @@
 								},
 								{
 									"key": "surname",
-									"value": ""
+									"value": "",
+									"disabled": true
 								},
 								{
 									"key": "company",
@@ -1741,9 +1740,50 @@
 									"key": "registration_date",
 									"value": "2021-01-08",
 									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "direction",
+									"value": null,
+									"disabled": true
 								}
 							]
-						}
+						},
+						"description": "Permite al administrador filtrar los usuarios por distintos parámetros. En caso de no aplicar filtros, se mostrarán todos.\n\n/admin/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Solicitud cambio contraseña",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"email\":\"foo@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users/recoverPassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"recoverPassword"
+							]
+						},
+						"description": "Permite solicitar el cambio de contraseña a un usuario anónimo que no es capaz de iniciar sesión. \n\n/users/recoverPassword"
 					},
 					"response": []
 				},
@@ -1771,7 +1811,8 @@
 							"path": [
 								"users"
 							]
-						}
+						},
+						"description": "Permite a un usuario anónimo crear una cuenta\n\n/users"
 					},
 					"response": []
 				},
@@ -1800,7 +1841,8 @@
 								"users",
 								"login"
 							]
-						}
+						},
+						"description": "Permite a un usuario anónimo iniciar sesión.\n\n/login"
 					},
 					"response": []
 				},
@@ -1811,17 +1853,23 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDE1NTI5OCwiZXhwIjoxNjEyNzQ3Mjk4fQ.S2OQJ7icJiCrAnAu-SzwX0IYyREA290Rsn46f5qI3FY",
-								"description": "Admin",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
 								"type": "text",
 								"disabled": true
 							},
 							{
 								"key": "Authorization",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
-								"description": "user",
+								"description": "Usuario",
 								"type": "text",
 								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4adsfasdfasdfasdfrZek1cnrWREhJ2Bh_ABM",
+								"description": "Token faslo",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -1845,7 +1893,60 @@
 								"contact",
 								"12"
 							]
-						}
+						},
+						"description": "Permite al administrador enviar un correo a cuaquier usuario.\n\n/users/contact/:user_id"
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar contraseña",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"description": "Administrador",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Usuario",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCIdsdsddsXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token faso",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\": \"123456\",\n    \"newPassword\": \"1234789456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users/2/changePassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"2",
+								"changePassword"
+							]
+						},
+						"description": "Permite a un usuario logueado cambiar su contraseña.\n\n/users/:user_id/changePassword"
 					},
 					"response": []
 				},
@@ -1874,27 +1975,35 @@
 								"users",
 								"resetPassword"
 							]
-						}
+						},
+						"description": "Permite a un usuario establecer una nueva contraseña con el código de validación que se le envía al correo.\n\n/users/resetPassword"
 					},
 					"response": []
 				},
 				{
-					"name": "editar info usuario",
+					"name": "Modificar usuario",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
-								"description": "usuario normal",
+								"description": "Administrador",
+								"key": "authorization",
+								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw"
+							},
+							{
+								"description": "Usuario",
 								"key": "authorization",
 								"type": "text",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
 							},
 							{
-								"description": "usuario admin",
-								"key": "authorization",
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzasdfa5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
+								"description": "Token falso",
 								"type": "text",
-								"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDE0MDIyMiwiZXhwIjoxNjEyNzMyMjIyfQ.2NwyIsVrQDbv76xpuB9OvtWVHHXaGaPayXQ5wMh3pXA\""
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1965,7 +2074,8 @@
 								"users",
 								"4"
 							]
-						}
+						},
+						"description": "Permite a un usuario modificar sus datos. El usuario puede modificar los datos de otros usuarios, incluido dar o quitar permisos de administración.\n\n/users/:user_id"
 					},
 					"response": []
 				},
@@ -1975,17 +2085,24 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"description": "usuario normal",
+								"description": "Administrador",
+								"key": "authorization",
+								"type": "text",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw"
+							},
+							{
+								"description": "Usuario",
 								"key": "authorization",
 								"type": "text",
 								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiYWRtaW4iOjAsImlhdCI6MTYxMTE4MTY4MCwiZXhwIjoxNjEzNzczNjgwfQ.Wi7KGkBBBH5coOmG4JKQ2h4rZek1cnrWREhJ2Bh_ABM",
 								"disabled": true
 							},
 							{
-								"description": "usuario admin",
-								"key": "authorization",
+								"description": "Token falso",
+								"key": "Authorization",
 								"type": "text",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOjEsImlhdCI6MTYwOTk2NzkzMywiZXhwIjoxNjEyNTU5OTMzfQ.cTbG35cyHVEnNg86SLxVua8YXrZnf1UdZ3vQfd0nito"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtadssddsImlhdCI6MTYxMDQwOTE5MywiZXhwIjoxNjEzMDAxMTkzfQ.1nVr5vQJ4z0zwKApr72mbkvXm6tAQSI2_PvG8YBlyEw",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -1999,7 +2116,8 @@
 								"users",
 								"11"
 							]
-						}
+						},
+						"description": "Permite a un usuario eliminar su cuenta (no se elimina de la base de datos, existen datos que quedan almacenados).\n\nEl administrador puede eliminar a cualquier usuario.\n\n/users/:user_id"
 					},
 					"response": []
 				}

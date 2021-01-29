@@ -1,4 +1,5 @@
 const Joi = require("joi");
+
 //lista de funciones que devuelven validaciones usadas reiteredas veces en los schemas
 
 const maxTextValidator = (varName, max) => {
@@ -62,6 +63,19 @@ const numberValidator = (varName) => {
       "number.positive": `${varName} debe ser un valor positivo`,
       "number.integer": `${varName} debe ser un valor entero`,
       "number.required": `${varName} es un campo requerido`,
+    });
+};
+
+const numBetweenOneAndZeroValidator = (varName) => {
+  return Joi.number()
+    .allow("")
+    .integer()
+    .min(0)
+    .max(1)
+    .messages({
+      "number.base": `${varName}  debe ser de tipo 'number'`,
+      "number.min": `${varName}  debe ser 0 o 1`,
+      "number.max": `${varName}  debe ser 0 o 1`,
     });
 };
 

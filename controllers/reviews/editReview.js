@@ -29,7 +29,6 @@ const editPack = async (req, res, next) => {
     );
 
     const { space_id, old_user_id } = oldReview[0];
-    console.log(space_id, old_user_id);
 
     // Comprobamos que el usuario que realiza la edición sea el mismo que la creó
     if (old_user_id !== Number(user_id)) {

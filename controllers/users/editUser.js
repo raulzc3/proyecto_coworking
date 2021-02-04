@@ -126,7 +126,7 @@ const editUser = async (req, res, next) => {
       updateFields.push(`photo='${userPhoto}'`);
     } else if (Number(deletePhoto) === 1) {
       //En caso de que no se envíe una foto y se solicite que se elimine la actual, establecemos la foto por defecto
-      updateFields.push(`photo='default.png'`);
+      updateFields.push(`photo='defaultImg.svg'`);
     }
 
     // Si el usuario es administrador, le permitimos dar o retirar permisos de administrador a otros usuarios

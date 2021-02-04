@@ -240,7 +240,12 @@ function distanceDateInHours(startDistance, endDistance) {
 function setPhotoUrl(fileName, folder = "") {
   const { PUBLIC_HOST, UPLOADS_DIRECTORY } = process.env;
 
-  return path.join(PUBLIC_HOST, UPLOADS_DIRECTORY, folder, fileName);
+  return path.join(
+    "http://localhost:3000",
+    UPLOADS_DIRECTORY,
+    folder,
+    fileName
+  );
 }
 
 module.exports = {

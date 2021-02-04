@@ -15,7 +15,7 @@ CREATE TABLE users (
     surname VARCHAR(100) NOT NULL,
     nif CHAR(9) NOT NULL,
     password VARCHAR(512) NOT NULL, -- Contraseña del usuario (cifrada)
-    photo VARCHAR(50) NOT NULL DEFAULT '/img/default.png', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
+    photo VARCHAR(50) NOT NULL DEFAULT '/defaultImg.svg', -- En caso de que un usuario no suba una foto, le asignaremos una por defecto
     email VARCHAR(100) NOT NULL UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo correo
     tel VARCHAR(30) UNIQUE, -- UNIQUE para que no se pueda crear más de un usuario con el mismo teléfono
     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 

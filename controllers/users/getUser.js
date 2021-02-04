@@ -1,4 +1,5 @@
 const path = require("path");
+const { setPhotoUrl } = require("../../helpers");
 
 const getUser = async (req, res, next) => {
   let connection;
@@ -21,12 +22,7 @@ const getUser = async (req, res, next) => {
     // Si el usuario solicitado coíncide con el del token se muestran los datos --> middleware isAuthorized ✅
 
     const { photo } = user[0];
-    const photoUrl = path.join(
-      process.env.PUBLIC_HOST,
-      "uploads",
-      "users",
-      photo
-    );
+    const photoUrl = setPhotoUrl(photo, "users");
 
     const userInfo = {
       name: user[0].name,

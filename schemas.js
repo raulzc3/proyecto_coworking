@@ -470,12 +470,10 @@ const filterBookingsSchema = Joi.object().keys({
 });
 
 const deletePhotoSpaceSchema = Joi.object().keys({
-  url: Joi.string()
-    .required()
-    .messages({
-      "string.base": `"orderBy" debe ser de tipo 'string'`,
-      "any.required": `${varName}  es un campo requerido`,
-    }),
+  url: Joi.string().required().messages({
+    "string.base": `"orderBy" debe ser de tipo 'string'`,
+    "any.required": `url es un campo requerido`,
+  }),
 });
 module.exports = {
   reservationSchema,

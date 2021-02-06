@@ -182,7 +182,7 @@ const editUserSchema = Joi.object().keys({
   name: textRequiredValidator("name", 50),
   surname: textRequiredValidator("surname", 100),
   nif: textRequiredValidator("nif", 9),
-  company: textRequiredValidator("company", 50),
+  company: maxTextValidator("company", 50),
   tel: textRequiredValidator("tel", 30),
   email: textRequiredValidator("email", 100),
   admin: numBetweenOneAndZeroValidator("admin"),

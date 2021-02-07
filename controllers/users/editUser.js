@@ -14,6 +14,7 @@ const editUser = async (req, res, next) => {
   let connection;
   let mailMessage = "";
   let updateFields = ["name=?", "surname=?", "company=?", "last_auth_date=?"];
+  let lastAuthDate;
 
   try {
     connection = await req.app.locals.getDB();
@@ -36,10 +37,10 @@ const editUser = async (req, res, next) => {
       deletePhoto,
     } = req.body;
 
-    // Obtenemos el email actual del usuario
+    // Obtenemos la iformación actual del usuario
     const [currentData] = await connection.query(
       `
-      SELECT email, nif, tel
+      SELECT email, nif, tel, last_auth_date
       FROM users
       WHERE id=?
       `,
@@ -50,6 +51,9 @@ const editUser = async (req, res, next) => {
     if (nif && nif !== currentData[0].nif) {
       updateFields.push(`nif='${nif}'`);
     }
+
+    // obtendremos el last_auth_date para modificarlo en caso de que el email haya cambiado
+    lastAuthDate = new Date(currentData[0].last_auth_date);
 
     // Si el teléfono recibido es diferente al que tenía anteriormente el usuario, lo procesamos
     if (tel && tel !== currentData[0].tel) {
@@ -75,6 +79,8 @@ const editUser = async (req, res, next) => {
 
     // Si el email recibido es diferente al que tenía anteriormente el usuario, lo procesamos
     if (email && email !== currentData[0].email) {
+      // Se eactualizara la  lastAuthDate para que sea necesario hacer login con un token válido
+      lastAuthDate = new Date();
       // Comprobamos que no exista el nuevo email en la base de datos
       const [existingEmail] = await connection.query(
         `
@@ -142,7 +148,7 @@ const editUser = async (req, res, next) => {
       SET ${updateFields.join(",")}
       WHERE id=?
       `,
-      [name, surname, company, new Date(), user_id]
+      [name, surname, company, lastAuthDate, user_id]
     );
 
     const [newData] = await connection.query(

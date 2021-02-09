@@ -1,4 +1,5 @@
-const { isId, validator } = require("../../helpers");
+const { create } = require("lodash");
+const { isId, validator, createError } = require("../../helpers");
 const { editPasswordSchema } = require("../../schemas");
 
 const editPassword = async (req, res, next) => {
@@ -15,11 +16,10 @@ const editPassword = async (req, res, next) => {
 
     // Comprobar que el usuario que viene del token es el mismo al que queremos cambiar la pass
     if (req.userAuth.id !== Number(user_id)) {
-      const error = new Error(
-        "No tienes permisos para cambiar la contraseña de este usuario"
+      throw createError(
+        "No tienes permisos para cambiar la contraseña de este usuario",
+        403
       );
-      error.httpStatus = 403;
-      throw error;
     }
     // Comprobar que la contraseña antigua es correcta
     const [current] = await connection.query(
@@ -32,9 +32,7 @@ const editPassword = async (req, res, next) => {
     );
 
     if (current.length === 0) {
-      const error = new Error("La contraseña antigua no es correcta");
-      error.httpStatus = 401;
-      throw error;
+      throw createError("La contraseña antigua no es correcta", 401);
     }
 
     // Guardar la nueva contraseña y last auth update para que los anteriores tokens dejen de ser válidos

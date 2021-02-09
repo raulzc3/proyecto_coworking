@@ -17,12 +17,12 @@ const filterUsers = async (req, res, next) => {
       verified,
       deleted,
       registration_date,
-      orderBy,
-      orderDirection,
+      order,
+      direction,
     } = req.query;
 
-    orderBy = orderBy ? orderBy.toLowerCase() : "id";
-    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
+    order = order ? order.toLowerCase() : "id";
+    direction = direction ? direction.toUpperCase() : "ASC";
 
     await validator(filterUserSchema, {
       user_id,
@@ -33,8 +33,8 @@ const filterUsers = async (req, res, next) => {
       verified,
       deleted,
       registration_date,
-      orderBy,
-      orderDirection,
+      order,
+      direction,
     });
 
     const [results] = await connection.query(
@@ -49,7 +49,7 @@ const filterUsers = async (req, res, next) => {
                 AND (verified = ? OR ?) 
                 AND (deleted = ? OR ?) 
                 AND (DATE(registration_date) = DATE(?) OR ?) 
-        ORDER BY ${orderBy} ${orderDirection}
+        ORDER BY ${order} ${direction}
     `,
       [
         user_id,
@@ -68,8 +68,8 @@ const filterUsers = async (req, res, next) => {
         !deleted,
         registration_date,
         !registration_date,
-        orderBy,
-        orderDirection,
+        order,
+        direction,
       ]
     );
 

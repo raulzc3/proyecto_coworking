@@ -18,19 +18,16 @@ const filterbookings = async (req, res, next) => {
       start_date,
       end_date,
       order_date,
-      orderDirection,
-      orderBy,
+      price,
+      direction,
+      order,
     } = req.query;
 
     //Modificamos algunos campos para que no den problemas a la hora de validarlos
-    orderBy = orderBy ? orderBy.toLowerCase() : "id";
-    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
+    order = order ? order.toLowerCase() : "id";
+    direction = direction ? direction.toUpperCase() : "ASC";
     if (space_type) space_type = capitalize(space_type);
     if (pack) pack = capitalize(pack);
-    // if (category) category = category.toLowerCase();
-    // if (orderBy) orderBy = orderBy.toLowerCase();
-    // orderBy = orderBy ? orderBy.toLowerCase() : "report_date";
-    // orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
 
     await validator(filterBookingsSchema, {
       reservation_id,
@@ -43,15 +40,16 @@ const filterbookings = async (req, res, next) => {
       start_date,
       end_date,
       order_date,
-      orderDirection,
-      orderBy,
+      direction,
+      order,
+      price,
     });
 
     const results = await connection.query(
       `
         SELECT o.id as "id",s.type as "space_type",s.name as "space_name",s.id as "space_id",
               CONCAT(u.name," ",u.surname) as "full_name_user",o.user_id as "user_id", p.type as "pack", 
-              o.start_date as "start_date",o.end_date as "end_date",o.order_date as "order_date"
+              o.start_date as "start_date",o.end_date as "end_date",o.order_date as "order_date", o.price as "price"
         FROM orders o 
         JOIN users u ON o.user_id = u.id 
         JOIN spaces s ON o.space_id = s.id 
@@ -66,7 +64,8 @@ const filterbookings = async (req, res, next) => {
                 AND (DATE(o.start_date) = DATE(?) OR ?) 
                 AND (DATE(o.end_date) = DATE(?) OR ?) 
                 AND (DATE(o.order_date) = DATE(?) OR ?) 
-          ORDER BY ${orderBy} ${orderDirection};
+                AND (o.price = ? OR ?)
+          ORDER BY ${order} ${direction};
     `,
       [
         reservation_id,
@@ -89,6 +88,8 @@ const filterbookings = async (req, res, next) => {
         !end_date,
         order_date,
         !order_date,
+        price,
+        !price,
       ]
     );
     const filteredBookings = results[0];

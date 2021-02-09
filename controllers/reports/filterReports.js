@@ -12,24 +12,25 @@ const filterReports = async (req, res, next) => {
       user,
       user_name,
       space,
+      space_name,
       category,
       date,
       solved,
-      orderBy,
-      orderDirection,
+      order,
+      direction,
     } = req.query;
 
     //Modificamos algunos campos para que no den problemas a la hora de validarlos
     if (category) category = category.toLowerCase();
-    if (orderBy) orderBy = orderBy.toLowerCase();
-    orderBy = orderBy ? orderBy.toLowerCase() : "id";
-    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
+    const orderBy = order ? order.toLowerCase() : "id";
+    const orderDirection = direction ? direction.toUpperCase() : "ASC";
 
     await validator(filterReportSchema, {
       report_id,
       user,
       user_name,
       space,
+      space_name,
       category,
       date,
       solved,
@@ -39,8 +40,9 @@ const filterReports = async (req, res, next) => {
 
     const [results] = await connection.query(
       `
-        SELECT r.id "id", category, description, solved, report_date, r.photo, CONCAT(u.name, " ", u.surname) "user_name", user_id, space_id
-        FROM reports r JOIN users u ON r.user_id = u.id
+        SELECT r.id "id", r.category, r.description, r.solved, r.report_date, r.photo, 
+              CONCAT(u.name, " ", u.surname) "user_name", user_id, space_id, s.name "space_name"
+        FROM reports r JOIN users u ON r.user_id = u.id JOIN spaces s ON r.space_id = s.id
         WHERE (r.id = ? OR ?) 
                 AND (user_id = ? OR ?)
                 AND (space_id = ? OR ?) 
@@ -48,7 +50,8 @@ const filterReports = async (req, res, next) => {
                 AND (category = ? OR ?) 
                 AND (solved = ? OR ?)
                 AND (CONCAT(u.name, " ", u.surname) LIKE ? OR ?)
-        ORDER BY ${orderBy} ${orderDirection};
+                AND (s.name LIKE ? or ?)
+                ORDER BY ${orderBy} ${orderDirection};
     `,
       [
         report_id,
@@ -65,6 +68,8 @@ const filterReports = async (req, res, next) => {
         !solved,
         `%${user_name}%`,
         !user_name,
+        `%${space_name}%`,
+        !space_name,
       ]
     );
 

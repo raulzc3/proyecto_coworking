@@ -287,7 +287,7 @@ app.put("/users/:user_id", isAuthorized, editUser);
 
 //PUT - Modifica la contraseña de un usuario
 //URL ejemplo: http://localhost:3000/users/changePassword
-app.put("/users/:user_id/changePassword", isAuthorized, editPassword);
+app.put("/users/changePassword/:user_id", isAuthorized, editPassword);
 
 //DELETE - Elimina un usuario (lo vuelve anónimo)
 //URL ejemplo_ http://localhost:3000/users/5

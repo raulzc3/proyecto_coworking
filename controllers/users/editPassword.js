@@ -32,7 +32,7 @@ const editPassword = async (req, res, next) => {
     );
 
     if (current.length === 0) {
-      throw createError("La contraseña antigua no es correcta", 401);
+      throw createError("La contraseña actual no es correcta", 401);
     }
 
     // Guardar la nueva contraseña y last auth update para que los anteriores tokens dejen de ser válidos

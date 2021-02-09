@@ -25,7 +25,7 @@ const editUser = async (req, res, next) => {
     //Validamos los datos introducidos
     await validator(editUserSchema, req.body);
     // Obtenemos los datos pasados por req.body
-    const {
+    let {
       name,
       surname,
       nif,
@@ -75,9 +75,8 @@ const editUser = async (req, res, next) => {
           );
         }
       }
-      if (tel !== undefined) {
-        updateFields.push(`tel='${tel}'`);
-      }
+      tel = tel === undefined || tel === "" ? null : tel;
+      updateFields.push("tel=" + tel);
     }
 
     // Si el email recibido es diferente al que tenía anteriormente el usuario, lo procesamos

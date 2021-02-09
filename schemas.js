@@ -386,7 +386,7 @@ const resetUserPasswordSchema = Joi.object().keys({
 
 const editPasswordSchema = Joi.object().keys({
   oldPassword: textRequiredValidator("oldPassword", 100),
-  newPassword: textRequiredValidator("newPassword", 100, 8),
+  newPassword: textRequiredValidator("newPassword", 100),
 });
 const getPackSchema = Joi.object().keys({
   order: Joi.valid("ID", "type", "content", "price", "photo"),

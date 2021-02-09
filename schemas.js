@@ -163,7 +163,7 @@ const editUserSchema = Joi.object().keys({
   surname: textRequiredValidator("surname", 100),
   nif: textRequiredValidator("nif", 9),
   company: maxTextValidator("company", 50),
-  tel: textRequiredValidator("tel", 30),
+  tel: maxTextValidator("tel", 30),
   email: textRequiredValidator("email", 100),
   admin: numBetweenOneAndZeroValidator("admin"),
   deleted: numBetweenOneAndZeroValidator("deleted"),
@@ -316,7 +316,7 @@ const filterUserSchema = Joi.object().keys({
     "any.required": `"registration_date" es un campo requerido`,
     "date.max": `'registration_date' no puede ser mayor que {#limit}`,
   }),
-  orderBy: Joi.string().valid(
+  order: Joi.string().valid(
     "id",
     "name",
     "surname",
@@ -326,7 +326,7 @@ const filterUserSchema = Joi.object().keys({
     "deleted",
     "registration_date"
   ),
-  orderDirection: Joi.string().valid("ASC", "DESC"),
+  direction: Joi.string().valid("ASC", "DESC"),
 });
 
 const newPackSchema = Joi.object().keys({
@@ -424,10 +424,10 @@ const filterBookingsSchema = Joi.object().keys({
   start_date: dateTypeValidator("start_date"),
   end_date: dateTypeValidator("end_date"),
   order_date: dateTypeValidator("order_date"),
-  orderDirection: Joi.string().valid("ASC", "DESC").messages({
-    "string.base": `"orderDirection" debe ser de tipo 'string'`,
+  direction: Joi.string().valid("ASC", "DESC").messages({
+    "string.base": `"direction" debe ser de tipo 'string'`,
   }),
-  orderBy: Joi.string()
+  order: Joi.string()
     .valid(
       "id",
       "space_type",
@@ -439,13 +439,14 @@ const filterBookingsSchema = Joi.object().keys({
       "start_date",
       "end_date",
       "order_date",
+      "price",
       ""
     )
     .messages({
-      "string.base": `"orderBy" debe ser de tipo 'string'`,
+      "string.base": `"order" debe ser de tipo 'string'`,
     })
     .messages({
-      "string.base": `"orderBy" debe ser de tipo 'string'`,
+      "string.base": `"order" debe ser de tipo 'string'`,
     }),
 });
 

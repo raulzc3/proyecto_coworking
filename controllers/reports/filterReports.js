@@ -15,15 +15,14 @@ const filterReports = async (req, res, next) => {
       category,
       date,
       solved,
-      orderBy,
-      orderDirection,
+      order,
+      direction,
     } = req.query;
 
     //Modificamos algunos campos para que no den problemas a la hora de validarlos
     if (category) category = category.toLowerCase();
-    if (orderBy) orderBy = orderBy.toLowerCase();
-    orderBy = orderBy ? orderBy.toLowerCase() : "id";
-    orderDirection = orderDirection ? orderDirection.toUpperCase() : "ASC";
+    const orderBy = order ? order.toLowerCase() : "id";
+    const orderDirection = direction ? direction.toUpperCase() : "ASC";
 
     await validator(filterReportSchema, {
       report_id,

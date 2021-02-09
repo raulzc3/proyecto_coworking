@@ -56,25 +56,28 @@ const editUser = async (req, res, next) => {
     lastAuthDate = new Date(currentData[0].last_auth_date);
 
     // Si el teléfono recibido es diferente al que tenía anteriormente el usuario, lo procesamos
-    if (tel && tel !== currentData[0].tel) {
+    if (tel !== currentData[0].tel) {
       // Comprobamos que no exista el nuevo teléfono en la base de datos
-      const [existingTel] = await connection.query(
-        `
+      if (tel) {
+        const [existingTel] = await connection.query(
+          `
       SELECT id
       FROM users
       WHERE tel=?
       `,
-        [tel]
-      );
-
-      if (existingTel.length > 0) {
-        throw createError(
-          "Ya existe un usuario  en la base de datos con el teléfono proporcionado",
-          409
+          [tel]
         );
-      }
 
-      updateFields.push(`tel='${tel}'`);
+        if (existingTel.length > 0) {
+          throw createError(
+            "Ya existe un usuario  en la base de datos con el teléfono proporcionado",
+            409
+          );
+        }
+      }
+      if (tel !== undefined) {
+        updateFields.push(`tel='${tel}'`);
+      }
     }
 
     // Si el email recibido es diferente al que tenía anteriormente el usuario, lo procesamos

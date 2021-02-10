@@ -27,11 +27,15 @@ const getSpace = async (req, res, next) => {
     photos = photos.map((photo) =>
       setPhotoUrl(photo.url, `spaces/${space_id}`)
     );
-    console.log(photos);
-
+    const [
+      dates,
+    ] = await connection.query(
+      `SELECT start_date,end_date FROM orders WHERE space_id=? AND end_date > CURDATE() ORDER BY start_date;`,
+      [space_id]
+    );
     res.send({
       status: "ok",
-      data: { ...result[0], photos: [...photos] },
+      data: { ...result[0], photos: [...photos], dates: [...dates] },
     });
   } catch (error) {
     next(error);

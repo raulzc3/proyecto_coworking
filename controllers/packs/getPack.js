@@ -13,18 +13,18 @@ const getPack = async (req, res, next) => {
     const orderDirection = direction ? direction : "ASC";
 
     const { authorization } = req.headers;
-
-    const tokenInfo = jwt.verify(authorization, process.env.SECRET);
     let result;
-    if (tokenInfo.admin) {
-      //      Hago el SELECT en la bd para que vea todos
-      [result] = await connection.query(
-        `
+    if (authorization) {
+      const tokenInfo = jwt.verify(authorization, process.env.SECRET);
+      if (tokenInfo.admin) {
+        //      Hago el SELECT en la bd para que vea todos
+        [result] = await connection.query(
+          `
       SELECT ID,type,content,price,photo FROM packs
       ORDER BY ${orderBy} ${orderDirection};`
-      );
+        );
+      }
     }
-
     //      Hago el SELECT en la bd para que se vean los enabled
     [result] = await connection.query(
       `

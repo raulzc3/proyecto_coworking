@@ -5,11 +5,7 @@ const Joi = require("joi");
 
 /**
  *
-<<<<<<< HEAD
- * @param {String} varName :Nombre del parámetro a validar
-=======
  * @param {String} varName :Nombre de la variable string a validar
->>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  * @param {Number} max :Número máximo de caracteres
  */
 const maxTextValidator = (varName, max) => {
@@ -23,11 +19,7 @@ const maxTextValidator = (varName, max) => {
 };
 /**
  *
-<<<<<<< HEAD
- * @param {String} varName :Nombre del parámetro a validar
-=======
  * @param {String} varName :Nombre de la variable requerida de tipo string a ser validada
->>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  * @param {Number} max :Número máximo de caracteres
  * @param {Number} min :Número mínimo de caracteres
  */
@@ -46,11 +38,7 @@ const textRequiredValidator = (varName, max, min = 0) => {
 };
 /**
  *
-<<<<<<< HEAD
- * @param {String} varName :Nombre del parámetro a validar
-=======
  * @param {String} varName :Nombre de la variable requerida de tipo date a ser validada
->>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
 const dateRequiredValidator = (varName) => {
   return Joi.date()
@@ -71,11 +59,7 @@ const dateRequiredValidator = (varName) => {
 };
 /**
  *
-<<<<<<< HEAD
- * @param {String} varName :Nombre del parámetro a validar
-=======
  * @param {String} varName :Nombre de la variable requerida de tipo date a ser validada
->>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
 const dateValidator = (varName) => {
   return Joi.date()
@@ -88,11 +72,7 @@ const dateValidator = (varName) => {
 };
 /**
  *
-<<<<<<< HEAD
- * @param {String} varName :Nombre del parámetro a validar
-=======
  * @param {String} varName :Nombre de la variable requerida de tipo number a ser validada
->>>>>>> 7e32620646c99389363cd94727257a1b27e6e105
  */
 const numberIntegerPositiveRequiredValidator = (varName) => {
   return Joi.number()

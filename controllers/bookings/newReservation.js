@@ -14,7 +14,7 @@ const newReservation = async (req, res, next) => {
     const { start_date, end_date, pack_id } = req.body;
 
     //validar los valores del body ✅
-    await validator(reservationSchema, req.body);
+    await validator(reservationSchema, { ...req.params, ...req.body });
 
     // si el id de usuario no existe dar error --> middleware userExists ✅
 

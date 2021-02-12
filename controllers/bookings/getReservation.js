@@ -18,14 +18,16 @@ const getReservation = async (req, res, next) => {
       case "current":
         orders = await connection.query(
           `
-           SELECT 
-           o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
-           o.user_id "userId", o.space_id "spaceId", o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
-           FROM orders o 
-           JOIN packs p 
-           ON o.pack_id = p.id 
-           JOIN photos ph
-           ON o.space_id = ph.id
+          SELECT 
+          o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          FROM orders o 
+          JOIN packs p 
+          ON o.pack_id = p.id 
+          JOIN photos ph
+          ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
            WHERE user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) 
            ORDER BY start_date, end_date , order_Date;`,
           [user_id]
@@ -37,12 +39,14 @@ const getReservation = async (req, res, next) => {
           `
           SELECT 
           o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
-          o.user_id "userId", o.space_id "spaceId", o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
           FROM orders o 
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
           ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
           WHERE user_id = ? AND CURDATE() < start_date 
           ORDER BY start_date , end_date , order_Date;`,
           [user_id]
@@ -53,12 +57,14 @@ const getReservation = async (req, res, next) => {
           `
           SELECT 
           o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
-          o.user_id "userId", o.space_id "spaceId", o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
           FROM orders o 
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
           ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
           WHERE user_id = ? AND CURDATE()  > end_date 
           ORDER BY start_date, end_date , order_Date;`,
           [user_id]
@@ -69,12 +75,14 @@ const getReservation = async (req, res, next) => {
           `
           SELECT 
           o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
-          o.user_id "userId", o.space_id "spaceId", o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
           FROM orders o 
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
           ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
           WHERE  user_id = ? ORDER BY start_date;`,
           [user_id]
         );

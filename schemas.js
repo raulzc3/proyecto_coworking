@@ -433,6 +433,10 @@ const filterBookingsSchema = Joi.object().keys({
   direction: Joi.string().valid("ASC", "DESC").messages({
     "string.base": `"direction" debe ser de tipo 'string'`,
   }),
+  price: Joi.number().allow("").messages({
+    "number.base": `"price" debe ser de tipo 'number'`,
+    "number.positive": `"price" debe ser un valor positivo`,
+  }),
   order: Joi.string()
     .valid(
       "id",

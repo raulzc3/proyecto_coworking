@@ -1,4 +1,4 @@
-const { validator } = require("../../helpers");
+const { validator, setPhotoUrl } = require("../../helpers");
 const { getPackSchema } = require("../../schemas");
 const jwt = require("jsonwebtoken");
 const getPack = async (req, res, next) => {
@@ -32,6 +32,10 @@ const getPack = async (req, res, next) => {
       WHERE enabled=1
       ORDER BY ${orderBy} ${orderDirection};`
     );
+
+    result.map((value) => {
+      value.photo = setPhotoUrl(value.photo, "packs");
+    });
 
     res.send({
       status: "ok",

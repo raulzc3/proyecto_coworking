@@ -422,9 +422,9 @@ const filterBookingsSchema = Joi.object().keys({
     "string.base": `"space_name" debe ser de tipo 'string'`,
   }),
   user_id: numPositiveIntegerValidator("user_id"),
-  user_full_name: Joi.string().allow("").max(150).messages({
-    "string.base": `"user_full_name" debe ser de tipo 'string'`,
-    "string.max": `"user_full_name" no puede ser mayor de {#limit} caracteres`,
+  user_name: Joi.string().allow("").max(150).messages({
+    "string.base": `"user_name" debe ser de tipo 'string'`,
+    "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
   }),
   pack: Joi.string()
     .valid("Básico", "Intermedio", "Audiovisual", "Informático", "")

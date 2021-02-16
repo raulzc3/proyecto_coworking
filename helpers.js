@@ -152,7 +152,7 @@ function isId(id) {
  * @returns {boolean} verdadero o falso
  */
 function dateValidator(inputDate) {
-  if (new Date().getTime() > inputDate.getTime()) {
+  if (new Date().setHours(0) > inputDate.getTime()) {
     return false;
   } else {
     return true;

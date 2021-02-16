@@ -1,3 +1,4 @@
+const { setPhotoUrl } = require("../../helpers");
 const getReservation = async (req, res, next) => {
   let connection;
   let reservation = [];
@@ -17,7 +18,18 @@ const getReservation = async (req, res, next) => {
       case "current":
         orders = await connection.query(
           `
-           SELECT * FROM orders WHERE user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) ORDER BY start_date, end_date , order_Date;`,
+          SELECT 
+          o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          FROM orders o 
+          JOIN packs p 
+          ON o.pack_id = p.id 
+          JOIN photos ph
+          ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
+           WHERE user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) 
+           ORDER BY start_date, end_date , order_Date;`,
           [user_id]
         );
         break;
@@ -25,31 +37,67 @@ const getReservation = async (req, res, next) => {
       case "pending":
         orders = await connection.query(
           `
-             SELECT * FROM orders WHERE user_id = ? AND CURDATE() < start_date ORDER BY start_date , end_date , order_Date;`,
+          SELECT 
+          o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          FROM orders o 
+          JOIN packs p 
+          ON o.pack_id = p.id 
+          JOIN photos ph
+          ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
+          WHERE user_id = ? AND CURDATE() < start_date 
+          ORDER BY start_date , end_date , order_Date;`,
           [user_id]
         );
         break;
       case "finished":
         orders = await connection.query(
           `
-               SELECT * FROM orders WHERE user_id = ? AND CURDATE()  > end_date ORDER BY start_date, end_date , order_Date;`,
+          SELECT 
+          o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          FROM orders o 
+          JOIN packs p 
+          ON o.pack_id = p.id 
+          JOIN photos ph
+          ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
+          WHERE user_id = ? AND CURDATE()  > end_date 
+          ORDER BY start_date, end_date , order_Date;`,
           [user_id]
         );
         break;
       default:
         orders = await connection.query(
-          `SELECT * FROM orders WHERE user_id = ? ORDER BY start_date;`,
+          `
+          SELECT 
+          o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          FROM orders o 
+          JOIN packs p 
+          ON o.pack_id = p.id 
+          JOIN photos ph
+          ON o.space_id = ph.id
+          JOIN spaces s
+          ON o.space_id = s.id
+          WHERE  user_id = ? ORDER BY start_date;`,
           [user_id]
         );
         break;
     }
 
-    for (const order of orders[0]) {
-      reservation.push(order);
-    }
+    const reservation = orders[0].map((order) => {
+      order.spacePhoto = setPhotoUrl(order.spacePhoto, "spaces");
+
+      return { ...order };
+    });
+
     res.send({
       status: "ok",
-      data: [...reservation],
+      data: reservation,
     });
   } catch (error) {
     next(error);

@@ -1,5 +1,4 @@
 require("dotenv").config();
-const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -47,6 +46,7 @@ const {
   deleteReview,
   filterReviews,
   getReviews,
+  getUserReviews,
 } = require("./controllers/reviews");
 
 //Controladores de reportes
@@ -202,6 +202,10 @@ app.delete("/packs/:pack_id", isAdmin, packExists, deletePack);
 // #################################################################
 // #                    Endpoints de valoraciones                  #
 // #################################################################
+
+//GET - Se obtitnen las valoraciones de un usuario
+//URL ejemplo: http://localhost:3000/reviews
+app.get("/reviews/:review_id/:user_id", isAuthorized, getUserReviews);
 
 //GET - Obtener las valoraciones de un espacio en concreto
 //URL ejemplo: http://localhost:3000/reviews/5

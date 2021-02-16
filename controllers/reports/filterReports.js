@@ -9,9 +9,7 @@ const filterReports = async (req, res, next) => {
 
     let {
       report_id,
-      user,
       user_name,
-      space,
       space_name,
       category,
       date,
@@ -27,9 +25,7 @@ const filterReports = async (req, res, next) => {
 
     await validator(filterReportSchema, {
       report_id,
-      user,
       user_name,
-      space,
       space_name,
       category,
       date,

@@ -20,6 +20,7 @@ const filterSpacesAdmin = async (req, res, next) => {
       order,
       direction,
       space_id,
+      space_name,
     } = req.query;
 
     const orderBy = order ? order : "ID";
@@ -47,6 +48,7 @@ const filterSpacesAdmin = async (req, res, next) => {
            AND (s.capacity >=? OR ?) 
            AND  (s.enabled=? OR ?) 
            AND (s.ID=? OR ?)
+           AND (s.name LIKE ? OR ?)
            ORDER BY ${orderBy} ${orderDirection};`,
       [
         start_date,
@@ -63,6 +65,8 @@ const filterSpacesAdmin = async (req, res, next) => {
         !enabled,
         space_id,
         !space_id,
+        `%${space_name}%`,
+        !space_name,
       ]
     );
 

@@ -186,12 +186,6 @@ const newReportSchema = Joi.object().keys({
 //Schema para filtrar reportes (los campos serán opcionales)
 const filterReportSchema = Joi.object().keys({
   report_id: numPositiveIntegerValidator("report_id"),
-  user: Joi.number().allow("").integer().positive().messages({
-    "number.base": `'user_id' debe ser de tipo 'number'`,
-  }),
-  space: Joi.number().allow("").integer().positive().messages({
-    "number.base": `'space_id' debe ser de tipo 'number'`,
-  }),
   date: Joi.date().allow("").optional().max(new Date()).messages({
     "date.base": `'date' debe ser de tipo 'date'`,
     "date.max": `'date' no puede ser posterior a la fecha actual`,

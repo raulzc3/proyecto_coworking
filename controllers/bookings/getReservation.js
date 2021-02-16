@@ -13,7 +13,7 @@ const getReservation = async (req, res, next) => {
 
     //si existe se enlistan las reservas hechas según el fintro indicado ✅
     let orders;
-
+    console.log(user_id);
     switch (typeOfReservation) {
       case "current":
         orders = await connection.query(
@@ -28,7 +28,7 @@ const getReservation = async (req, res, next) => {
           ON o.space_id = ph.id
           JOIN spaces s
           ON o.space_id = s.id
-           WHERE user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) 
+           WHERE o.user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) 
            ORDER BY start_date, end_date , order_Date;`,
           [user_id]
         );
@@ -57,7 +57,7 @@ const getReservation = async (req, res, next) => {
           `
           SELECT 
           o.id "id", o.order_date "orderDate", o.start_date "startDate", o.end_date "endDate", o.price "price", 
-          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto"
+          o.user_id "userId", o.space_id "spaceId",s.type "spaceName" , o.pack_id "packId", p.type "packName", ph.url "spacePhoto", IFNULL(r.id, 0) "reviewId"
           FROM orders o 
           JOIN packs p 
           ON o.pack_id = p.id 
@@ -65,7 +65,9 @@ const getReservation = async (req, res, next) => {
           ON o.space_id = ph.id
           JOIN spaces s
           ON o.space_id = s.id
-          WHERE user_id = ? AND CURDATE()  > end_date 
+          LEFT JOIN reviews r
+          ON (o.user_id = r.user_id) AND (r.space_id = o.space_id)
+          WHERE o.user_id = ? AND CURDATE()  > end_date 
           ORDER BY start_date, end_date , order_Date;`,
           [user_id]
         );

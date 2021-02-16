@@ -40,8 +40,8 @@ const filterReports = async (req, res, next) => {
 
     const [results] = await connection.query(
       `
-        SELECT r.id "ID", r.category, r.description, r.solved, r.report_date, r.photo, 
-              CONCAT(u.name, " ", u.surname) "user_name", user_id, space_id, s.name "space_name"
+        SELECT r.id "ID", r.category,  CONCAT(u.name, " ", u.surname, " (", u.id, ")") "user_name", 
+        CONCAT(s.name, " (", s.id, ")") "space_name", r.description, r.solved, r.report_date, r.photo
         FROM reports r JOIN users u ON r.user_id = u.id JOIN spaces s ON r.space_id = s.id
         WHERE (r.id = ? OR ?) 
                 AND (user_id = ? OR ?)
@@ -56,10 +56,6 @@ const filterReports = async (req, res, next) => {
       [
         report_id,
         !report_id,
-        user,
-        !user,
-        space,
-        !space,
         date,
         !date,
         category,

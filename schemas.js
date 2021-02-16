@@ -357,7 +357,11 @@ const newReviewSchema = Joi.object().keys({
 
 const filterReviewsSchema = Joi.object().keys({
   review_id: numPositiveIntegerValidator("review_id"),
-
+  space_id: numPositiveIntegerValidator("review_id"),
+  space_name: Joi.string().allow("").max(150).messages({
+    "string.base": `"user_name" debe ser de tipo 'string'`,
+    "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
+  }),
   user_id: numPositiveIntegerValidator("user_id"),
   review_date: Joi.date().messages({
     "date.base": `"end_date" debe ser de tipo 'date'`,
@@ -432,6 +436,10 @@ const filterBookingsSchema = Joi.object().keys({
   order_date: dateTypeValidator("order_date"),
   direction: Joi.string().valid("ASC", "DESC").messages({
     "string.base": `"direction" debe ser de tipo 'string'`,
+  }),
+  price: Joi.number().allow("").messages({
+    "number.base": `"price" debe ser de tipo 'number'`,
+    "number.positive": `"price" debe ser un valor positivo`,
   }),
   order: Joi.string()
     .valid(

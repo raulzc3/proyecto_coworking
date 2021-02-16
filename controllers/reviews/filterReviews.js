@@ -17,6 +17,7 @@ const filterReviews = async (req, res, next) => {
       direction,
       space_id,
       user_name,
+      space_name,
     } = req.query;
 
     review_date ? new Date(review_date) : new Date(1111 - 11 - 11);
@@ -24,9 +25,10 @@ const filterReviews = async (req, res, next) => {
     const orderDirection = direction ? direction : `ASC`;
     const [results] = await connection.query(
       `
-  SELECT r.id as "id", CONCAT(name, " ", surname) "user_name", comment, score, review_date, user_id, space_id
-  FROM reviews r JOIN users u ON r.user_id = u.id
-  WHERE (r.ID = ? OR ?) AND (CONCAT(name, " ", surname) LIKE ? OR ?) AND (user_id =? OR ?) AND (space_id =? OR ?) AND (DATE(review_date)=DATE(?) OR ?)
+  SELECT r.id as "id", CONCAT(u.name, " ", surname) "user_name", comment, score, review_date, user_id, space_id,s.name
+  FROM reviews r JOIN users u ON r.user_id = u.id JOIN spaces s ON r.space_id=s.id
+  WHERE (r.ID = ? OR ?) AND (CONCAT(u.name, " ", surname) LIKE ? OR ?) AND (user_id =? OR ?) AND (space_id =? OR ?) 
+  AND (DATE(review_date)=DATE(?) OR ?) AND (s.name LIKE ? OR ?)
   ORDER BY ${orderBy} ${orderDirection};
   `,
       [
@@ -40,6 +42,8 @@ const filterReviews = async (req, res, next) => {
         !space_id,
         review_date,
         !review_date,
+        `%${space_name}%`,
+        !space_name,
       ]
     );
 

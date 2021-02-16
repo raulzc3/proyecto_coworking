@@ -39,7 +39,7 @@ const filterUsers = async (req, res, next) => {
 
     const [results] = await connection.query(
       `
-        SELECT *
+        SELECT ID, surname, name, nif, registration_date, tel, company, email, admin, verified, deleted
         FROM users
         WHERE (id = ? OR ?) 
                 AND (name LIKE ? OR ?) 

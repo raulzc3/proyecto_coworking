@@ -40,13 +40,11 @@ const filterReports = async (req, res, next) => {
         CONCAT(s.name, " (", s.id, ")") "space_name", r.description, r.solved, r.report_date, r.photo
         FROM reports r JOIN users u ON r.user_id = u.id JOIN spaces s ON r.space_id = s.id
         WHERE (r.id = ? OR ?) 
-                AND (user_id = ? OR ?)
-                AND (space_id = ? OR ?) 
                 AND (DATE(report_date) = DATE(?) OR ?) 
                 AND (category = ? OR ?) 
                 AND (solved = ? OR ?)
-                AND (CONCAT(u.name, " ", u.surname) LIKE ? OR ?)
-                AND (s.name LIKE ? or ?)
+                AND ((CONCAT(u.name, " ", u.surname, " (", u.id, ")") LIKE ?) OR ?)
+               AND  (CONCAT(s.name, " (", s.ID, ")") LIKE ? OR ?)
                 ORDER BY ${orderBy} ${orderDirection};
     `,
       [

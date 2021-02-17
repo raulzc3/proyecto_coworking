@@ -9,10 +9,8 @@ const filterbookings = async (req, res, next) => {
 
     let {
       reservation_id,
-      space_id,
       space_type,
       space_name,
-      user_id,
       user_name,
       pack,
       start_date,
@@ -31,10 +29,8 @@ const filterbookings = async (req, res, next) => {
 
     await validator(filterBookingsSchema, {
       reservation_id,
-      space_id,
       space_type,
       space_name,
-      user_id,
       user_name,
       pack,
       start_date,
@@ -47,25 +43,23 @@ const filterbookings = async (req, res, next) => {
 
     const results = await connection.query(
       `
-        SELECT o.id as "id",s.type as "space_type",s.name as "space_name",s.id as "space_id",
-              CONCAT(u.name," ",u.surname) as "full_name_user",o.user_id as "user_id", p.type as "pack", 
-              o.start_date as "start_date",o.end_date as "end_date",o.order_date as "order_date", o.price as "price"
-        FROM orders o 
-        JOIN users u ON o.user_id = u.id 
-        JOIN spaces s ON o.space_id = s.id 
-        JOIN packs p ON o.pack_id = p.id
+        SELECT o.id as "id", CONCAT(u.name," ",u.surname, " (", u.ID, ")") as "user_name", 
+               CONCAT(s.name, " (", s.ID, ")") as "space_name", s.type as "space_type", 
+               p.type as "pack", o.price as "price", o.order_date as "order_date",
+               o.start_date as "start_date", o.end_date as "end_date"
+        FROM orders o JOIN users u ON o.user_id = u.id 
+                      JOIN spaces s ON o.space_id = s.id 
+                      JOIN packs p ON o.pack_id = p.id
         WHERE (o.id = ? OR ?) 
-                AND (s.type = ? OR ?)
-                AND (s.name  LIKE ? OR ?) 
-                AND (s.id = ? OR ?)
-                AND (CONCAT(u.name," ",u.surname) LIKE ? OR ?) 
-                AND (o.user_id = ? OR ?) 
-                AND (p.type = ? OR ?) 
-                AND (DATE(o.start_date) = DATE(?) OR ?) 
-                AND (DATE(o.end_date) = DATE(?) OR ?) 
-                AND (DATE(o.order_date) = DATE(?) OR ?) 
-                AND (o.price = ? OR ?)
-          ORDER BY ${order} ${direction};
+              AND (s.type = ? OR ?)
+              AND ( CONCAT(s.name, " (", s.ID, ")")  LIKE ? OR ?) 
+              AND (CONCAT(u.name," ",u.surname) LIKE ? OR ?) 
+              AND (p.type = ? OR ?) 
+              AND (DATE(o.start_date) = DATE(?) OR ?) 
+              AND (DATE(o.end_date) = DATE(?) OR ?) 
+              AND (DATE(o.order_date) = DATE(?) OR ?) 
+              AND (o.price = ? OR ?)
+        ORDER BY ${order} ${direction};
     `,
       [
         reservation_id,
@@ -74,12 +68,8 @@ const filterbookings = async (req, res, next) => {
         !space_type,
         `%${space_name}%`,
         !space_name,
-        space_id,
-        !space_id,
         `%${user_name}%`,
         !user_name,
-        user_id,
-        !user_id,
         pack,
         !pack,
         start_date,

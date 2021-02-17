@@ -16,7 +16,7 @@ const filterbookings = async (req, res, next) => {
       start_date,
       end_date,
       order_date,
-      price,
+
       direction,
       order,
     } = req.query;
@@ -38,7 +38,6 @@ const filterbookings = async (req, res, next) => {
       order_date,
       direction,
       order,
-      price,
     });
 
     const results = await connection.query(

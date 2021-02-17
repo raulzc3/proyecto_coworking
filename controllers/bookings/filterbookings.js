@@ -53,12 +53,11 @@ const filterbookings = async (req, res, next) => {
         WHERE (o.id = ? OR ?) 
               AND (s.type = ? OR ?)
               AND ( CONCAT(s.name, " (", s.ID, ")")  LIKE ? OR ?) 
-              AND (CONCAT(u.name," ",u.surname) LIKE ? OR ?) 
+              AND (CONCAT(u.name," ",u.surname, " (", u.ID, ")") LIKE ? OR ?) 
               AND (p.type = ? OR ?) 
               AND (DATE(o.start_date) = DATE(?) OR ?) 
               AND (DATE(o.end_date) = DATE(?) OR ?) 
               AND (DATE(o.order_date) = DATE(?) OR ?) 
-              AND (o.price = ? OR ?)
         ORDER BY ${order} ${direction};
     `,
       [
@@ -78,8 +77,6 @@ const filterbookings = async (req, res, next) => {
         !end_date,
         order_date,
         !order_date,
-        price,
-        !price,
       ]
     );
     const filteredBookings = results[0];

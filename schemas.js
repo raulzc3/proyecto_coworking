@@ -413,7 +413,6 @@ const filterBookingsSchema = Joi.object().keys({
   space_name: Joi.string().allow("").messages({
     "string.base": `"space_name" debe ser de tipo 'string'`,
   }),
-  user_id: numPositiveIntegerValidator("user_id"),
   user_name: Joi.string().allow("").max(150).messages({
     "string.base": `"user_name" debe ser de tipo 'string'`,
     "string.max": `"user_name" no puede ser mayor de {#limit} caracteres`,
@@ -429,28 +428,18 @@ const filterBookingsSchema = Joi.object().keys({
   direction: Joi.string().valid("ASC", "DESC").messages({
     "string.base": `"direction" debe ser de tipo 'string'`,
   }),
-  price: Joi.number().allow("").messages({
-    "number.base": `"price" debe ser de tipo 'number'`,
-    "number.positive": `"price" debe ser un valor positivo`,
-  }),
   order: Joi.string()
     .valid(
       "id",
       "space_type",
       "space_name",
-      "space_id",
-      "full_name_user",
-      "user_id",
+      "user_name",
       "pack",
       "start_date",
       "end_date",
       "order_date",
-      "price",
       ""
     )
-    .messages({
-      "string.base": `"order" debe ser de tipo 'string'`,
-    })
     .messages({
       "string.base": `"order" debe ser de tipo 'string'`,
     }),

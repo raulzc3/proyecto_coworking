@@ -294,7 +294,9 @@ const filterSpaceAdminSchema = Joi.object().keys({
     "capacity",
     "start_date",
     "end_date",
-    "enabled"
+    "enabled",
+    "price",
+    ""
   ),
   direction: Joi.string().valid("ASC", "DESC"),
 });
@@ -438,6 +440,7 @@ const filterBookingsSchema = Joi.object().keys({
       "start_date",
       "end_date",
       "order_date",
+      "price",
       ""
     )
     .messages({

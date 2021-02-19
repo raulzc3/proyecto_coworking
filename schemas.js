@@ -287,8 +287,6 @@ const filterSpaceAdminSchema = Joi.object().keys({
   capacity: numPositiveIntegerValidator("capacity"),
   enabled: Joi.number().valid(0, 1),
   start_date: dateValidator("start_date"),
-  end_date: dateValidator("end_date"),
-
   order: Joi.string().valid(
     "type",
     "price",
@@ -328,7 +326,10 @@ const filterUserSchema = Joi.object().keys({
     "admin",
     "verified",
     "deleted",
-    "registration_date"
+    "registration_date",
+    "nif",
+    "tel",
+    "email"
   ),
   direction: Joi.string().valid("ASC", "DESC"),
 });

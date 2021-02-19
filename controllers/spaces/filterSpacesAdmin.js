@@ -27,14 +27,13 @@ const filterSpacesAdmin = async (req, res, next) => {
     const orderDirection = direction ? direction : "ASC";
 
     let results;
-
     if (start_date && end_date) {
       start_date = new Date(start_date);
       end_date = new Date(end_date);
     }
     [results] = await connection.query(
       `
-      SELECT s.ID,s.type,s.name,s.description,s.price,s.capacity,s.enabled,p.url
+      SELECT s.ID,s.type,s.name "name",s.description,s.price,s.capacity,s.enabled,p.url
           FROM spaces s JOIN photos p ON s.id = p.space_id
           WHERE s.id NOT IN (
           SELECT DISTINCT space_id 

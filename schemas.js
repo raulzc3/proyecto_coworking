@@ -364,7 +364,7 @@ const filterReviewsSchema = Joi.object().keys({
   }),
   order: Joi.string().valid(
     "id",
-    "space_id",
+    "space_name",
     "user_id",
     "score",
     "review_date",

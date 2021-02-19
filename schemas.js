@@ -215,7 +215,9 @@ const filterReportSchema = Joi.object().keys({
     "user_id",
     "space_id",
     "user_name",
-    "space_name"
+    "space_name",
+    "category",
+    "description"
   ),
 
   orderDirection: Joi.string().valid("ASC", "DESC"),

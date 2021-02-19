@@ -6,10 +6,8 @@ const filterReviews = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
 
-    //Verifico los datos del query
-    await validator(filterReviewsSchema, req.query);
     //Filtrar por id/usuario/tipo de espacio/fecha
-    const {
+    let {
       review_id,
       review_date,
       order,
@@ -19,15 +17,27 @@ const filterReviews = async (req, res, next) => {
     } = req.query;
 
     review_date ? new Date(review_date) : new Date(1111 - 11 - 11);
-    const orderBy = order ? order : `id`;
-    const orderDirection = direction ? direction : `ASC`;
+    order = order ? order : `id`;
+    direction = direction ? direction.toUpperCase() : `ASC`;
+    console.log(direction);
+
+    //Verifico los datos del query
+    await validator(filterReviewsSchema, {
+      review_id,
+      review_date,
+      order,
+      direction,
+      user_name,
+      space_name,
+    });
+
     const [results] = await connection.query(
       `
   SELECT r.id as "id", CONCAT(u.name, " ", surname," (", s.id, ")" ) "user_name", CONCAT(s.name, " (", s.id, ")" ) "space_name", comment, score, review_date
   FROM reviews r JOIN users u ON r.user_id = u.id JOIN spaces s ON r.space_id=s.id
   WHERE (r.ID = ? OR ?) AND (CONCAT(u.name, " ", surname," (", s.id, ")" ) LIKE ? OR ?)
   AND (DATE(review_date)=DATE(?) OR ?) AND (CONCAT(s.name, " (", s.id, ")" ) LIKE ? OR ?)
-  ORDER BY ${orderBy} ${orderDirection};
+  ORDER BY ${order} ${direction};
   `,
       [
         review_id,

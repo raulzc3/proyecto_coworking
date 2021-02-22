@@ -20,7 +20,7 @@ let pool;
 async function getDB() {
   if (!pool) {
     pool = mysql.createPool({
-      connectionLimit: 20,
+      connectionLimit: 30,
       host: MYSQL_HOST,
       user: MYSQL_USER,
       password: MYSQL_PASSWORD,

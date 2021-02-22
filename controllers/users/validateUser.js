@@ -22,7 +22,7 @@ const validateUser = async (req, res, next) => {
     if (user.length === 0) {
       throw createError(
         "No hay ningún usuario pendiente de validar con ese código",
-        404
+        400
       );
     }
 

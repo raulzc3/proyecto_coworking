@@ -46,7 +46,7 @@ const addUser = async (req, res, next) => {
     const emailBody = `
 
     Te acabas de registra en la empresa de espacios de trabajo <strong>COWORKIT</strong>. 
-    Pulsa en este link para validar tu email: <strong>. ${process.env.PUBLIC_HOST}/users/validate/${registrationCode}</strong>. 
+    Pulsa en este link para validar tu email: <strong>${process.env.REACT_PORT}/users/validate/${registrationCode}</strong>. 
       `;
 
     await sendMail({

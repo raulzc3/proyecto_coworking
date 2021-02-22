@@ -1,4 +1,4 @@
-const { validator } = require("../../helpers");
+const { validator, setPhotoUrl } = require("../../helpers");
 const { filterSpaceSchema } = require("../../schemas");
 const filterSpaces = async (req, res, next) => {
   let connection;
@@ -70,7 +70,9 @@ const filterSpaces = async (req, res, next) => {
         return [value.url, value.ID];
       }
     });
-
+    results.map((result) => {
+      result.url = setPhotoUrl(result.url, "spaces");
+    });
     res.send({
       status: "ok",
       data: [...filtro],

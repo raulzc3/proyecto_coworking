@@ -1,4 +1,4 @@
-const { isId } = require("../../helpers");
+const { isId, setPhotoUrl } = require("../../helpers");
 
 const getReviews = async (req, res, next) => {
   let connection;
@@ -19,6 +19,9 @@ const getReviews = async (req, res, next) => {
     `,
       [space_id]
     );
+    results.map((result) => {
+      result.photo = setPhotoUrl(result.photo, "users");
+    });
 
     res.send({
       status: "ok",

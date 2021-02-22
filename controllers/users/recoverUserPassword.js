@@ -33,7 +33,7 @@ const recoverUserPassword = async (req, res, next) => {
    Se ha solicitado un cambio de contraseña para el usuario registrado con este email en la página coworkit.company.com
    <br>
    <br>
-   Pulsa en el siguiente link para cambiar la contraseña: <strong>. ${process.env.PUBLIC_HOST}/users/changePassword/${recoverCode}</strong>.
+   Pulsa en el siguiente link para cambiar la contraseña: <strong>. ${process.env.REACT_PORT}/users/resetPassword/${recoverCode}</strong>.
    <br>
    <br>
    Si no te funciona el link, introduce el link directamente en el buscador de tu navegador.

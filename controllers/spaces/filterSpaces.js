@@ -70,8 +70,18 @@ const filterSpaces = async (req, res, next) => {
         return [value.url, value.ID];
       }
     });
-    results.map((result) => {
+    const [dates] = await connection.query(
+      `
+      SELECT start_date,end_date,space_id,ID,price FROM orders WHERE end_date > CURDATE() ORDER BY start_date
+    ;`
+    );
+    filtro.map((result) => {
+      //Devuelvo la foto con su ruta de backend
       result.url = setPhotoUrl(result.url, "spaces");
+      //filtro todas los orders de dichos espacios y lo añado a la resupesta
+      result.date = dates.filter((date) => {
+        return date.space_id === result.ID;
+      });
     });
     res.send({
       status: "ok",

@@ -13,10 +13,7 @@ const editSpace = async (req, res, next) => {
 
     const { type, description, name, price, capacity } = req.body;
 
-    //Compruebo si se envió foto y si es correcta
-    if (!req.files) {
-      throw createError("Tienes que añadir una foto ", 400);
-    }
+    //Compruebo  si es correcta
     if (Object.keys(req.files).length > 20) {
       throw createError("Solo se permite subir 20 fotos", 400);
     }

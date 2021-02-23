@@ -6,9 +6,13 @@ const deletePhotos = async (req, res, next) => {
   try {
     connection = await req.app.locals.getDB();
     //Cargamos el nombre y dirección de la foto a eliminar
-    const { url } = req.body;
+    let { url } = req.body;
     const { space_id } = req.params;
-    console.log(typeof url);
+    console.log(url);
+    const { UPLOADS_DIRECTORY, PUBLIC_HOST } = process.env;
+
+    url = url.split(`${PUBLIC_HOST}/${UPLOADS_DIRECTORY}/`)[1];
+    console.log(url);
     await validator(deletePhotoSpaceSchema, req.body);
     //Veo si existe la foto
     const [photoBD] = await connection.query(

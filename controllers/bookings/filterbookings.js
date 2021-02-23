@@ -32,7 +32,7 @@ const filterbookings = async (req, res, next) => {
       space_type,
       space_name,
       user_name,
-      pack,
+      // pack,
       start_date,
       end_date,
       order_date,
@@ -44,7 +44,7 @@ const filterbookings = async (req, res, next) => {
       `
         SELECT o.id as "id", CONCAT(u.name," ",u.surname, " (", u.ID, ")") as "user_name", 
                CONCAT(s.name, " (", s.ID, ")") as "space_name", s.type as "space_type", 
-               p.type as "pack", o.price as "price", o.order_date as "order_date",
+               CONCAT(p.type, " (", p.ID, ")") as "pack", o.price as "price", o.order_date as "order_date",
                o.start_date as "start_date", o.end_date as "end_date"
         FROM orders o JOIN users u ON o.user_id = u.id 
                       JOIN spaces s ON o.space_id = s.id 
@@ -53,7 +53,7 @@ const filterbookings = async (req, res, next) => {
               AND (s.type = ? OR ?)
               AND ( CONCAT(s.name, " (", s.ID, ")")  LIKE ? OR ?) 
               AND (CONCAT(u.name," ",u.surname, " (", u.ID, ")") LIKE ? OR ?) 
-              AND (p.type = ? OR ?) 
+              AND (CONCAT(p.type, " (", p.ID, ")") LIKE ? OR ?) 
               AND (DATE(o.start_date) = DATE(?) OR ?) 
               AND (DATE(o.end_date) = DATE(?) OR ?) 
               AND (DATE(o.order_date) = DATE(?) OR ?) 
@@ -68,7 +68,7 @@ const filterbookings = async (req, res, next) => {
         !space_name,
         `%${user_name}%`,
         !user_name,
-        pack,
+        `%${pack}%`,
         !pack,
         start_date,
         !start_date,

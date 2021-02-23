@@ -46,7 +46,7 @@ const filterSpaces = async (req, res, next) => {
            AND (s.capacity >=? OR ?) 
            AND s.enabled=1
            GROUP BY s.id, r.space_id
-           HAVING (score > ? OR ?) 
+           HAVING (score >= ? OR ?) 
            ORDER BY ${orderBy} ${orderDirection};`,
       [
         start_date,

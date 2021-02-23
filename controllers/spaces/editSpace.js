@@ -1,5 +1,10 @@
 const { newSpaceSchema } = require("../../schemas");
-const { validator, savePhoto, setPhotoUrl } = require("../../helpers");
+const {
+  validator,
+  savePhoto,
+  setPhotoUrl,
+  createError,
+} = require("../../helpers");
 
 const editSpace = async (req, res, next) => {
   let connection;

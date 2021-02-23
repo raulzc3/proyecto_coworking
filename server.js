@@ -37,6 +37,7 @@ const {
   editPack,
   deletePack,
   getPack,
+  filterPacksAdmin,
 } = require("./controllers/packs");
 
 //Controladores de valoraciones
@@ -186,6 +187,10 @@ app.delete(
 //GET - Obtener todos los packs
 //URL ejemplo: http://localhost:3000/packs
 app.get("/packs", getPack);
+
+//GET - Filtrar packs (solo el administrador)
+//URL ejemplo: http://localhost:3000/packs
+app.get("/admin/packs", isAdmin, filterPacksAdmin);
 
 //GET - Crear un pack
 //URL ejemplo http://localhost:3000/packs

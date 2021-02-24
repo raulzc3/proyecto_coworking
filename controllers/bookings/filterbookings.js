@@ -16,7 +16,6 @@ const filterbookings = async (req, res, next) => {
       start_date,
       end_date,
       order_date,
-
       direction,
       order,
     } = req.query;

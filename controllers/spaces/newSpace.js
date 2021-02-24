@@ -1,4 +1,9 @@
-const { validator, savePhoto, setPhotoUrl } = require("../../helpers");
+const {
+  validator,
+  savePhoto,
+  setPhotoUrl,
+  createError,
+} = require("../../helpers");
 const { newSpaceSchema } = require("../../schemas");
 
 const newSpace = async (req, res, next) => {

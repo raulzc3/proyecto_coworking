@@ -1,3 +1,5 @@
+const { setPhotoUrl } = require("../../helpers");
+
 const filterPacksAdmin = async (req, res, next) => {
   let connection;
   try {
@@ -16,9 +18,14 @@ const filterPacksAdmin = async (req, res, next) => {
         (type LIKE ? OR ?)AND
         (price = ? OR ?)AND
         (enabled = ? OR ?)
+        ORDER BY ${orderBy} ${orderDirection}
       ;`,
       [pack_id, !pack_id, `%${type}%`, !type, price, !price, enabled, !enabled]
     );
+
+    result.map((value) => {
+      value.photo = setPhotoUrl(value.photo, "packs");
+    });
 
     res.send({
       status: "ok",

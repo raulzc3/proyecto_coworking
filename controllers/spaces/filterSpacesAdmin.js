@@ -1,4 +1,4 @@
-const { validator } = require("../../helpers");
+const { validator, setPhotoUrl } = require("../../helpers");
 const { filterSpaceAdminSchema } = require("../../schemas");
 
 const filterSpacesAdmin = async (req, res, next) => {
@@ -68,6 +68,10 @@ const filterSpacesAdmin = async (req, res, next) => {
         !space_name,
       ]
     );
+
+    results.map((value) => {
+      value.url = setPhotoUrl(value.url, `spaces/${value.ID}`);
+    });
 
     let spacios = [];
     const filtro = await results.filter((value) => {

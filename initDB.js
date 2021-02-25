@@ -135,7 +135,7 @@ async function main() {
     console.log("Datos de spaces añadidos");
 
     // Inserción de fotos
-    for (let i = 1; i < 12; i++) {
+    for (let i = 1; i <= 12; i++) {
       let space = 1;
       if (i > 3) {
         space = 2;

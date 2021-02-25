@@ -25,7 +25,7 @@ const getReservation = async (req, res, next) => {
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
-          ON o.space_id = ph.id
+          ON  o.space_id = ph.space_id
           JOIN spaces s
           ON o.space_id = s.id
            WHERE o.user_id = ? AND (CURDATE() BETWEEN start_date AND end_date) 
@@ -44,7 +44,7 @@ const getReservation = async (req, res, next) => {
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
-          ON o.space_id = ph.id
+          ON  o.space_id = ph.space_id
           JOIN spaces s
           ON o.space_id = s.id
           WHERE user_id = ? AND CURDATE() < start_date 
@@ -62,7 +62,7 @@ const getReservation = async (req, res, next) => {
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
-          ON o.space_id = ph.id
+          ON  o.space_id = ph.space_id
           JOIN spaces s
           ON o.space_id = s.id
           LEFT JOIN reviews r
@@ -82,7 +82,7 @@ const getReservation = async (req, res, next) => {
           JOIN packs p 
           ON o.pack_id = p.id 
           JOIN photos ph
-          ON o.space_id = ph.id
+          ON o.space_id = ph.space_id
           JOIN spaces s
           ON o.space_id = s.id
           WHERE  user_id = ? ORDER BY start_date;`,
@@ -92,7 +92,11 @@ const getReservation = async (req, res, next) => {
     }
 
     const reservation = orders[0].map((order) => {
-      order.spacePhoto = setPhotoUrl(order.spacePhoto, "spaces");
+      console.log(order);
+      order.spacePhoto = setPhotoUrl(
+        order.spacePhoto,
+        "spaces/" + order.spaceId
+      );
 
       return { ...order };
     });

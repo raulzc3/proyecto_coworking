@@ -72,13 +72,13 @@ async function main() {
     // Inserición de usuario administrador
     await connection.query(`
     INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
-    VALUES("SUPERADMIN","SUPERADMIN", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1,"2020-01-01")
+    VALUES("SUPERADMIN", "ISTRATOR", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1,"2020-01-01")
     `);
     // Inserición de usuario normal
-    await connection.query(`
-  INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin,last_auth_date)
-  VALUES("Normal","user", "123456788",SHA2("${process.env.ADMIN_PASSWORD}", 512),"normaluser_coworkit@gmail.com","000000001","COWORKIT", 1,0,"2020-01-01")
-  `);
+    /*  await connection.query(`
+  INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin, last_auth_date)
+  VALUES("Normal", "User", "123456788",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.USER_EMAIL}", "631124456", "HACKABOSS", 1,0,"2020-01-01")
+  `); */
 
     // Inserición de usuarios aleatorios
     const users = 10;
@@ -109,7 +109,16 @@ async function main() {
       "Oficina compartida",
     ];
 
-    const numSpaces = 10;
+    await connection.query(`
+    INSERT INTO spaces (type, name, description, price, capacity)
+    VALUES ("${listTypeSpaces[4]}","Despacho coval", "Habilitado con todos los servicios necesarios para una empresa, desde un lujoso escritorio de caoba, hasta sillones de cuero, todo ello diseñado por la famosa diseñadora Mollie Grey.
+    " ,10 , 5),
+    ("${listTypeSpaces[2]}",  "Auditorio Iago XV", "Nuestra zona más amplia, el espacio ideal para poder realizar exposiciones, charlas, presentaciones...", 200, 350),
+    ("${listTypeSpaces[3]}",  "Estudio principal", "Espacio en el que podrás crear tu mejor contenido audiovisual, estando completamente insonorizado y con una zona acondicionada para ralizar grabaciones", 35, 5),
+    ("${listTypeSpaces[0]}",  "Sala de las ideas", "De las mejores opciones a la hora de hacer reuniones de empresa, cuenta con luz natural y sillas súper cómodas", 50, 15)
+    `);
+
+    const numSpaces = 0;
 
     for (let i = 0; i < numSpaces; i++) {
       const description = faker.lorem.paragraph();
@@ -126,11 +135,21 @@ async function main() {
     console.log("Datos de spaces añadidos");
 
     // Inserción de fotos
-    for (let i = 0; i < numSpaces; i++) {
-      const urlImageOfSpace = `http://placeimg.com/640/48${i}`;
+    for (let i = 1; i < 12; i++) {
+      let space = 1;
+      if (i > 3) {
+        space = 2;
+      }
+      if (i > 6) {
+        space = 3;
+      }
+      if (i > 9) {
+        space = 4;
+      }
+      const urlImageOfSpace = `${i}.jpg`;
       await connection.query(`
     INSERT INTO photos (url, space_id)
-    VALUES ("${urlImageOfSpace}",${i + 1})
+    VALUES ("${urlImageOfSpace}", ${space})
         `);
     }
     console.log("Datos de photos añadidos");
@@ -138,10 +157,10 @@ async function main() {
     // Inserción de packs
     await connection.query(`
     INSERT INTO packs (type, content, price, photo)
-    VALUES ("Básico", "Si quieres más, paga", 0, "img/pack1.jpg"),
-    ("Intermedio", "Este no está mal, pero podría estar mejor", 5, "img/pack2.jpg"),
-    ("Audiovisual", "Tus presentaciones parecerán películas", 10, "img/pack3.jpg"),
-    ("Informático", "Podrás sacar al hacker que llevas dentro", 15, "img/pack4.jpg");
+    VALUES ("Básico", "Cunta con conexión a intertet a través de nuestro Wifi o por cable", 0, "basico.jpg"),
+    ("Intermedio", "Junto a los servicios del pack básico, dispondrás de una taquilla con una clave personal disponible 24h.", 5, "intermedio.jpg"),
+    ("Audiovisual", "A las ventajas de los anteriores packs le añadimos un proyector 4k, un equipo de sonido 7.1 y un equipo Windows 10 equipado con todo lo necesario para crear o mostrar tus mejores presentaciones", 10, "audiovisual.jpg"),
+    ("Deluxe", "El pack definitivo, todos los servicios anteriores disponibles junto a una velocidad de conexión superior, servicio de secretaría 24h y podrás disponer de cuatro equipos Windows 10 cuando los requieras", 30, "deluxe.jpg");
     `);
     console.log("Datos de packs añadidos");
 
@@ -156,13 +175,13 @@ async function main() {
     ];
 
     // Inserción de reviews
-    const reviews = 50;
+    const reviews = 15;
 
     for (let index = 0; index < reviews; index++) {
       const coment = faker.lorem.sentence();
-      const rating = random(1, 10);
+      const rating = random(3, 10);
       const userId = random(1, users);
-      const spacesId = random(1, numSpaces);
+      const spacesId = random(1, 4);
 
       await connection.query(`
         INSERT INTO reviews(comment, score,  user_id, space_id)
@@ -173,7 +192,7 @@ async function main() {
 
     // Inserción de incidencias
 
-    const reports = 20;
+    const reports = 5;
     const listOfReportsCategories = [
       "Hardware",
       "Software",
@@ -188,8 +207,8 @@ async function main() {
       const description = faker.lorem.paragraph();
       const solved = random(0, 1);
       const reportDate = formatDateToDB(faker.date.recent());
-      const urlImageOfSpace = `./files/reports/report_${i}.jpg`;
-      const spaceId = random(1, numSpaces);
+      const urlImageOfSpace = `https://source.unsplash.com/random/800*60${i}`;
+      const spaceId = random(1, 4);
       const userId = random(1, users);
 
       await connection.query(`
@@ -218,7 +237,7 @@ async function main() {
       );
       const userID = random(1, users);
       const packID = random(1, 4);
-      const spaceID = random(1, numSpaces);
+      const spaceID = random(1, 4);
 
       const [
         result,

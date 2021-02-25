@@ -77,7 +77,7 @@ const filterSpaces = async (req, res, next) => {
     );
     filtro.map((result) => {
       //Devuelvo la foto con su ruta de backend
-      result.url = setPhotoUrl(result.url, "spaces");
+      result.url = setPhotoUrl(result.url, "spaces/" + result.ID);
       //filtro todas los orders de dichos espacios y lo añado a la resupesta
       result.date = dates.filter((date) => {
         return date.space_id === result.ID;

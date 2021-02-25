@@ -75,10 +75,10 @@ async function main() {
     VALUES("SUPERADMIN", "ISTRATOR", "123456789",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.ADMIN_EMAIL}","000000000","COWORKIT", 1,1,"2020-01-01")
     `);
     // Inserición de usuario normal
-    /*  await connection.query(`
+    await connection.query(`
   INSERT INTO users(name, surname, nif, password, email, tel, company, verified, admin, last_auth_date)
   VALUES("Normal", "User", "123456788",SHA2("${process.env.ADMIN_PASSWORD}", 512),"${process.env.USER_EMAIL}", "631124456", "HACKABOSS", 1,0,"2020-01-01")
-  `); */
+  `);
 
     // Inserición de usuarios aleatorios
     const users = 10;
